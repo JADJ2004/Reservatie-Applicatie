@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {}
+    "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {
+    "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+        "projectUniqueName": "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
         "projectName": "Reserverings-Applicatie",
-        "projectPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
-        "packagesPath": "C:\\Users\\joey-\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
+        "projectPath": "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+        "packagesPath": "C:\\Users\\rensg\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\joey-\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\rensg\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -37,6 +37,16 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.SQLite": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "SQLite": {
+              "target": "Package",
+              "version": "[3.13.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
