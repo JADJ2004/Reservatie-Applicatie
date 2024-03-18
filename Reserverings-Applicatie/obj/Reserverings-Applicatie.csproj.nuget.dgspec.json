@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {}
+    "C:\\Users\\Dennj\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {
+    "C:\\Users\\Dennj\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+        "projectUniqueName": "C:\\Users\\Dennj\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
         "projectName": "Reserverings-Applicatie",
-        "projectPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
-        "packagesPath": "C:\\Users\\joey-\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
+        "projectPath": "C:\\Users\\Dennj\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+        "packagesPath": "C:\\Users\\Dennj\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dennj\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\joey-\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Dennj\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
