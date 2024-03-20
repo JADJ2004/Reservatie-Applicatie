@@ -1,0 +1,14 @@
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.AssemblyInfoInputs.cache
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.AssemblyInfo.cs
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.csproj.CoreCompileInputs.cache
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\bin\Debug\net7.0\Reserverings-Applicatie.exe
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\bin\Debug\net7.0\Reserverings-Applicatie.deps.json
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\bin\Debug\net7.0\Reserverings-Applicatie.runtimeconfig.json
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\bin\Debug\net7.0\Reserverings-Applicatie.dll
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\bin\Debug\net7.0\Reserverings-Applicatie.pdb
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.dll
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\refint\Reserverings-Applicatie.dll
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.pdb
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.genruntimeconfig.cache
+c:\Users\joey-\Documents\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\ref\Reserverings-Applicatie.dll
