@@ -42,9 +42,13 @@
               "target": "Package",
               "version": "[3.1.0, )"
             },
-            "SQLite": {
+            "SQLitePCLRaw.core": {
               "target": "Package",
-              "version": "[3.13.0, )"
+              "version": "[2.1.8, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.118, )"
             }
           },
           "imports": [

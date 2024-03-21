@@ -1,39 +1,60 @@
 using System;
 using System.Data.SQLite;
 
-class Program
+public partial class database
 {
-    static void Main(string[] args)
+    public void Database_con()
     {
-        // Verbinding maken met de database
-        string connectionString = "Data Source=restaurant.db;Version=3;";
+
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
         using (SQLiteConnection connection = new SQLiteConnection(connectionString))
         {
             connection.Open();
 
-            // Tabel aanmaken voor reserveringen
-            string createTableQuery = @"CREATE TABLE IF NOT EXISTS Reservations (
-                                            ReservationID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                            CustomerName TEXT NOT NULL,
-                                            ReservationDate TEXT NOT NULL,
-                                            NumberOfGuests INTEGER NOT NULL
-                                        );";
+
+            string createTableQuery = @"
+                CREATE TABLE IF NOT EXISTS Reserveringen (
+                    ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Amount_people TEXT,
+                    First_name TEXT,
+                    Last_name TEXT,
+                    Phonenumber TEXT,
+                    Date TEXT,
+                    Email TEXT
+                )";
+
             using (SQLiteCommand command = new SQLiteCommand(createTableQuery, connection))
             {
+                
                 command.ExecuteNonQuery();
+                Console.WriteLine("Tabel 'Reserveringen' is succesvol aangemaakt.");
             }
 
-            // Voorbeeldgegevens invoegen
-            string insertDataQuery = @"INSERT INTO Reservations (CustomerName, ReservationDate, NumberOfGuests)
-                                        VALUES ('John Doe', '2024-03-18', 4),
-                                               ('Jane Smith', '2024-03-20', 2),
-                                               ('Michael Johnson', '2024-03-21', 6);";
-            using (SQLiteCommand command = new SQLiteCommand(insertDataQuery, connection))
+            connection.Close();
+        }
+    }
+
+    public void AddReservation(int amountPeople, string firstName, string lastName, int phoneNumber, string email, int date)
+    {
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
+        
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = @"INSERT INTO Reserveringen (Amount_people, First_name, Last_name, Phonenumber, Email, Date) VALUES (@Amount_people, @First_name, @Last_name, @Phonenumber, @Email, @Date)";
+
+            using (SQLiteCommand command = new SQLiteCommand(sqlQuery, connection))
             {
+                command.Parameters.AddWithValue("@Amount_people", amountPeople);
+                command.Parameters.AddWithValue("@First_name", firstName);
+                command.Parameters.AddWithValue("@Last_name", lastName);
+                command.Parameters.AddWithValue("@Phonenumber", phoneNumber);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Date", date);
+
                 command.ExecuteNonQuery();
             }
-
-            Console.WriteLine("Database en tabel zijn succesvol aangemaakt en voorbeeldgegevens zijn toegevoegd.");
         }
     }
 }
