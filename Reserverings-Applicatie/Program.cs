@@ -11,7 +11,7 @@ class Program
         bool wantWindow = Console.ReadLine()?.Trim().ToLower() == "yes";
 
         Console.WriteLine("Please enter the number of people for the reservation:");
-        int numberOfPeople = int.Parse(Console.ReadLine() ?? "0");
+        int numOfPeople = int.Parse(Console.ReadLine() ?? "0");
 
         ReservationSystem rs = new ReservationSystem();
         rs.ReserveTableForGroup(numOfPeople, wantWindow);
