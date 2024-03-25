@@ -40,13 +40,13 @@ namespace ReservationApplication
             {
                 Console.Write("Aantal personen: ");
                 numOfPeople = int.Parse(Console.ReadLine() ?? "");
-                if (numOfPeople < 1 || numOfPeople > 40) //placeholder
+                if (numOfPeople < 1 || numOfPeople > 48) //placeholder
                 {
                     people_checker = true;
                 }
                 else
                 {
-                    Console.WriteLine("Invalid hoeveelheid mensen. Hoe de hoeveelheid mensen tussen 1 en (placeholder)");
+                    Console.WriteLine("Invalid hoeveelheid mensen. Hoe de hoeveelheid mensen tussen 1 en 48");
                 }
             }
 
