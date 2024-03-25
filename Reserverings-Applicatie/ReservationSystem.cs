@@ -30,12 +30,12 @@ public class ReservationSystem
                 int capacity = reader.GetInt32(1);
                 bool isWindowSeat = reader.GetBoolean(2);
 
-                string tableType = $"{capacity} persoons";
+                string tableType = $"{capacity} personen";
                 if (capacity >= peopleToAccommodate)
                 {
                     assignedTables.Add(tableId);
                     UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Table {tableId} ({tableType}) reserved. Window seat: {(isWindowSeat ? "Yes" : "No")}.");
+                    Console.WriteLine($"Tafel {tableId} ({tableType}) gereserveerd. Aan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
                     peopleToAccommodate -= capacity;
                     break;
                 }
@@ -44,7 +44,7 @@ public class ReservationSystem
 
         if (peopleToAccommodate > 0)
         {
-            Console.WriteLine("Not enough capacity to accommodate everyone based on your preferences. Trying without window preference.");
+            Console.WriteLine("Er zijn geen tafels meer aan het raam, u krijgt een tafel zonder raam.");
             ReserveTableForGroupWithoutWindowPreference(numberOfPeople, assignedTables);
         }
     }
@@ -68,7 +68,7 @@ public class ReservationSystem
                 if (!alreadyAssignedTables.Contains(tableId) && capacity >= peopleToAccommodate)
                 {
                     UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Table {tableId} ({tableType}) reserved. Window seat: {(isWindowSeat ? "Yes" : "No")}.");
+                    Console.WriteLine($"Tafel {tableId} ({tableType}) gereserveerd. Aan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
                     peopleToAccommodate -= capacity;
                     break;
                 }
@@ -77,7 +77,7 @@ public class ReservationSystem
 
         if (peopleToAccommodate > 0)
         {
-            Console.WriteLine("Unfortunately, we cannot accommodate your entire group with the current table setup.");
+            Console.WriteLine("Helaas is er geen plek meer");
         }
     }
 
