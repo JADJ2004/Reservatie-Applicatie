@@ -50,7 +50,7 @@ namespace ReservationApplication
                 }
             }
 
-            while (first_name_checker == false)
+            while (first_name_checker != true)
             {
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Voornaam: ");
@@ -68,7 +68,7 @@ namespace ReservationApplication
             Console.Write("Toevoeging: ");
             string addition = Console.ReadLine() ?? "";
 
-            while (last_name_checker == false)
+            while (last_name_checker != true)
             {
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Achternaam: ");
@@ -82,7 +82,7 @@ namespace ReservationApplication
                 }
             }
 
-            while (phoneNumber_checker == false)
+            while (phoneNumber_checker != true)
                 {
                 Console.Write("Telefoonnummer: ");
                 phoneNumber = Console.ReadLine() ?? "";
