@@ -18,7 +18,7 @@ public class ReservationSystem
         List<int> assignedTables = new List<int>();
         int peopleToAccommodate = numberOfPeople;
 
-        string sql = "SELECT TableId, Capacity FROM Tables WHERE IsAvailable = 1 AND WindowSeat = @WantWindow ORDER BY Capacity ASC";
+        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 AND WindowSeat = @WantWindow ORDER BY Capacity ASC";
         SQLiteCommand cmd = new SQLiteCommand(sql, conn);
         cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
 
@@ -28,12 +28,14 @@ public class ReservationSystem
             {
                 int tableId = reader.GetInt32(0);
                 int capacity = reader.GetInt32(1);
+                bool isWindowSeat = reader.GetBoolean(2);
 
+                string tableType = $"{capacity} persoons";
                 if (capacity >= peopleToAccommodate)
                 {
                     assignedTables.Add(tableId);
                     UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Table {tableId} reserved.");
+                    Console.WriteLine($"Table {tableId} ({tableType}) reserved. Window seat: {(isWindowSeat ? "Yes" : "No")}.");
                     peopleToAccommodate -= capacity;
                     break;
                 }
@@ -51,7 +53,7 @@ public class ReservationSystem
     {
         int peopleToAccommodate = numberOfPeople;
 
-        string sql = "SELECT TableId, Capacity FROM Tables WHERE IsAvailable = 1 ORDER BY Capacity ASC";
+        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 ORDER BY Capacity ASC";
         SQLiteCommand cmd = new SQLiteCommand(sql, conn);
 
         using (var reader = cmd.ExecuteReader())
@@ -60,11 +62,13 @@ public class ReservationSystem
             {
                 int tableId = reader.GetInt32(0);
                 int capacity = reader.GetInt32(1);
+                bool isWindowSeat = reader.GetBoolean(2);
 
+                string tableType = $"{capacity} persoons";
                 if (!alreadyAssignedTables.Contains(tableId) && capacity >= peopleToAccommodate)
                 {
                     UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Table {tableId} reserved.");
+                    Console.WriteLine($"Table {tableId} ({tableType}) reserved. Window seat: {(isWindowSeat ? "Yes" : "No")}.");
                     peopleToAccommodate -= capacity;
                     break;
                 }
