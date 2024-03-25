@@ -8,29 +8,30 @@ public static class Menus
     private static string AdminWachtwoord = "1234YES!";
     private static string Wachtwoord;
 
-    public static string StartUp()
+public static string StartUp()
+{
+    string keuze = null;
+
+    Console.WriteLine("\nWelkom bij het keuzemenu van YES!");
+    Console.WriteLine("Maak een keuze (1/2/3).");
+    Console.WriteLine("1. Inloggen als beheerder.");
+    Console.WriteLine("2. Reserveer een tafel.");
+    Console.WriteLine("3. Annuleer of bewerk je reservering.");
+    Console.WriteLine("4. Check het menu.");
+
+    keuze = Console.ReadLine();
+
+    if (keuze != null && (keuze == "1" || keuze == "2" || keuze == "3" || keuze == "4"))
     {
-        Menu = true;
-
-        while (Menu)
-        {
-            Console.WriteLine("\nWelkom bij het keuzemenu van YES!");
-            Console.WriteLine("Maak een keuze (1/2/3).");
-            Console.WriteLine("1. Inloggen als beheerder.");
-            Console.WriteLine("2. Reserveer een tafel.");
-            Console.WriteLine("3. Annuleer of bewerk je reservering.");
-            Console.WriteLine("4. Check het menu.");
-
-            Keuze = Console.ReadLine();
-
-            if (Keuze != null)
-            {
-                return Keuze;
-            }
-        }
-
-        return null; // Dit word nooit gebruikt maar het hoort er.
+        return keuze;
     }
+    else
+    {
+        Console.WriteLine("Ongeldige invoer. Probeer opnieuw.");
+        return StartUp();
+    }
+}
+
 
     public static void AdminLogin()
     {
@@ -42,7 +43,6 @@ public static class Menus
         if (Wachtwoord == AdminWachtwoord)
         {
             Console.WriteLine("Je bent succesvol ingelogd als beheerder.");
-            Menu = false; // Uit de menu loop.
             // Admin Menu
         }
         else

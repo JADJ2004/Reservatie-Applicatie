@@ -1,28 +1,31 @@
-class Program
+public class Program
 {
     static void Main(string[] args)
     {
-        string choice = Menus.StartUp(); // Geeft de gekozen optie.
+        string choice;
 
-        switch (choice)
+        do
         {
-            case "1":
-                Menus.AdminLogin(); // If the user chooses option 1, attempt admin login
-                break;
-            case "2":
-                Console.WriteLine("Option 2 selected: Reserveer een tafel.");
-                break;
-            case "3":
-                Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");
-                break;
-            case "4":
-                Console.WriteLine("Option 4 selected: Check het menu.");
-                break;
-            default:
-                Console.WriteLine("Invalid choice. Please select a valid option.");
-                break;
-        }
+            choice = Menus.StartUp();
 
-        // Here you can add more code to continue the program flow
+            switch (choice)
+            {
+                case "1":
+                    Menus.AdminLogin();
+                    break;
+                case "2":
+                    Console.WriteLine("Option 2 selected: Reserveer een tafel.");
+                    break;
+                case "3":
+                    Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");
+                    break;
+                case "4":
+                    Console.WriteLine("Option 4 selected: Check het menu.");
+                    break;
+                default:
+                    Console.WriteLine("Dit is geen geldige optie.");
+                    break;
+            }
+        } while (choice != "1" && choice != "2" && choice != "3" && choice != "4");
     }
 }
