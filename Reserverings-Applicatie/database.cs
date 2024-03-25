@@ -1,7 +1,7 @@
 using System;
 using System.Data.SQLite;
 
-public partial class database
+public partial class Database
 {
     public void Database_con()
     {
