@@ -7,7 +7,6 @@ public class Program
         do
         {
             keuze = Menus.StartUp();
-
             switch (keuze)
             {
                 case "1":
@@ -15,6 +14,7 @@ public class Program
                     break;
                 case "2":
                     Console.WriteLine("Option 2 selected: Reserveer een tafel.");
+                    ReserveringAanvragen.Reserveren();
                     break;
                 case "3":
                     Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");

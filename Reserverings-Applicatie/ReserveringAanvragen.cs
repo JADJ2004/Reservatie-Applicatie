@@ -1,9 +1,9 @@
 using System;
 
 // dit is eig placeholder
-class Program
+class ReserveringAanvragen
 {
-    static void Main(string[] args)
+    public void Reserveren()
     {
         Console.WriteLine("Welcome to the reservation system.");
 
