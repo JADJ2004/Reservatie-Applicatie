@@ -2,9 +2,9 @@ using System;
 
 namespace ReservationApplication
 {
-    class Program
+    class TestAplicatie
     {
-        static void ReservationSystem(string[] args)
+        public void ReservationSystem()
         {
             bool date_checker = false;
             bool first_name_checker = false;
@@ -40,7 +40,7 @@ namespace ReservationApplication
             {
                 Console.Write("Aantal personen: ");
                 numOfPeople = int.Parse(Console.ReadLine() ?? "");
-                if (numOfPeople < 1 || numOfPeople > 48) //placeholder
+                if (numOfPeople > 1 || numOfPeople < 48) //placeholder
                 {
                     people_checker = true;
                 }
