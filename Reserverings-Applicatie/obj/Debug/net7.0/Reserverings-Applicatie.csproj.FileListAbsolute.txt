@@ -1,0 +1,5 @@
+C:\Users\noah\OneDrive\Bureaublad\development c#\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.csproj.AssemblyReference.cache
+C:\Users\noah\OneDrive\Bureaublad\development c#\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\noah\OneDrive\Bureaublad\development c#\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.AssemblyInfoInputs.cache
+C:\Users\noah\OneDrive\Bureaublad\development c#\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.AssemblyInfo.cs
+C:\Users\noah\OneDrive\Bureaublad\development c#\Reservatie-Applicatie\Reserverings-Applicatie\obj\Debug\net7.0\Reserverings-Applicatie.csproj.CoreCompileInputs.cache
