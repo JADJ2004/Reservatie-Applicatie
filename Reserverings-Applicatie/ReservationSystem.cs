@@ -13,10 +13,10 @@ public class ReservationSystem
         conn.Open();
     }
 
-    public void ReserveTableForGroup(int numberOfPeople, bool wantWindow)
+    public void ReserveTableForGroup(int numOfPeople, bool wantWindow)
     {
         List<int> assignedTables = new List<int>();
-        int peopleToAccommodate = numberOfPeople;
+        int peopleToAccommodate = numOfPeople;
 
         string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 AND WindowSeat = @WantWindow ORDER BY Capacity ASC";
         SQLiteCommand cmd = new SQLiteCommand(sql, conn);
@@ -45,13 +45,13 @@ public class ReservationSystem
         if (peopleToAccommodate > 0)
         {
             Console.WriteLine("Er zijn geen tafels meer aan het raam, u krijgt een tafel zonder raam.");
-            ReserveTableForGroupWithoutWindowPreference(numberOfPeople, assignedTables);
+            ReserveTableForGroupWithoutWindowPreference(numOfPeople, assignedTables);
         }
     }
 
-    private void ReserveTableForGroupWithoutWindowPreference(int numberOfPeople, List<int> alreadyAssignedTables)
+    private void ReserveTableForGroupWithoutWindowPreference(int numOfPeople, List<int> alreadyAssignedTables)
     {
-        int peopleToAccommodate = numberOfPeople;
+        int peopleToAccommodate = numOfPeople;
 
         string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 ORDER BY Capacity ASC";
         SQLiteCommand cmd = new SQLiteCommand(sql, conn);

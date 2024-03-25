@@ -14,6 +14,6 @@ class Program
         int numberOfPeople = int.Parse(Console.ReadLine() ?? "0");
 
         ReservationSystem rs = new ReservationSystem();
-        rs.ReserveTableForGroup(numberOfPeople, wantWindow);
+        rs.ReserveTableForGroup(numOfPeople, wantWindow);
     }
 }
