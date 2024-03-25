@@ -17,8 +17,8 @@ public partial class Database
                 CREATE TABLE IF NOT EXISTS Reserveringen (
                     ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
                     Amount_people TEXT,
-                    Infix TEXT,
                     First_name TEXT,
+                    Infix TEXT,
                     Last_name TEXT,
                     Phonenumber TEXT,
                     Date TEXT,
@@ -72,7 +72,7 @@ public partial class Database
         {
             connection.Open();
 
-            string formattedDate = date.ToString("yyyy-MM-dd");
+            string formattedDate = date.ToString("dd-MM-yyyy");
 
             string sqlQuery = @"INSERT INTO Reserveringen (Amount_people, First_name, Infix, Last_name, Phonenumber, Email, Date) VALUES (@Amount_people, @First_name,@Infix, @Last_name, @Phonenumber, @Email, @Date)";
 
