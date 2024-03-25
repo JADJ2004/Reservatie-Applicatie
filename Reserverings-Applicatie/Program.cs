@@ -2,13 +2,13 @@ public class Program
 {
     static void Main(string[] args)
     {
-        string choice;
+        string keuze;
 
         do
         {
-            choice = Menus.StartUp();
+            keuze = Menus.StartUp();
 
-            switch (choice)
+            switch (keuze)
             {
                 case "1":
                     Menus.AdminLogin();
@@ -22,10 +22,13 @@ public class Program
                 case "4":
                     Console.WriteLine("Option 4 selected: Check het menu.");
                     break;
+                case "5":
+                    Console.WriteLine("Fijne dag.");
+                    break;
                 default:
-                    Console.WriteLine("Dit is geen geldige optie.");
+                    Console.WriteLine("\nDit is geen geldige optie.");
                     break;
             }
-        } while (choice != "1" && choice != "2" && choice != "3" && choice != "4");
+        } while (keuze != "5");
     }
 }
