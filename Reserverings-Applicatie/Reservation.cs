@@ -4,7 +4,7 @@ namespace ReservationApplication
 {
     class Program
     {
-        static void Main(string[] args)
+        static void ReservationSystem(string[] args)
         {
             bool date_checker = false;
             bool first_name_checker = false;
