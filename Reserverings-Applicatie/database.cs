@@ -16,7 +16,7 @@ public partial class Database
             string createTableQuery = @"
                 CREATE TABLE IF NOT EXISTS Reserveringen (
                     ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Amount_people TEXT,
+                    numOfPeople TEXT,
                     First_name TEXT,
                     Infix TEXT,
                     Last_name TEXT,
@@ -74,11 +74,11 @@ public partial class Database
 
             string formattedDate = date.ToString("dd-MM-yyyy");
 
-            string sqlQuery = @"INSERT INTO Reserveringen (Amount_people, First_name, Infix, Last_name, Phonenumber, Email, Date) VALUES (@Amount_people, @First_name,@Infix, @Last_name, @Phonenumber, @Email, @Date)";
+            string sqlQuery = @"INSERT INTO Reserveringen (numOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date) VALUES (@numOfPeople, @First_name,@Infix, @Last_name, @Phonenumber, @Email, @Date)";
 
             using (SQLiteCommand command = new SQLiteCommand(sqlQuery, connection))
             {
-                command.Parameters.AddWithValue("@Amount_people", amountPeople);
+                command.Parameters.AddWithValue("@numOfPeople", amountPeople);
                 command.Parameters.AddWithValue("@First_name", firstName);
                 command.Parameters.AddWithValue("@Infix", infix);
                 command.Parameters.AddWithValue("@Last_name", lastName);
@@ -109,7 +109,7 @@ public partial class Database
                     {
                         // Retrieve values from the current row
                         int reservationId = reader.GetInt32(0);
-                        int amountPeople = int.Parse(reader.GetString(1));
+                        int numOfPeople = int.Parse(reader.GetString(1));
                         string firstName = reader.GetString(2);
                         string Infix = reader.GetString(3);
                         string lastName = reader.GetString(4);
@@ -118,7 +118,7 @@ public partial class Database
                         string email = reader.GetString(7);
 
                         // Print the values
-                        Console.WriteLine($"Reservation ID: {reservationId}, Amount of People: {amountPeople}, First Name: {firstName}, Infix: {Infix}, Last Name: {lastName}, Phone Number: {phoneNumber}, Date: {date}, Email: {email}");
+                        Console.WriteLine($"Reservation ID: {reservationId}, Amount of People: {numOfPeople}, First Name: {firstName}, Infix: {Infix}, Last Name: {lastName}, Phone Number: {phoneNumber}, Date: {date}, Email: {email}");
                     }
                 }
             }
