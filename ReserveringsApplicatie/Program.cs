@@ -18,10 +18,10 @@ public class Program
                     break;
                 case "3":
                     Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");
-                    break;
+                    break; // later
                 case "4":
                     Console.WriteLine("Option 4 selected: Check het menu.");
-                    break;
+                    break; //
                 case "5":
                     Console.WriteLine("Fijne dag.");
                     break;
