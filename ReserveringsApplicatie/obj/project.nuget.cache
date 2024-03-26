@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "UNeB8uPmesSsSDF95lm7isXyUB9+2NgxQSnUZtgof4vEa2IbROdlmNngXr2/Hvts6NJmE3Ir4TnKCchtdjpmuA==",
+  "dgSpecHash": "Ir1yxH2tcB60S5EHuMXvqp/qo/0b9dyoQaUpgavoCIrb6JM6ERH0p775LT9E3fDPcu1HIFCGngU76G1aSM2X7w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\ReserveringsApplicatie.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "Z:\\Documenten\\PROJECTEN\\01\\01.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\microsoft.data.sqlite\\8.0.3\\microsoft.data.sqlite.8.0.3.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.3\\microsoft.data.sqlite.core.8.0.3.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.6\\sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.6\\sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512"
+  ],
   "logs": []
 }
