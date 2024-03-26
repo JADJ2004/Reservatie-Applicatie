@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "Z:\\Documenten\\PROJECTEN\\01\\01.csproj": {}
+    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\ReserveringsApplicatie.csproj": {}
   },
   "projects": {
-    "Z:\\Documenten\\PROJECTEN\\01\\01.csproj": {
+    "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\ReserveringsApplicatie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "Z:\\Documenten\\PROJECTEN\\01\\01.csproj",
-        "projectName": "01",
-        "projectPath": "Z:\\Documenten\\PROJECTEN\\01\\01.csproj",
-        "packagesPath": "C:\\Users\\Jibbe de Jong\\.nuget\\packages\\",
-        "outputPath": "Z:\\Documenten\\PROJECTEN\\01\\obj\\",
+        "projectUniqueName": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\ReserveringsApplicatie.csproj",
+        "projectName": "ReserveringsApplicatie",
+        "projectPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\ReserveringsApplicatie.csproj",
+        "packagesPath": "C:\\Users\\joey-\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Jibbe de Jong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\joey-\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -37,12 +37,6 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "dependencies": {
-            "Microsoft.Data.Sqlite": {
-              "target": "Package",
-              "version": "[8.0.3, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -59,7 +53,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.407\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.405\\RuntimeIdentifierGraph.json"
         }
       }
     }

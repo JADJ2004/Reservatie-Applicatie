@@ -1,17 +1,19 @@
 using System;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
-
     public void Database_con()
     {
-        using (var connection = new SqliteConnection(ConnectionString))
+
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
         {
             connection.Open();
-            var createTableQuery = @"
-                DROP TABLE IF EXISTS Reserveringen;
+
+            string createTableQuery = @"
                 CREATE TABLE IF NOT EXISTS Reserveringen (
                     ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
                     numOfPeople TEXT,
@@ -22,82 +24,106 @@ public partial class Database
                     Date TEXT,
                     Email TEXT
                 )";
-            using (var command = new SqliteCommand(createTableQuery, connection))
+
+            using (SQLiteCommand command = new SQLiteCommand(createTableQuery, connection))
             {
+                
                 command.ExecuteNonQuery();
+                Console.WriteLine("Tabel 'Reserveringen' is succesvol aangemaakt.");
             }
+            connection.Close();
         }
     }
-
 
     public void CreateTableTable()
     {
-        using (var connection = new SqliteConnection(ConnectionString))
-        {
-            connection.Open();
-            var createTableQuery = @"
-                CREATE TABLE IF NOT EXISTS Tables (
-                    TableId INTEGER PRIMARY KEY,
-                    Capacity INTEGER NOT NULL,
-                    IsAvailable INTEGER NOT NULL,
-                    WindowSeat INTEGER NOT NULL
-                )";
-            using (var command = new SqliteCommand(createTableQuery, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-        }
-    }
 
-    public void AddReservation(int numOfPeople, string firstName, string infix, string lastName, int phoneNumber, string email, DateTime date)
-    {
-        using (var connection = new SqliteConnection(ConnectionString))
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
         {
             connection.Open();
-            var formattedDate = date.ToString("dd-MM-yyyy");
-            var sqlQuery = @"
-                INSERT INTO Reserveringen (numOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date)
-                VALUES (@numOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date)";
-            using (var command = new SqliteCommand(sqlQuery, connection))
+            string createTableQuery = @"
+            CREATE TABLE IF NOT EXISTS Tables (
+                TableId INTEGER PRIMARY KEY,
+                Capacity INTEGER NOT NULL,
+                IsAvailable INTEGER NOT NULL
+            )";
+            using (SQLiteCommand command = new SQLiteCommand(createTableQuery, connection))
             {
-                command.Parameters.AddWithValue("@numOfPeople", numOfPeople);
+                
+                command.ExecuteNonQuery();
+                Console.WriteLine("Tabel 'Tables' is succesvol aangemaakt.");
+            }
+            connection.Close();
+        }
+
+
+        }
+
+
+       
+
+
+    public void AddReservation(int amountPeople, string firstName, string infix, string lastName, int phoneNumber, string email, DateTime date)
+    {
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
+        
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+        {
+            connection.Open();
+
+            string formattedDate = date.ToString("dd-MM-yyyy");
+
+            string sqlQuery = @"INSERT INTO Reserveringen (numOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date) VALUES (@numOfPeople, @First_name,@Infix, @Last_name, @Phonenumber, @Email, @Date)";
+
+            using (SQLiteCommand command = new SQLiteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@numOfPeople", amountPeople);
                 command.Parameters.AddWithValue("@First_name", firstName);
                 command.Parameters.AddWithValue("@Infix", infix);
                 command.Parameters.AddWithValue("@Last_name", lastName);
-                command.Parameters.AddWithValue("@Phonenumber", phoneNumber.ToString());
+                command.Parameters.AddWithValue("@Phonenumber", phoneNumber);
                 command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@Date", formattedDate);
 
                 command.ExecuteNonQuery();
             }
         }
-    }
 
+    }
     public void PrintReservations()
     {
-        using (var connection = new SqliteConnection(ConnectionString))
+        string connectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\Reserverings-Applicatie\Mydatabase.db";
+        
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
         {
             connection.Open();
-            var sqlQuery = @"SELECT * FROM Reserveringen";
-            using (var command = new SqliteCommand(sqlQuery, connection))
+
+            string sqlQuery = @"SELECT * FROM Reserveringen";
+
+            using (SQLiteCommand command = new SQLiteCommand(sqlQuery, connection))
             {
-                using (var reader = command.ExecuteReader())
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var reservationId = reader.GetInt32(0);
-                        var numOfPeople = reader.GetInt32(1);
-                        var firstName = reader.GetString(2);
-                        var infix = reader.GetString(3);
-                        var lastName = reader.GetString(4);
-                        var phoneNumber = reader.GetString(5); // Assuming Phonenumber is stored as TEXT
-                        var date = reader.GetString(6);
-                        var email = reader.GetString(7);
+                        // Retrieve values from the current row
+                        int reservationId = reader.GetInt32(0);
+                        int numOfPeople = int.Parse(reader.GetString(1));
+                        string firstName = reader.GetString(2);
+                        string Infix = reader.GetString(3);
+                        string lastName = reader.GetString(4);
+                        int phoneNumber = int.Parse(reader.GetString(5));
+                        string date = reader.GetString(6);
+                        string email = reader.GetString(7);
 
-                        Console.WriteLine($"Reservation ID: {reservationId}, Amount of People: {numOfPeople}, First Name: {firstName}, Infix: {infix}, Last Name: {lastName}, Phone Number: {phoneNumber}, Date: {date}, Email: {email}");
+                        // Print the values
+                        Console.WriteLine($"Reservation ID: {reservationId}, Amount of People: {numOfPeople}, First Name: {firstName}, Infix: {Infix}, Last Name: {lastName}, Phone Number: {phoneNumber}, Date: {date}, Email: {email}");
                     }
                 }
             }
         }
     }
+
 }
+
