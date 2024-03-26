@@ -26,7 +26,7 @@ namespace ReservationApplication
                 Console.Write("Voer uw reserveringsdatum in (MM/DD/YYYY): ");
                 date = Console.ReadLine() ?? "";
                 var date_splitter = date.Split("/");
-                if (date_splitter[0].Length == 2 && date_splitter[1].Length == 2 && date_splitter[2].Length == 4) // Kijkt of de correcte format is gebruikt
+                if (date_splitter[0].Length == 2 && date_splitter[1].Length == 2 && date_splitter[2].Length == 4)
                 {
                     date_checker = true;
                 }
@@ -38,9 +38,12 @@ namespace ReservationApplication
 
             while (people_checker != true)
             {
+            Console.WriteLine("Wilt u aan het raam? (ja/nee):");
+            bool wantWindow = Console.ReadLine()?.Trim().ToLower() == "ja";
+            {
                 Console.Write("Aantal personen: ");
-                numOfPeople = int.Parse(Console.ReadLine() ?? "");
-                if (numOfPeople > 1 || numOfPeople < 48) //placeholder
+                numOfPeople = int.Parse(Console.ReadLine() ?? "0");
+                if (numOfPeople > 1 || numOfPeople < 48)
                 {
                     people_checker = true;
                 }
@@ -49,13 +52,15 @@ namespace ReservationApplication
                     Console.WriteLine("Invalid hoeveelheid mensen. Hoe de hoeveelheid mensen tussen 1 en 48");
                 }
             }
+            ReservationSystem rs = new ReservationSystem();
+            rs.ReserveTableForGroup(numOfPeople, wantWindow);
 
             while (first_name_checker != true)
             {
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Voornaam: ");
                 name = Console.ReadLine() ?? "";
-                if (name is string) // kijkt of de naam alleen letters heeft
+                if (name is string)
                 {
                     first_name_checker = true;
                 }
@@ -73,7 +78,7 @@ namespace ReservationApplication
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Achternaam: ");
                 surname = Console.ReadLine() ?? "";
-                if (surname is string) // kijkt of de naam alleen letters heeft
+                if (surname is string)
                 {
                     last_name_checker = true;
                 }
@@ -100,7 +105,7 @@ namespace ReservationApplication
             {
                 Console.Write("E-mail: ");
                 email = Console.ReadLine() ?? "";
-                if (email.Contains("@") && email.Contains(".")) // Kijkt of de variabel bepaalde tekens erin heeft
+                if (email.Contains("@") && email.Contains("."))
                 {
                     mail_checker = true;
                 }
@@ -124,6 +129,7 @@ namespace ReservationApplication
             Console.WriteLine("Opmerkingen: " + comments);
 
             Console.WriteLine("\nDank u wel! We hopen u gauw te zien bij YES!");
+            }
         }
     }
 }
