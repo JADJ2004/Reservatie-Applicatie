@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 public class ReservationSystem
 {
-    private SQLiteConnection conn;
-    private string connectionString = "Data Source=Mydatabase.db;Version=3;";
+    private SqliteConnection conn;
+    private string connectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
 
     public ReservationSystem()
     {
-        conn = new SQLiteConnection(connectionString);
+        conn = new SqliteConnection(connectionString);
         conn.Open();
     }
 
@@ -18,26 +18,28 @@ public class ReservationSystem
         List<int> assignedTables = new List<int>();
         int peopleToAccommodate = numOfPeople;
 
-        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 AND WindowSeat = @WantWindow ORDER BY Capacity ASC";
-        SQLiteCommand cmd = new SQLiteCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
-
-        using (var reader = cmd.ExecuteReader())
+        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 AND WindowSeat = @WantWindow ORDER BY ABS(Capacity - @NumOfPeople) ASC, Capacity DESC";
+        using (var cmd = new SqliteCommand(sql, conn))
         {
-            while (reader.Read() && peopleToAccommodate > 0)
-            {
-                int tableId = reader.GetInt32(0);
-                int capacity = reader.GetInt32(1);
-                bool isWindowSeat = reader.GetBoolean(2);
+            cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
+            cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
 
-                string tableType = $"{capacity} personen";
-                if (capacity >= peopleToAccommodate)
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read() && peopleToAccommodate > 0)
                 {
-                    assignedTables.Add(tableId);
-                    UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Tafel {tableId} ({tableType}) gereserveerd. Aan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
-                    peopleToAccommodate -= capacity;
-                    break;
+                    int tableId = reader.GetInt32(0);
+                    int capacity = reader.GetInt32(1);
+                    bool isWindowSeat = reader.GetBoolean(2);
+
+                    if (!assignedTables.Contains(tableId))
+                    {
+                        assignedTables.Add(tableId);
+                        UpdateTableAvailability(tableId, false);
+                        Console.WriteLine($"Tafel voor {capacity} personen gereserveerd. \nAan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
+                        peopleToAccommodate -= capacity;
+                        if (peopleToAccommodate <= 0) break;
+                    }
                 }
             }
         }
@@ -53,40 +55,44 @@ public class ReservationSystem
     {
         int peopleToAccommodate = numOfPeople;
 
-        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables WHERE IsAvailable = 1 ORDER BY Capacity ASC";
-        SQLiteCommand cmd = new SQLiteCommand(sql, conn);
-
-        using (var reader = cmd.ExecuteReader())
+        string sql = "SELECT TableId, Capacity FROM Tables WHERE IsAvailable = 1 ORDER BY ABS(Capacity - @NumOfPeople) ASC, Capacity DESC";
+        using (var cmd = new SqliteCommand(sql, conn))
         {
-            while (reader.Read() && peopleToAccommodate > 0)
-            {
-                int tableId = reader.GetInt32(0);
-                int capacity = reader.GetInt32(1);
-                bool isWindowSeat = reader.GetBoolean(2);
+            cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
 
-                string tableType = $"{capacity} persoons";
-                if (!alreadyAssignedTables.Contains(tableId) && capacity >= peopleToAccommodate)
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read() && peopleToAccommodate > 0)
                 {
-                    UpdateTableAvailability(tableId, false);
-                    Console.WriteLine($"Tafel {tableId} ({tableType}) gereserveerd. Aan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
-                    peopleToAccommodate -= capacity;
-                    break;
+                    int tableId = reader.GetInt32(0);
+                    int capacity = reader.GetInt32(1);
+
+                    if (!alreadyAssignedTables.Contains(tableId))
+                    {
+                        UpdateTableAvailability(tableId, false);
+                        Console.WriteLine($"Tafel {tableId} ({capacity} persoons) gereserveerd.");
+                        peopleToAccommodate -= capacity;
+                        alreadyAssignedTables.Add(tableId);
+                        if (peopleToAccommodate <= 0) break;
+                    }
                 }
             }
         }
 
         if (peopleToAccommodate > 0)
         {
-            Console.WriteLine("Helaas is er geen plek meer");
+            Console.WriteLine("Helaas is er geen plek meer beschikbaar.");
         }
     }
 
     private void UpdateTableAvailability(int tableId, bool isAvailable)
     {
         string sqlUpdateTable = "UPDATE Tables SET IsAvailable = @IsAvailable WHERE TableId = @TableId";
-        SQLiteCommand cmdUpdateTable = new SQLiteCommand(sqlUpdateTable, conn);
-        cmdUpdateTable.Parameters.AddWithValue("@IsAvailable", isAvailable ? 1 : 0);
-        cmdUpdateTable.Parameters.AddWithValue("@TableId", tableId);
-        cmdUpdateTable.ExecuteNonQuery();
+        using (var cmdUpdateTable = new SqliteCommand(sqlUpdateTable, conn))
+        {
+            cmdUpdateTable.Parameters.AddWithValue("@IsAvailable", isAvailable ? 1 : 0);
+            cmdUpdateTable.Parameters.AddWithValue("@TableId", tableId);
+            cmdUpdateTable.ExecuteNonQuery();
+        }
     }
 }

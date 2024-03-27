@@ -4,6 +4,8 @@ namespace ReservationApplication
 {
     class TestAplicatie
     {
+        Database db = new Database();
+
         public void ReservationSystem()
         {
             bool date_checker = false;
@@ -19,43 +21,49 @@ namespace ReservationApplication
             string surname = "";
             string phoneNumber = "";
             string email = "";
+            string addition = "";
 
             while (date_checker != true)
             {
                 Console.WriteLine("Welkom bij het reserveringsapplicatie van YES!");
-                Console.Write("Voer uw reserveringsdatum in (MM/DD/YYYY): ");
+                Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
                 date = Console.ReadLine() ?? "";
-                var date_splitter = date.Split("/");
-                if (date_splitter[0].Length == 2 && date_splitter[1].Length == 2 && date_splitter[2].Length == 4) // Kijkt of de correcte format is gebruikt
+                DateTime parsedDate;
+                if (DateTime.TryParseExact(date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out parsedDate))
                 {
                     date_checker = true;
                 }
                 else
                 {
-                    Console.WriteLine("Incorrecte formaat. Probeer: (MM/DD/YYYY)");
+                    Console.WriteLine("Incorrecte formaat. Probeer: (dd-MM-yyyy)");
                 }
             }
+
+            Console.WriteLine("Wilt u aan het raam? (ja/nee):");
+            bool wantWindow = Console.ReadLine()?.Trim().ToLower() == "ja";
 
             while (people_checker != true)
             {
                 Console.Write("Aantal personen: ");
-                numOfPeople = int.Parse(Console.ReadLine() ?? "");
-                if (numOfPeople > 1 || numOfPeople < 48) //placeholder
+                if (int.TryParse(Console.ReadLine(), out numOfPeople) && numOfPeople > 0 && numOfPeople < 48)
                 {
                     people_checker = true;
                 }
                 else
                 {
-                    Console.WriteLine("Invalid hoeveelheid mensen. Hoe de hoeveelheid mensen tussen 1 en 48");
+                    Console.WriteLine("Invalid aantal personen. Het aantal personen moet tussen 1 en 48 zijn.");
                 }
             }
 
-            while (first_name_checker != true)
+            ReservationSystem rs = new ReservationSystem();
+            rs.ReserveTableForGroup(numOfPeople, wantWindow);
+
+            while (!first_name_checker)
             {
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Voornaam: ");
                 name = Console.ReadLine() ?? "";
-                if (name is string) // kijkt of de naam alleen letters heeft
+                if (!string.IsNullOrWhiteSpace(name))
                 {
                     first_name_checker = true;
                 }
@@ -66,27 +74,27 @@ namespace ReservationApplication
             }
 
             Console.Write("Toevoeging: ");
-            string addition = Console.ReadLine() ?? "";
+            addition = Console.ReadLine() ?? "";
 
-            while (last_name_checker != true)
+            while (!last_name_checker)
             {
-                Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Achternaam: ");
                 surname = Console.ReadLine() ?? "";
-                if (surname is string) // kijkt of de naam alleen letters heeft
+                if (!string.IsNullOrWhiteSpace(surname))
                 {
                     last_name_checker = true;
                 }
+                else
                 {
                     Console.WriteLine("Invalid input. Probeer alleen letters te gebruiken.");
                 }
             }
 
-            while (phoneNumber_checker != true)
-                {
+            while (!phoneNumber_checker)
+            {
                 Console.Write("Telefoonnummer: ");
                 phoneNumber = Console.ReadLine() ?? "";
-                if (phoneNumber.Length == 10)
+                if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
                 {
                     phoneNumber_checker = true;
                 }
@@ -96,11 +104,11 @@ namespace ReservationApplication
                 }
             }
 
-            while (mail_checker != true)
+            while (!mail_checker)
             {
                 Console.Write("E-mail: ");
                 email = Console.ReadLine() ?? "";
-                if (email.Contains("@") && email.Contains(".")) // Kijkt of de variabel bepaalde tekens erin heeft
+                if (email.Contains("@") && email.Contains("."))
                 {
                     mail_checker = true;
                 }
@@ -112,6 +120,12 @@ namespace ReservationApplication
 
             Console.WriteLine("\nHeeft u nog opmerkingen of verzoeken?");
             string comments = Console.ReadLine() ?? "";
+
+            DateTime reservationDate;
+            if(DateTime.TryParseExact(date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+            {
+                db.AddReservation(numOfPeople, name, addition, surname, int.Parse(phoneNumber), email, reservationDate);
+            }
 
             Console.WriteLine("\nReserveringsgegevens:");
             Console.WriteLine("Datum: " + date);
