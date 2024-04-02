@@ -96,3 +96,22 @@ public class ReservationSystem
         }
     }
 }
+
+
+public void CancelReservation(int reservationId)
+    {
+        string sqlCancelReservation = "UPDATE Tables SET IsAvailable = 1 WHERE ReservationId = @ReservationId";
+        using (var cmdCancelReservation = new SqliteCommand(sqlCancelReservation, conn))
+        {
+            cmdCancelReservation.Parameters.AddWithValue("@ReservationId", reservationId);
+            int rowsAffected = cmdCancelReservation.ExecuteNonQuery();
+            if (rowsAffected > 0)
+            {
+                Console.WriteLine("Reservation canceled successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to cancel reservation. Please check the reservation ID.");
+            }
+        }
+    }
