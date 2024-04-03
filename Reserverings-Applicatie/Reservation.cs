@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ReservationApplication
 {
@@ -6,44 +7,34 @@ namespace ReservationApplication
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welkom bij het reserveringsapplicatie van YES!");
-            Console.Write("Voer uw reserveringsdatum in (MM/DD/YYYY): ");
-            string date = Console.ReadLine();
+            HashSet<int> bookedDays = new HashSet<int> { 1, 3, 5 };
 
-            Console.Write("Aantal personen: ");
-            int AmountOfPeople = int.Parse(Console.ReadLine());
+            Console.WriteLine("Voer een dag in om te reserveren (1-31):");
+            if (int.TryParse(Console.ReadLine(), out int chosenDay) && chosenDay >= 1 && chosenDay <= 31)
+            {
+                if (bookedDays.Contains(chosenDay))
+                {
+                    Console.WriteLine($"De gekozen dag {chosenDay} is al volgeboekt.");
 
-            Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
-            Console.Write("Voornaam: ");
-            string name = Console.ReadLine();
+                    Console.WriteLine("Beschikbare dagen voor de volgende 5 dagen:");
 
-            Console.Write("Toevoeging: ");
-            string addition = Console.ReadLine();
-
-            Console.Write("Achternaam: ");
-            string surname = Console.ReadLine();
-
-            Console.Write("Telefoonnummer: ");
-            string phoneNumber = Console.ReadLine();
-
-            Console.Write("E-mail: ");
-            string email = Console.ReadLine();
-
-            Console.WriteLine("\nHeeft u nog opmerkingen of verzoeken?");
-            string comments = Console.ReadLine();
-
-            Console.WriteLine("\nReserveringsgegevens:");
-            Console.WriteLine("Datum: " + date);
-            Console.WriteLine("Aantal Personen: " + numOfPeople);
-            Console.WriteLine("Voornaam: " + name);
-            Console.WriteLine("Toevoering: " + name);
-            Console.WriteLine("Achternaam: " + surname);
-            Console.WriteLine("Telefoonnummer: " + phoneNumber);
-            Console.WriteLine("E-mail: " + email);
-            Console.WriteLine("Opmerkingen: " + comments);
-
-            Console.WriteLine("\nDank u wel! We hopen u gauw te zien bij YES!");
+                    for (int i = chosenDay + 1; i <= chosenDay + 5; i++)
+                    {
+                        if (!bookedDays.Contains(i))
+                        {
+                            Console.WriteLine(i);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Dag {chosenDay} is succesvol gereserveerd.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ongeldige invoer.");
+            }
         }
     }
 }
-
