@@ -62,6 +62,7 @@ public class ReservationSystem
         string sql = "SELECT TableId, Capacity FROM Tables " +
                      "JOIN DateAvailability ON Tables.TableId = DateAvailability.TableId " +
                      "WHERE DateAvailability.IsAvailable = 1 AND DateAvailability.Date = @Date " +
+                     "AND TableId NOT IN (" + string.Join(",", alreadyAssignedTables) + ") " +
                      "ORDER BY ABS(Capacity - @NumOfPeople) ASC, Capacity DESC";
         using (var cmd = new SqliteCommand(sql, conn))
         {
