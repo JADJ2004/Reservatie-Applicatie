@@ -56,7 +56,7 @@ namespace ReservationApplication
             }
 
             ReservationSystem rs = new ReservationSystem();
-            rs.ReserveTableForGroup(numOfPeople, wantWindow);
+            rs.ReserveTableForGroup(numOfPeople, wantWindow, DateTime.ParseExact(date, "dd-MM-yyyy", null));
 
             while (!first_name_checker)
             {
