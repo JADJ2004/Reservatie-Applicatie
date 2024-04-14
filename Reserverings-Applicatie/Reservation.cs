@@ -1,40 +1,48 @@
 using System;
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 
-namespace ReservationApplication
+public class Database
 {
-    class Program
+    private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
+
+    public List<DateTime> GetNextAvailableDates(DateTime startDate, int numOfDaysToCheck)
     {
-        static void Main(string[] args)
+        List<DateTime> availableDates = new List<DateTime>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
         {
-            HashSet<int> bookedDays = new HashSet<int> { 1, 3, 5 };
+            connection.Open();
 
-            Console.WriteLine("Voer een dag in om te reserveren (1-31):");
-            if (int.TryParse(Console.ReadLine(), out int chosenDay) && chosenDay >= 1 && chosenDay <= 31)
+            for (int i = 0; i < numOfDaysToCheck; i++)
             {
-                if (bookedDays.Contains(chosenDay))
+                DateTime currentDate = startDate.AddDays(i);
+
+                if (!IsDateTaken(currentDate, connection))
                 {
-                    Console.WriteLine($"De gekozen dag {chosenDay} is al volgeboekt.");
+                    availableDates.Add(currentDate);
 
-                    Console.WriteLine("Beschikbare dagen voor de volgende 5 dagen:");
-
-                    for (int i = chosenDay + 1; i <= chosenDay + 5; i++)
+                    if (availableDates.Count == 5)
                     {
-                        if (!bookedDays.Contains(i))
-                        {
-                            Console.WriteLine(i);
-                        }
+                        break;
                     }
                 }
-                else
-                {
-                    Console.WriteLine($"Dag {chosenDay} is succesvol gereserveerd.");
-                }
             }
-            else
-            {
-                Console.WriteLine("Ongeldige invoer.");
-            }
+        }
+
+        return availableDates;
+    }
+
+    public bool IsDateTaken(DateTime date, SqliteConnection connection)
+    {
+        string formattedDate = date.ToString("dd-MM-yyyy");
+
+        var sqlQuery = @"SELECT COUNT(*) FROM Reserveringen WHERE Date = @Date";
+        using (var command = new SqliteCommand(sqlQuery, connection))
+        {
+            command.Parameters.AddWithValue("@Date", formattedDate);
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
         }
     }
 }
