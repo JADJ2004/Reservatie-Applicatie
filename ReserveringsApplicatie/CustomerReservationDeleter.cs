@@ -1,3 +1,32 @@
+public partial class Database
+{
+    public bool DeleteReservation(string firstName, string lastName, string date)
+    {
+        bool deletionSuccess = false;
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            var sqlQuery = @"
+                DELETE FROM Reserveringen 
+                WHERE First_name = @FirstName AND Last_name = @LastName AND Date = @Date";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@FirstName", firstName);
+                command.Parameters.AddWithValue("@LastName", lastName);
+                command.Parameters.AddWithValue("@Date", date);
+
+                int rowsAffected = command.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    deletionSuccess = true;
+                }
+            }
+        }
+        return deletionSuccess;
+    }
+
+}
+
 using System;
 
 namespace Customer_Reservation_Deleter
