@@ -1,128 +1,89 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private string connectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
 
     public ReservationSystem()
     {
-        conn = new SqliteConnection(connectionString);
+        conn = new SqliteConnection(ConnectionString);
         conn.Open();
     }
 
-    public void ReserveTableForGroup(int numOfPeople, bool wantWindow, DateTime date)
+    public (int tableId, DateTime nextAvailableDate) ReserveTableForGroup(int numOfPeople, bool wantWindow, DateTime date)
     {
-        List<int> assignedTables = new List<int>();
-        int peopleToAccommodate = numOfPeople;
+        int reservedTableId = FindAvailableTable(numOfPeople, wantWindow, date);
+        
+        if (reservedTableId == -1)
+        {
+            DateTime nextAvailableDate = FindNextAvailableDate(numOfPeople, wantWindow, date);
+            reservedTableId = FindAvailableTable(numOfPeople, wantWindow, nextAvailableDate);
+            return (reservedTableId, nextAvailableDate);
+        }
 
-        string sql = "SELECT TableId, Capacity, WindowSeat FROM Tables " +
-                     "JOIN DateAvailability ON Tables.TableId = DateAvailability.TableId " +
-                     "WHERE DateAvailability.IsAvailable = 1 AND DateAvailability.Date = @Date AND WindowSeat = @WantWindow " +
-                     "ORDER BY ABS(Capacity - @NumOfPeople) ASC, Capacity DESC";
+        return (reservedTableId, date);
+    }
+
+    private int FindAvailableTable(int numOfPeople, bool wantWindow, DateTime date)
+    {
+        string formattedDate = date.ToString("yyyy-MM-dd");
+        string sql = @"
+            SELECT t.TableId, t.Capacity
+            FROM Tables t
+            WHERE t.WindowSeat = @WantWindow AND NOT EXISTS (
+                SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date
+            )
+            ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC
+            LIMIT 1;";
+
         using (var cmd = new SqliteCommand(sql, conn))
         {
             cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
             cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
-            cmd.Parameters.AddWithValue("@Date", date.ToString("dd-MM-yyyy"));
+            cmd.Parameters.AddWithValue("@Date", formattedDate);
 
             using (var reader = cmd.ExecuteReader())
             {
-                while (reader.Read() && peopleToAccommodate > 0)
+                if (reader.Read() && reader.GetInt32(1) >= numOfPeople)
                 {
-                    int tableId = reader.GetInt32(0);
-                    int capacity = reader.GetInt32(1);
-                    bool isWindowSeat = reader.GetBoolean(2);
-
-                    if (!assignedTables.Contains(tableId))
-                    {
-                        assignedTables.Add(tableId);
-                        UpdateTableAvailability(tableId, date, false);
-                        Console.WriteLine($"Tafel voor {capacity} personen gereserveerd. \nAan het raam: {(isWindowSeat ? "Ja" : "Nee")}.");
-                        peopleToAccommodate -= capacity;
-                        if (peopleToAccommodate <= 0) break;
-                    }
+                    return reader.GetInt32(0);
                 }
             }
         }
-
-        if (peopleToAccommodate > 0)
-        {
-            Console.WriteLine("Er zijn geen tafels meer aan het raam, u krijgt een tafel zonder raam.");
-            ReserveTableForGroupWithoutWindowPreference(numOfPeople, assignedTables, date);
-        }
+        return -1;
     }
 
-    private void ReserveTableForGroupWithoutWindowPreference(int numOfPeople, List<int> alreadyAssignedTables, DateTime date)
+    private DateTime FindNextAvailableDate(int numOfPeople, bool wantWindow, DateTime startDate)
     {
-        int peopleToAccommodate = numOfPeople;
-
-        string sql = "SELECT TableId, Capacity FROM Tables " +
-                     "JOIN DateAvailability ON Tables.TableId = DateAvailability.TableId " +
-                     "WHERE DateAvailability.IsAvailable = 1 AND DateAvailability.Date = @Date " +
-                     "AND TableId NOT IN (" + string.Join(",", alreadyAssignedTables) + ") " +
-                     "ORDER BY ABS(Capacity - @NumOfPeople) ASC, Capacity DESC";
-        using (var cmd = new SqliteCommand(sql, conn))
+        DateTime nextDate = startDate.AddDays(1);
+        string formattedDate;
+        while (true)
         {
-            cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
-            cmd.Parameters.AddWithValue("@Date", date.ToString("dd-MM-yyyy"));
-
-            using (var reader = cmd.ExecuteReader())
+            formattedDate = nextDate.ToString("yyyy-MM-dd");
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Tables t
+                WHERE t.WindowSeat = @WantWindow AND t.Capacity >= @NumOfPeople AND NOT EXISTS (
+                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date
+                );";
+            
+            using (var cmd = new SqliteCommand(sql, conn))
             {
-                while (reader.Read() && peopleToAccommodate > 0)
-                {
-                    int tableId = reader.GetInt32(0);
-                    int capacity = reader.GetInt32(1);
+                cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
+                cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
+                cmd.Parameters.AddWithValue("@Date", formattedDate);
 
-                    if (!alreadyAssignedTables.Contains(tableId))
-                    {
-                        UpdateTableAvailability(tableId, date, false);
-                        Console.WriteLine($"Tafel {tableId} ({capacity} persoons) gereserveerd.");
-                        peopleToAccommodate -= capacity;
-                        alreadyAssignedTables.Add(tableId);
-                        if (peopleToAccommodate <= 0) break;
-                    }
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                if (count > 0)
+                {
+                    break;
                 }
+
+                nextDate = nextDate.AddDays(1);
             }
         }
-
-        if (peopleToAccommodate > 0)
-        {
-            Console.WriteLine("Helaas is er geen plek meer beschikbaar.");
-        }
-    }
-
-    private void UpdateTableAvailability(int tableId, DateTime date, bool isAvailable)
-    {
-        string sqlUpdateTable = "UPDATE DateAvailability SET IsAvailable = @IsAvailable " +
-                                "WHERE TableId = @TableId AND Date = @Date";
-        using (var cmdUpdateTable = new SqliteCommand(sqlUpdateTable, conn))
-        {
-            cmdUpdateTable.Parameters.AddWithValue("@IsAvailable", isAvailable ? 1 : 0);
-            cmdUpdateTable.Parameters.AddWithValue("@TableId", tableId);
-            cmdUpdateTable.Parameters.AddWithValue("@Date", date.ToString("dd-MM-yyyy"));
-            cmdUpdateTable.ExecuteNonQuery();
-        }
+        return nextDate;
     }
 }
-
-
-public void CancelReservation(int reservationId)
-    {
-        string sqlCancelReservation = "UPDATE Tables SET IsAvailable = 1 WHERE ReservationId = @ReservationId";
-        using (var cmdCancelReservation = new SqliteCommand(sqlCancelReservation, conn))
-        {
-            cmdCancelReservation.Parameters.AddWithValue("@ReservationId", reservationId);
-            int rowsAffected = cmdCancelReservation.ExecuteNonQuery();
-            if (rowsAffected > 0)
-            {
-                Console.WriteLine("Reservation canceled successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to cancel reservation. Please check the reservation ID.");
-            }
-        }
-    }

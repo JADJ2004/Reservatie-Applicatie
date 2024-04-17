@@ -1,4 +1,5 @@
 ﻿using System;
+using Customer_Reservation_Deleter;
 
 namespace ReservationApplication
 {
@@ -7,9 +8,9 @@ namespace ReservationApplication
         static void Main(string[] args)
         {
             Database db = new Database();
-            db.Database_con();
-            db.CreateTableTable();
-            DateTime dateTime = new DateTime(2024, 4, 5);
+            db.InitializeDatabase();
+
+            CRD reservationDeleter = new CRD();
 
             string keuze;
             do
@@ -21,15 +22,18 @@ namespace ReservationApplication
                         Menus.AdminLogin();
                         break;
                     case "2":
-                        Console.WriteLine("Option 2 selected: Reserveer een tafel.");
+                        Console.WriteLine("Reserveer een tafel.");
                         TestAplicatie reservationApplication = new TestAplicatie();
                         reservationApplication.ReservationSystem();
                         break;
                     case "3":
-                        Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");
+                        Console.WriteLine("Annuleer of bewerk je reservering.");
+                        reservationDeleter.ReservationDeleter();
                         break;
                     case "4":
-                        Console.WriteLine("Option 4 selected: Check het menu.");
+                        Console.WriteLine("Toon het menu.");
+                        FoodMenu foodMenu = new FoodMenu();
+                        foodMenu.ToonMenu();
                         break;
                     case "5":
                         Console.WriteLine("Fijne dag.");

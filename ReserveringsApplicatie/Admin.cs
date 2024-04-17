@@ -1,3 +1,5 @@
+using System;
+
 public class Admin
 {
     public string Menu()
@@ -6,16 +8,16 @@ public class Admin
         Console.WriteLine("1. Reserveringen in zien.");
         Console.WriteLine("2. Menu veranderen.");
         Console.WriteLine("3. Uitloggen");
-        keuze = Console.ReadLine();
+        string keuze = Console.ReadLine();
         if (keuze == "1")
         {
             ReserveringZien();
         }
-        elif (keuze == "2");
+        else if (keuze == "2")
         {
             MenuVeranderen();
         }
-        elif (keuze == "3");
+        else if (keuze == "3")
         {
             Uitloggen();
         }
@@ -24,6 +26,7 @@ public class Admin
             Console.WriteLine("Dit is geen geldige keuze.");
             return Menu();
         }
+        return null;
     }
 
     public void ReserveringZien()
@@ -39,7 +42,5 @@ public class Admin
     public void Uitloggen()
     {
         Console.WriteLine("U bent uitgelogd.\n");
-
-        // Hier nog terug naar main menu of loop afbreken.
     }
 }

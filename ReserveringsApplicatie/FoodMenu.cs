@@ -1,3 +1,5 @@
+using System;
+
 public class FoodMenu
 {
     public void ToonMenu()
@@ -9,17 +11,16 @@ public class FoodMenu
 
     public void ToonVoorgerecht()
     {
-        Console.WriteLine("VOORGERECHTEN\n1. Ceasar Salad\n2. Italiaanse Ham met Galiameloen\n3. Franse slakken")
+        Console.WriteLine("VOORGERECHTEN\n1. Ceasar Salad\n2. Italiaanse Ham met Galiameloen\n3. Franse slakken");
     }
 
     public void ToonHoofdgerecht()
     {
-        Console.WriteLine("HOOFDGERECHTEN\n1. Hamburger\n2. Biefstuk\n3. Kip met rodewijnsaus")
+        Console.WriteLine("HOOFDGERECHTEN\n1. Hamburger\n2. Biefstuk\n3. Kip met rodewijnsaus");
     }
 
     public void ToonDessert()
     {
-        Console.WriteLine("DESSERTS\n1. Tiramisue\n2. Cheesecake\n3. CrÃ¨me BrÃ»lÃ©e\n4. Schepijs")
+        Console.WriteLine("DESSERTS\n1. Tiramisu\n2. Cheesecake\n3. Crème Brûlée\n4. Schepijs");
     }
-
 }

@@ -1,3 +1,6 @@
+using System;
+using Microsoft.Data.Sqlite;
+
 public partial class Database
 {
     public bool DeleteReservation(string firstName, string lastName, string date)
@@ -7,7 +10,7 @@ public partial class Database
         {
             connection.Open();
             var sqlQuery = @"
-                DELETE FROM Reserveringen 
+                DELETE FROM Reservations 
                 WHERE First_name = @FirstName AND Last_name = @LastName AND Date = @Date";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
@@ -24,10 +27,7 @@ public partial class Database
         }
         return deletionSuccess;
     }
-
 }
-
-using System;
 
 namespace Customer_Reservation_Deleter
 {
@@ -99,7 +99,6 @@ namespace Customer_Reservation_Deleter
                 string CRD_confirmation = Console.ReadLine()?.Trim().ToLower();
                 if (CRD_confirmation == "ja")
                 {
-                    // Attempt to delete the reservation
                     if (db.DeleteReservation(name, surname, date_CRD))
                     {
                         CRD_checker = true;
@@ -109,10 +108,6 @@ namespace Customer_Reservation_Deleter
                     {
                         Console.WriteLine("\nReservering niet gevonden of kon niet worden verwijderd.");
                     }
-                }
-                else
-                {
-                    CRD_checker = true; // Exit loop if not confirmed to delete
                 }
             }
         }
