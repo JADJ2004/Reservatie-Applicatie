@@ -1,34 +1,48 @@
-public class Program
+﻿using System;
+using Customer_Reservation_Deleter;
+
+namespace ReservationApplication
 {
-    static void Main(string[] args)
+    class Program
     {
-        string keuze;
-
-        do
+        static void Main(string[] args)
         {
-            keuze = Menus.StartUp();
+            Database db = new Database();
+            db.InitializeDatabase();
 
-            switch (keuze)
+            CRD reservationDeleter = new CRD();
+
+            string keuze;
+            do
             {
-                case "1":
-                    Menus.AdminLogin();
-                    break;
-                case "2":
-                    Console.WriteLine("Option 2 selected: Reserveer een tafel.");
-                    break;
-                case "3":
-                    Console.WriteLine("Option 3 selected: Annuleer of bewerk je reservering.");
-                    break;
-                case "4":
-                    Console.WriteLine("Option 4 selected: Check het menu.");
-                    break;
-                case "5":
-                    Console.WriteLine("Fijne dag.");
-                    break;
-                default:
-                    Console.WriteLine("\nDit is geen geldige optie.");
-                    break;
-            }
-        } while (keuze != "5");
+                keuze = Menus.StartUp();
+                switch (keuze)
+                {
+                    case "1":
+                        Menus.AdminLogin();
+                        break;
+                    case "2":
+                        Console.WriteLine("Reserveer een tafel.");
+                        TestAplicatie reservationApplication = new TestAplicatie();
+                        reservationApplication.ReservationSystem();
+                        break;
+                    case "3":
+                        Console.WriteLine("Annuleer of bewerk je reservering.");
+                        reservationDeleter.ReservationDeleter();
+                        break;
+                    case "4":
+                        Console.WriteLine("Toon het menu.");
+                        FoodMenu foodMenu = new FoodMenu();
+                        foodMenu.ToonMenu();
+                        break;
+                    case "5":
+                        Console.WriteLine("Fijne dag.");
+                        break;
+                    default:
+                        Console.WriteLine("\nDit is geen geldige optie.");
+                        break;
+                }
+            } while (keuze != "5");
+        }
     }
 }
