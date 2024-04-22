@@ -3,7 +3,11 @@ using Microsoft.Data.Sqlite;
 
 public partial class Database
 {
+<<<<<<< Updated upstream:Reserverings-Applicatie/database.cs
     private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Test123\Mydatabase.db";
+=======
+    private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\LocalRES\Mydatabase.db";
+>>>>>>> Stashed changes:ReserveringsApplicatie/database.cs
 
     public void InitializeDatabase()
     {

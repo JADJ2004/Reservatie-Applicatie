@@ -4,7 +4,11 @@ using Microsoft.Data.Sqlite;
 public class ReservationSystem
 {
     private SqliteConnection conn;
+<<<<<<< Updated upstream:Reserverings-Applicatie/ReservationSystem.cs
     private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Test123\Mydatabase.db";
+=======
+    private const string ConnectionString = @"C:\Users\joeyc\OneDrive\Documents\GitHub\LocalRES\Mydatabase.db";
+>>>>>>> Stashed changes:ReserveringsApplicatie/ReservationSystem.cs
 
     public ReservationSystem()
     {
