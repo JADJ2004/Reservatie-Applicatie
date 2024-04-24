@@ -11,65 +11,112 @@ namespace ReservationApplication
             bool reservationConfirmed = false;
             while (!reservationConfirmed)
             {
-                
                 Console.WriteLine("Welkom bij het reserveringsapplicatie van YES!");
-                Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                string dateString = Console.ReadLine() ?? "";
+
+                // Datum invoeren
                 DateTime reservationDate;
-                if (!DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                while (true)
                 {
+                    Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
+                    string dateString = Console.ReadLine() ?? "";
+                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                    {
+                        break;
+                    }
                     Console.WriteLine("Incorrecte formaat. Probeer: (dd-MM-yyyy)");
-                    continue;
                 }
 
-                Console.WriteLine("Wilt u aan het raam zitten? (ja/nee): ");
-                bool wantsWindow = Console.ReadLine()?.Trim().ToLower() == "ja";
+                // Aan het raam zitten?
+                bool wantsWindow;
+                while (true)
+                {
+                    Console.WriteLine("Wilt u aan het raam zitten? (ja/nee): ");
+                    string input = Console.ReadLine()?.Trim().ToLower();
+                    if (input == "ja")
+                    {
+                        wantsWindow = true;
+                        break;
+                    }
+                    else if (input == "nee")
+                    {
+                        wantsWindow = false;
+                        break;
+                    }
+                }
 
-                Console.Write("Aantal personen: ");
+                // Aantal personen
                 int numberOfPeople;
-                if (!int.TryParse(Console.ReadLine(), out numberOfPeople) || numberOfPeople <= 0)
+                while (true)
                 {
+                    Console.Write("Aantal personen: ");
+                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0)
+                    {
+                        break;
+                    }
                     Console.WriteLine("Ongeldig aantal personen.");
-                    continue;
-                }
-                Console.Write("Voornaam: ");
-                string firstName = Console.ReadLine() ?? "";
-                if (string.IsNullOrWhiteSpace(firstName))
-                {
-                    Console.WriteLine("Voornaam mag niet leeg zijn.");
-                    continue;
                 }
 
+                // Voornaam
+                string firstName;
+                while (true)
+                {
+                    Console.Write("Voornaam: ");
+                    firstName = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(firstName))
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Voornaam mag niet leeg zijn.");
+                }
+
+                // Tussenvoegsel
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
                 string infix = Console.ReadLine() ?? "";
 
-                Console.Write("Achternaam: ");
-                string lastName = Console.ReadLine() ?? "";
-                if (string.IsNullOrWhiteSpace(lastName))
+                // Achternaam
+                string lastName;
+                while (true)
                 {
+                    Console.Write("Achternaam: ");
+                    lastName = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(lastName))
+                    {
+                        break;
+                    }
                     Console.WriteLine("Achternaam mag niet leeg zijn.");
-                    continue;
                 }
 
-                Console.Write("Telefoonnummer: ");
-                string phoneNumber = Console.ReadLine() ?? "";
-                if (phoneNumber.Length != 10 || !long.TryParse(phoneNumber, out _))
+                // Telefoonnummer
+                string phoneNumber;
+                while (true)
                 {
+                    Console.Write("Telefoonnummer: ");
+                    phoneNumber = Console.ReadLine() ?? "";
+                    if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
+                    {
+                        break;
+                    }
                     Console.WriteLine("Een geldig telefoonnummer moet uit 10 cijfers bestaan.");
-                    continue;
                 }
 
-                Console.Write("E-mail: ");
-                string email = Console.ReadLine() ?? "";
-                if (!email.Contains("@") || !email.Contains("."))
+                // E-mail
+                string email;
+                while (true)
                 {
+                    Console.Write("E-mail: ");
+                    email = Console.ReadLine() ?? "";
+                    if (email.Contains("@") && email.Contains("."))
+                    {
+                        break;
+                    }
                     Console.WriteLine("Ongeldig e-mailadres.");
-                    continue;
                 }
-                
+
+                // Opmerkingen/verzoeken
                 Console.Write("Eventuele opmerkingen/verzoeken: (mag ook leeg zijn) ");
                 string remarks = Console.ReadLine() ?? "";
 
+                // Reservering maken
                 ReservationSystem reservationSystem = new ReservationSystem();
                 var (tableId, nextAvailableDate) = reservationSystem.ReserveTableForGroup(numberOfPeople, wantsWindow, reservationDate);
                 if (tableId == -1)
@@ -79,6 +126,7 @@ namespace ReservationApplication
                     continue;
                 }
 
+                // Reserveringsgegevens bevestigen
                 Console.WriteLine("\nReserveringsgegevens:");
                 Console.WriteLine($"Datum: {reservationDate.ToShortDateString()}");
                 Console.WriteLine($"Tafelnummer: {tableId}");
