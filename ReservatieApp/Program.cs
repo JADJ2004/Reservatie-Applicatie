@@ -6,7 +6,7 @@ namespace ReservationApplication
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             Database db = new Database();
             db.InitializeDatabase();

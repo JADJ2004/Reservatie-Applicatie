@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Data.Sqlite;
+using ReservationApplication;
 
 public partial class Database
 {
@@ -50,12 +51,25 @@ namespace Customer_Reservation_Deleter
 
                 while (!date_checker)
                 {
+                    Console.Clear();
+                    Console.WriteLine("********* Reserveringsgegevens ************");
+                    Console.WriteLine("");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Druk op Q om af te sluiten");
+                    Console.ResetColor();
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
+                    Console.WriteLine("");
+                    
                     date_CRD = Console.ReadLine() ?? "";
                     DateTime parsedDate;
                     if (DateTime.TryParseExact(date_CRD, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out parsedDate))
                     {
                         date_checker = true;
+                    }
+                    if ( date_CRD == "Q" || date_CRD == "q")
+                    {
+                        Program program = new Program();
+                        Program.Main();
                     }
                     else
                     {
