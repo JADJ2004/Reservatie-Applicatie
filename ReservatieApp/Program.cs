@@ -13,9 +13,9 @@ namespace ReservationApplication
 
             CRD reservationDeleter = new CRD();
 
-            string keuze = ""; // Initieer keuze met lege string
+            string keuze = ""; 
 
-            // Definieer een lijst van menu-opties
+            
             List<string> menuOpties = new List<string>
             {
                 "Admin Login",
@@ -25,13 +25,13 @@ namespace ReservationApplication
                 "Afsluiten"
             };
 
-            int selectedIndex = 0; // Index van de geselecteerde optie
+            int selectedIndex = 0; 
 
             do
             {
-                Console.Clear(); // Scherm leegmaken voor een schone interface
+                Console.Clear(); 
 
-                // ASCII-art logo voor "Yess Restaurant"
+                
                 Console.WriteLine(@"
    __   __  _______  _______  _______  __  
 |  | |  ||       ||       ||       ||  | 
@@ -44,37 +44,37 @@ namespace ReservationApplication
                 Console.WriteLine("Welkom bij Yess Restaurant!");
                 Console.WriteLine("Kies een optie:");
 
-                // Toon menu-opties
+                
                 for (int i = 0; i < menuOpties.Count; i++)
                 {
                     if (i == selectedIndex)
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow; // Markeer geselecteerde optie
+                        Console.ForegroundColor = ConsoleColor.Yellow; 
                     }
                     Console.WriteLine($"{i + 1}. {menuOpties[i]}");
-                    Console.ResetColor(); // Herstel de kleur naar standaard
+                    Console.ResetColor();
                 }
 
-                // Wacht op een toetsaanslag
+               
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
-                // Verwerk de toetsaanslag
+                
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
-                    // Naar boven navigeren in de menu-opties
+                    
                     selectedIndex = (selectedIndex - 1 + menuOpties.Count) % menuOpties.Count;
                 }
                 else if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
-                    // Naar beneden navigeren in de menu-opties
+                    
                     selectedIndex = (selectedIndex + 1) % menuOpties.Count;
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    // Gebruiker heeft Enter ingedrukt, selecteer de huidige optie
-                    keuze = (selectedIndex + 1).ToString(); // Converteer naar keuze string
+                    
+                    keuze = (selectedIndex + 1).ToString(); 
 
-                    // Voer de geselecteerde actie uit op basis van de keuze
+                    
                     switch (keuze)
                     {
                         case "1":
@@ -103,12 +103,12 @@ namespace ReservationApplication
                             break;
                     }
 
-                    // Pauze om de gebruiker te laten zien wat er is gebeurd voordat het menu opnieuw wordt weergegeven
+                   
                     Console.WriteLine("\nDruk op een toets om door te gaan...");
                     Console.ReadKey();
                 }
 
-            } while (keuze != "5"); // Blijf doorgaan totdat "Afsluiten" is geselecteerd
+            } while (keuze != "5"); 
 
             Console.Clear();
             Console.WriteLine("\nBedankt voor het gebruik van de applicatie!");

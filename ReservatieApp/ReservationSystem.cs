@@ -123,9 +123,11 @@ public class ReservationSystem
 
         try
         {
-            // Verstuur de e-mail
+            Console.ForegroundColor = ConsoleColor.Green;
             client.Send(message);
             Console.WriteLine("Bevestigingsmail is succesvol verstuurd.");
+            Console.ResetColor();
+
         }
         catch (Exception ex)
         {
