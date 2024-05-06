@@ -154,9 +154,6 @@ public void ChangeReservation()
             }
         }
 
-        Console.WriteLine("Wilt u aan het raam? (ja/nee):");
-        bool CRC_wantWindow = Console.ReadLine()?.Trim().ToLower() == "ja";
-
         while (CRC_people_checker != true)
         {
             Console.Write("Aantal personen: ");
