@@ -5,98 +5,111 @@ public partial class Database
 {
     private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
 
-    public void Database_con()
+    public void InitializeDatabase()
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            var createTableQuery = @"
-                DROP TABLE IF EXISTS Reserveringen;
-                CREATE TABLE IF NOT EXISTS Reserveringen (
-                    ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
-                    numOfPeople TEXT,
-                    First_name TEXT,
-                    Infix TEXT,
-                    Last_name TEXT,
-                    Phonenumber TEXT,
-                    Date TEXT,
-                    Email TEXT
-                )";
-            using (var command = new SqliteCommand(createTableQuery, connection))
-            {
-                command.ExecuteNonQuery();
-            }
-        }
-    }
-
-
-    public void CreateTableTable()
-    {
-        using (var connection = new SqliteConnection(ConnectionString))
-        {
-            connection.Open();
-            var createTableQuery = @"
+            var createTablesSql = @"
                 CREATE TABLE IF NOT EXISTS Tables (
-                    TableId INTEGER PRIMARY KEY,
-                    Capacity INTEGER NOT NULL,
-                    IsAvailable INTEGER NOT NULL,
-                    WindowSeat INTEGER NOT NULL
-                )";
-            using (var command = new SqliteCommand(createTableQuery, connection))
+                    TableId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Capacity INTEGER NOT NULL
+                );";
+            var createReservationsSql = @"
+                CREATE TABLE IF NOT EXISTS Reservations (
+                    ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    TableId INTEGER,
+                    NumOfPeople INTEGER NOT NULL,
+                    First_name TEXT NOT NULL,
+                    Infix TEXT,
+                    Last_name TEXT NOT NULL,
+                    Phonenumber TEXT NOT NULL,
+                    Date TEXT NOT NULL,
+                    TimeSlot TEXT NOT NULL,
+                    Email TEXT NOT NULL,
+                    FOREIGN KEY (TableId) REFERENCES Tables(TableId),
+                    UNIQUE (TableId, Date, TimeSlot)
+                );";
+
+            using (var command = new SqliteCommand(createTablesSql + createReservationsSql, connection))
             {
                 command.ExecuteNonQuery();
             }
         }
     }
 
-    public void AddReservation(int numOfPeople, string firstName, string infix, string lastName, int phoneNumber, string email, DateTime date)
+    public (bool success, DateTime suggestedDate, string suggestedTimeSlot) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
             var formattedDate = date.ToString("dd-MM-yyyy");
             var sqlQuery = @"
-                INSERT INTO Reserveringen (numOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date)
-                VALUES (@numOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date)";
+                INSERT INTO Reservations (TableId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
+                VALUES (@TableId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
-                command.Parameters.AddWithValue("@numOfPeople", numOfPeople);
+                command.Parameters.AddWithValue("@TableId", tableId);
+                command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
                 command.Parameters.AddWithValue("@First_name", firstName);
                 command.Parameters.AddWithValue("@Infix", infix);
                 command.Parameters.AddWithValue("@Last_name", lastName);
-                command.Parameters.AddWithValue("@Phonenumber", phoneNumber.ToString());
+                command.Parameters.AddWithValue("@Phonenumber", phoneNumber);
                 command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@Date", formattedDate);
+                command.Parameters.AddWithValue("@TimeSlot", timeSlot);
+                command.Parameters.AddWithValue("@Remarks", remarks);
 
-                command.ExecuteNonQuery();
+                try
+                {
+                    command.ExecuteNonQuery();
+                    return (true, date, timeSlot);
+                }
+                catch (SqliteException e)
+                {
+                    if (e.Message.Contains("UNIQUE constraint failed"))
+                    {
+                        var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(tableId, date, timeSlot, connection);
+                        return (false, nextAvailableDate, nextAvailableTimeSlot);
+                    }
+                    throw;
+                }
             }
         }
     }
 
-    public void PrintReservations()
+    private (DateTime, string) FindNextAvailableDateTime(int tableId, DateTime startDate, string startTimeSlot, SqliteConnection connection)
     {
-        using (var connection = new SqliteConnection(ConnectionString))
-        {
-            connection.Open();
-            var sqlQuery = @"SELECT * FROM Reserveringen";
-            using (var command = new SqliteCommand(sqlQuery, connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var reservationId = reader.GetInt32(0);
-                        var numOfPeople = reader.GetInt32(1);
-                        var firstName = reader.GetString(2);
-                        var infix = reader.GetString(3);
-                        var lastName = reader.GetString(4);
-                        var phoneNumber = reader.GetString(5);
-                        var date = reader.GetString(6);
-                        var email = reader.GetString(7);
+        DateTime nextDate = startDate;
+        string nextTimeSlot = startTimeSlot;
+        string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
+        int currentIndex = Array.IndexOf(timeSlots, startTimeSlot);
 
-                        Console.WriteLine($"Reservation ID: {reservationId}, Amount of People: {numOfPeople}, First Name: {firstName}, Infix: {infix}, Last Name: {lastName}, Phone Number: {phoneNumber}, Date: {date}, Email: {email}");
-                    }
+        while (true)
+        {
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Reservations
+                WHERE TableId = @TableId AND Date = @Date AND TimeSlot = @TimeSlot;";
+
+            using (var cmd = new SqliteCommand(sql, connection))
+            {
+                cmd.Parameters.AddWithValue("@TableId", tableId);
+                cmd.Parameters.AddWithValue("@Date", nextDate.ToString("dd-MM-yyyy"));
+                cmd.Parameters.AddWithValue("@TimeSlot", nextTimeSlot);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                if (count == 0)
+                {
+                    return (nextDate, nextTimeSlot);
                 }
+
+                currentIndex = (currentIndex + 1) % timeSlots.Length;
+                if (currentIndex == 0)
+                {
+                    nextDate = nextDate.AddDays(1);
+                }
+                nextTimeSlot = timeSlots[currentIndex];
             }
         }
     }
