@@ -6,7 +6,7 @@ using System.Net.Mail;
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\Reservatie-Applicatie\ReservatieApp\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
 
     public ReservationSystem()
     {
@@ -14,27 +14,27 @@ public class ReservationSystem
         conn.Open();
     }
 
-    public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numOfPeople, bool wantsWindow, DateTime date, string timeSlot)
+    public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numOfPeople, DateTime date, string timeSlot)
     {
-        int reservedTableId = FindAvailableTable(numOfPeople, wantsWindow, date, timeSlot);
+        int reservedTableId = FindAvailableTable(numOfPeople, date, timeSlot);
         
         if (reservedTableId == -1)
         {
-            var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(numOfPeople, wantsWindow, date, timeSlot);
-            reservedTableId = FindAvailableTable(numOfPeople, wantsWindow, nextAvailableDate, nextAvailableTimeSlot);
+            var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(numOfPeople, date, timeSlot);
+            reservedTableId = FindAvailableTable(numOfPeople, nextAvailableDate, nextAvailableTimeSlot);
             return (reservedTableId, nextAvailableDate, nextAvailableTimeSlot);
         }
 
         return (reservedTableId, date, timeSlot);
     }
 
-    private int FindAvailableTable(int numOfPeople, bool wantsWindow, DateTime date, string timeSlot)
+    private int FindAvailableTable(int numOfPeople, DateTime date, string timeSlot)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
         string sql = @"
             SELECT t.TableId
             FROM Tables t
-            WHERE t.WindowSeat = @WantWindow AND t.Capacity >= @NumOfPeople AND NOT EXISTS (
+            WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
                 SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
             )
             ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC
@@ -45,7 +45,6 @@ public class ReservationSystem
             cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
             cmd.Parameters.AddWithValue("@Date", formattedDate);
             cmd.Parameters.AddWithValue("@TimeSlot", timeSlot);
-            cmd.Parameters.AddWithValue("@WantWindow", wantsWindow ? 1 : 0);
 
             using (var reader = cmd.ExecuteReader())
             {
@@ -58,7 +57,7 @@ public class ReservationSystem
         return -1;
     }
 
-    private (DateTime, string) FindNextAvailableDateTime(int numOfPeople, bool wantsWindow, DateTime startDate, string startTimeSlot)
+    private (DateTime, string) FindNextAvailableDateTime(int numOfPeople, DateTime startDate, string startTimeSlot)
     {
         DateTime nextDate = startDate;
         string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
@@ -70,7 +69,7 @@ public class ReservationSystem
             string sql = @"
                 SELECT COUNT(*)
                 FROM Tables t
-                WHERE t.WindowSeat = @WantWindow AND t.Capacity >= @NumOfPeople AND NOT EXISTS (
+                WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
                     SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
                 );";
 
@@ -79,7 +78,6 @@ public class ReservationSystem
                 cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
                 cmd.Parameters.AddWithValue("@Date", formattedDate);
                 cmd.Parameters.AddWithValue("@TimeSlot", timeSlots[currentIndex]);
-                cmd.Parameters.AddWithValue("@WantWindow", wantsWindow ? 1 : 0);
 
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count > 0)

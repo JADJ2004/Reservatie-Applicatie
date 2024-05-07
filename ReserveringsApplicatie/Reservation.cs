@@ -55,24 +55,6 @@ namespace ReservationApplication
                     Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
                 }
 
-                // Aan het raam zitten?
-                bool wantsWindow;
-                while (true)
-                {
-                    Console.Write("Wilt u aan het raam zitten? (ja/nee): ");
-                    string input = Console.ReadLine()?.Trim().ToLower();
-                    if (input == "ja")
-                    {
-                        wantsWindow = true;
-                        break;
-                    }
-                    else if (input == "nee")
-                    {
-                        wantsWindow = false;
-                        break;
-                    }
-                }
-
                 // Aantal personen
                 int numberOfPeople;
                 while (true)
@@ -107,7 +89,7 @@ namespace ReservationApplication
 
                 // Reservering maken
                 ReservationSystem reservationSystem = new ReservationSystem();
-                (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) = reservationSystem.ReserveTableForGroup(numberOfPeople, wantsWindow, reservationDate, timeSlot);
+                (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) = reservationSystem.ReserveTableForGroup(numberOfPeople, reservationDate, timeSlot);
 
 
                 if (tableId == -1)
