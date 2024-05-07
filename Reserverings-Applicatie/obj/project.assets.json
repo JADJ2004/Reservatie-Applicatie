@@ -8,19 +8,19 @@
     "net7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\joey-\\.nuget\\packages\\": {}
+    "C:\\Users\\joeyc\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+      "projectUniqueName": "C:\\Users\\joeyc\\OneDrive\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
       "projectName": "Reserverings-Applicatie",
-      "projectPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
-      "packagesPath": "C:\\Users\\joey-\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\joey-\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
+      "projectPath": "C:\\Users\\joeyc\\OneDrive\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\Reserverings-Applicatie.csproj",
+      "packagesPath": "C:\\Users\\joeyc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\joeyc\\OneDrive\\Documents\\GitHub\\Reservatie-Applicatie\\Reserverings-Applicatie\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\joey-\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\joeyc\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -59,7 +59,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.405\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.408\\RuntimeIdentifierGraph.json"
       }
     }
   }
