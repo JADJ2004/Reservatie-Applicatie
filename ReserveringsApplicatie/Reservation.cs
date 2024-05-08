@@ -17,8 +17,40 @@ namespace ReservationApplication
             Console.WriteLine();
 
             bool reservationConfirmed = false;
+            bool date_checker = false;
+            bool first_name_checker = false;
+            bool last_name_checker = false;
+            bool phoneNumber_checker = false;
+            bool people_checker = false;
+            bool mail_checker = false;
+            
+            string date = "";
+            int numOfPeople = 0;
+            string name = "";
+            string surname = "";
+            string phoneNumber = "";
+            string email = "";
+            string addition = "";
+            string reservation_checker = "";
+            
             while (!reservationConfirmed)
             {
+                bool date_checker = false;
+                bool first_name_checker = false;
+                bool last_name_checker = false;
+                bool phoneNumber_checker = false;
+                bool people_checker = false;
+                bool mail_checker = false;
+                
+                string date = "";
+                int numOfPeople = 0;
+                string name = "";
+                string surname = "";
+                string phoneNumber = "";
+                string email = "";
+                string addition = "";
+                string reservation_checker = "";
+
                 Console.WriteLine();
                 Console.WriteLine("********* Reserveringsgegevens ************");
                 Console.WriteLine();
@@ -68,24 +100,68 @@ namespace ReservationApplication
                 }
 
                 // Persoonsgegevens
-                Console.WriteLine("\nVoer uw persoonsgegevens in:");
-                Console.Write("Voornaam: ");
-                string firstName = Console.ReadLine() ?? "";
+                while (!first_name_checker)
+                {
+                    Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
+                    Console.Write("Voornaam: ");
+                    name = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        first_name_checker = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Probeer alleen letters te gebruiken.");
+                    }
+                }
 
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                string infix = Console.ReadLine() ?? "";
+                addition = Console.ReadLine() ?? "";
 
-                Console.Write("Achternaam: ");
-                string lastName = Console.ReadLine() ?? "";
+                while (!last_name_checker)
+                {
+                    Console.Write("Achternaam: ");
+                    surname = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(surname))
+                    {
+                        last_name_checker = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Probeer alleen letters te gebruiken.");
+                    }
+                }
 
-                Console.Write("Telefoonnummer: ");
-                string phoneNumber = Console.ReadLine() ?? "";
+                while (!phoneNumber_checker)
+                {
+                    Console.Write("Telefoonnummer: ");
+                    phoneNumber = Console.ReadLine() ?? "";
+                    if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
+                    {
+                        phoneNumber_checker = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
+                    }
+                }
 
-                Console.Write("E-mail: ");
-                string email = Console.ReadLine() ?? "";
+                while (!mail_checker)
+                {
+                    Console.Write("E-mail: ");
+                    email = Console.ReadLine() ?? "";
+                    if (email.Contains("@") && email.Contains("."))
+                    {
+                        mail_checker = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid email. Probeer een echt email in te vullen.");
+                    }
+                }
 
-                Console.Write("Opmerkingen/verzoeken: ");
-                string remarks = Console.ReadLine() ?? "";
+                Console.WriteLine("Opmerkingen/verzoeken: ");
+                string comments = Console.ReadLine() ?? "";
 
                 // Reservering maken
                 ReservationSystem reservationSystem = new ReservationSystem();
