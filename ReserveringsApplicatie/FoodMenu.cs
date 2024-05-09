@@ -1,26 +1,76 @@
-using System;
-
-public class FoodMenu
+class FoodMenu
 {
+    public static List<List<Food>> Foods = new List<List<Food>>
+    {
+        new List<Food>
+        {
+            new Food("Salade", 8.99),
+            new Food("Italiaanse Ham", 10.99),
+            new Food("Franse slakken", 12.99)
+        },
+        new List<Food>
+        {
+            new Food("Hamburger", 9.99),
+            new Food("Biefstuk", 15.99),
+            new Food("Kip met rodeweijnsaus", 12.49)
+        },
+        new List<Food>
+        {
+            new Food("Tiramisu", 7.49),
+            new Food("Cheesecake", 6.99),
+            new Food("Creme Brulee", 8.49),
+            new Food("Schepijs", 5.99)
+        }
+    };
+
     public void ToonMenu()
     {
-        ToonVoorgerecht();
-        ToonHoofdgerecht();
-        ToonDessert();
+        Console.WriteLine("VOORGERECHTEN");
+        PrintCategory(0);
+
+        Console.WriteLine("HOOFDGERECHTEN");
+        PrintCategory(1);
+
+        Console.WriteLine("DESSERTS");
+        PrintCategory(2);
     }
 
-    public void ToonVoorgerecht()
+    private void PrintCategory(int categoryIndex)
     {
-        Console.WriteLine("VOORGERECHTEN\n1. Ceasar Salad\n2. Italiaanse Ham met Galiameloen\n3. Franse slakken");
+        foreach (Food foodItem in Foods[categoryIndex])
+        {
+            Console.WriteLine($"{foodItem.Name} - {foodItem.Price}");
+        }
+        Console.WriteLine(); 
     }
 
-    public void ToonHoofdgerecht()
+    public void EditFood(int categoryIndex, int foodIndex, string newName, double newPrice)
     {
-        Console.WriteLine("HOOFDGERECHTEN\n1. Hamburger\n2. Biefstuk\n3. Kip met rodewijnsaus");
+        if (categoryIndex >= 0 && categoryIndex < Foods.Count && foodIndex >= 0 && foodIndex < Foods[categoryIndex].Count)
+        {
+            Foods[categoryIndex][foodIndex].Name = newName;
+            Foods[categoryIndex][foodIndex].Price = newPrice;
+            Console.WriteLine("Food item updated successfully!");
+        }
+        else
+        {
+            Console.WriteLine("Invalid category or food index!");
+        }
     }
 
-    public void ToonDessert()
+    public List<string> GetMenu()
     {
-        Console.WriteLine("DESSERTS\n1. Tiramisu\n2. Cheesecake\n3. Crème Brûlée\n4. Schepijs");
+        List<string> menu = new List<string>();
+
+        foreach (var category in Foods)
+        {
+            foreach (var foodItem in category)
+            {
+                string menuItem = foodItem.Name;
+                menu.Add(menuItem);
+            }
+        }
+
+        return menu;
     }
 }

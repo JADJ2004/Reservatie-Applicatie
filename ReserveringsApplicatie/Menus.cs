@@ -41,7 +41,7 @@ public static class Menus
         if (Wachtwoord == AdminWachtwoord)
         {
             Console.WriteLine("Je bent succesvol ingelogd als beheerder.");
-            new Admin().Menu();
+            ManagerTools.StartUp();
         }
         else
         {
