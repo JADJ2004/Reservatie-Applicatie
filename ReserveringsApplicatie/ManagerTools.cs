@@ -1,6 +1,6 @@
-public class ManagerTools
+public static class ManagerTools
 {
-     private static string keuze;
+    private static string keuze;
     private static string AdminWachtwoord = "1234YES!";
     private static string Wachtwoord;
             
