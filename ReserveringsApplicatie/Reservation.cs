@@ -24,32 +24,16 @@ namespace ReservationApplication
             bool people_checker = false;
             bool mail_checker = false;
             
-            string date = "";
-            int numOfPeople = 0;
-            string name = "";
-            string surname = "";
+            string dateString = "";
+            int numberOfPeople = 0;
+            string firstName = "";
+            string lastName = "";
             string phoneNumber = "";
             string email = "";
-            string addition = "";
-            string reservation_checker = "";
+            string infix = "";
             
             while (!reservationConfirmed)
             {
-                bool date_checker = false;
-                bool first_name_checker = false;
-                bool last_name_checker = false;
-                bool phoneNumber_checker = false;
-                bool people_checker = false;
-                bool mail_checker = false;
-                
-                string date = "";
-                int numOfPeople = 0;
-                string name = "";
-                string surname = "";
-                string phoneNumber = "";
-                string email = "";
-                string addition = "";
-                string reservation_checker = "";
 
                 Console.WriteLine();
                 Console.WriteLine("********* Reserveringsgegevens ************");
@@ -57,10 +41,10 @@ namespace ReservationApplication
 
                 // Datum invoeren
                 DateTime reservationDate;
-                while (true)
+                while (!date_checker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                    string dateString = Console.ReadLine() ?? "";
+                    dateString = Console.ReadLine() ?? "";
                     if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
                     {
                         break;
@@ -88,8 +72,7 @@ namespace ReservationApplication
                 }
 
                 // Aantal personen
-                int numberOfPeople;
-                while (true)
+                while (!people_checker)
                 {
                     Console.Write("Aantal personen: ");
                     if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0)
@@ -104,8 +87,8 @@ namespace ReservationApplication
                 {
                     Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                     Console.Write("Voornaam: ");
-                    name = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(name))
+                    firstName = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(firstName))
                     {
                         first_name_checker = true;
                     }
@@ -116,13 +99,13 @@ namespace ReservationApplication
                 }
 
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                addition = Console.ReadLine() ?? "";
+                infix = Console.ReadLine() ?? "";
 
                 while (!last_name_checker)
                 {
                     Console.Write("Achternaam: ");
-                    surname = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(surname))
+                    lastName = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(lastName))
                     {
                         last_name_checker = true;
                     }
@@ -161,7 +144,7 @@ namespace ReservationApplication
                 }
 
                 Console.WriteLine("Opmerkingen/verzoeken: ");
-                string comments = Console.ReadLine() ?? "";
+                string remarks = Console.ReadLine() ?? "";
 
                 // Reservering maken
                 ReservationSystem reservationSystem = new ReservationSystem();
