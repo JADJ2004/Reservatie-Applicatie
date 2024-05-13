@@ -18,24 +18,24 @@ namespace ReservationApplication
             Console.WriteLine();
 
             bool reservationConfirmed = false;
-            bool date_checker = false;
-            bool first_name_checker = false;
-            bool last_name_checker = false;
-            bool phoneNumber_checker = false;
-            bool people_checker = false;
-            bool mail_checker = false;
-            
-            string dateString = "";
-            DateTime reservationDate = DateTime.MinValue;
-            int numberOfPeople = 0;
-            string firstName = "";
-            string lastName = "";
-            string phoneNumber = "";
-            string email = "";
-            string infix = "";
             
             while (!reservationConfirmed)
             {
+                bool date_checker = false;
+                bool first_name_checker = false;
+                bool last_name_checker = false;
+                bool phoneNumber_checker = false;
+                bool people_checker = false;
+                bool mail_checker = false;
+                
+                string dateString = "";
+                DateTime reservationDate = DateTime.MinValue;
+                int numberOfPeople = 0;
+                string firstName = "";
+                string lastName = "";
+                string phoneNumber = "";
+                string email = "";
+                string infix = "";
 
                 Console.WriteLine();
                 Console.WriteLine("********* Reserveringsgegevens ************");
