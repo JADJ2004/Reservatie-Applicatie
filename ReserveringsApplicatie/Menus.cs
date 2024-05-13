@@ -24,6 +24,13 @@ namespace ReservationApplication{
 
 
                     string prompt = @"
+ __   __  _______  _______  __  
+|  | |  ||       ||       ||  | 
+|  |_|  ||    ___||  _____||  | 
+|       ||   |___ | |_____ |  | 
+|_     _||    ___||_____  ||__| 
+  |   |  |   |___  _____| | __  
+  |___|  |_______||_______||__| 
 Welkom bij het hoofdmenu van YES! Selecteer een optie.
 Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                     string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer of bewerk je reservering", "Toon het menu", "Verlaten"};

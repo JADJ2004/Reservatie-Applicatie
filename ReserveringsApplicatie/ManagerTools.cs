@@ -1,9 +1,7 @@
+using ReservationApplication;
+
 public static class ManagerTools
 {
-    private static string keuze;
-    private static string AdminWachtwoord = "1234YES!";
-    private static string Wachtwoord;
-            
     public static void StartUp()
     {
         string prompt = @"
@@ -23,11 +21,11 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 Console.WriteLine("Not implemented");
                 break;
             case 2:
-                Console.WriteLine("Not implemented");
-                break;
-            case 3:
-                Console.WriteLine("Not implemented");
+                Console.WriteLine("U bent uitgelogd.");
+                Menus.StartUp();
                 break;
         }
     }
+
+
 }
