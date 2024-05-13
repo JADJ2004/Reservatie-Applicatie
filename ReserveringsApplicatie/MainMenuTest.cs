@@ -28,12 +28,14 @@ public class MenuTest
             if (i == SelectedIndex)
             {
                 prefix = "-";
-                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.White;
             }
             else
             {
                 prefix = " ";
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
             }
             Console.WriteLine($" {prefix} {currentOption}");
         }

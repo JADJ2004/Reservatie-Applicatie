@@ -1,12 +1,10 @@
-using Microsoft.Data.Sqlite;
 using System;
-using System.Net;
-using System.Net.Mail;
+using Microsoft.Data.Sqlite;
 
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source=Z:\Documenten\PROJECTEN\01\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Reservatie-Applicatie\Localtest\Mydatabase.db";
 
     public ReservationSystem()
     {
@@ -14,41 +12,41 @@ public class ReservationSystem
         conn.Open();
     }
 
-    public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numOfPeople, DateTime date, string timeSlot)
+    public (int tableId, DateTime nextAvailableDate) ReserveTableForGroup(int numOfPeople, bool wantWindow, DateTime date)
     {
-        int reservedTableId = FindAvailableTable(numOfPeople, date, timeSlot);
+        int reservedTableId = FindAvailableTable(numOfPeople, wantWindow, date);
         
         if (reservedTableId == -1)
         {
-            var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(numOfPeople, date, timeSlot);
-            reservedTableId = FindAvailableTable(numOfPeople, nextAvailableDate, nextAvailableTimeSlot);
-            return (reservedTableId, nextAvailableDate, nextAvailableTimeSlot);
+            DateTime nextAvailableDate = FindNextAvailableDate(numOfPeople, wantWindow, date);
+            reservedTableId = FindAvailableTable(numOfPeople, wantWindow, nextAvailableDate);
+            return (reservedTableId, nextAvailableDate);
         }
 
-        return (reservedTableId, date, timeSlot);
+        return (reservedTableId, date);
     }
 
-    private int FindAvailableTable(int numOfPeople, DateTime date, string timeSlot)
+    private int FindAvailableTable(int numOfPeople, bool wantWindow, DateTime date)
     {
         string formattedDate = date.ToString("yyyy-MM-dd");
         string sql = @"
-            SELECT t.TableId
+            SELECT t.TableId, t.Capacity
             FROM Tables t
-            WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
-                SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+            WHERE t.WindowSeat = @WantWindow AND NOT EXISTS (
+                SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date
             )
             ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC
             LIMIT 1;";
 
         using (var cmd = new SqliteCommand(sql, conn))
         {
+            cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
             cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
             cmd.Parameters.AddWithValue("@Date", formattedDate);
-            cmd.Parameters.AddWithValue("@TimeSlot", timeSlot);
 
             using (var reader = cmd.ExecuteReader())
             {
-                if (reader.Read())
+                if (reader.Read() && reader.GetInt32(1) >= numOfPeople)
                 {
                     return reader.GetInt32(0);
                 }
@@ -57,83 +55,35 @@ public class ReservationSystem
         return -1;
     }
 
-    private (DateTime, string) FindNextAvailableDateTime(int numOfPeople, DateTime startDate, string startTimeSlot)
+    private DateTime FindNextAvailableDate(int numOfPeople, bool wantWindow, DateTime startDate)
     {
-        DateTime nextDate = startDate;
-        string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
-        int currentIndex = Array.IndexOf(timeSlots, startTimeSlot);
-        
+        DateTime nextDate = startDate.AddDays(1);
+        string formattedDate;
         while (true)
         {
-            string formattedDate = nextDate.ToString("yyyy-MM-dd");
+            formattedDate = nextDate.ToString("yyyy-MM-dd");
             string sql = @"
                 SELECT COUNT(*)
                 FROM Tables t
-                WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
-                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+                WHERE t.WindowSeat = @WantWindow AND t.Capacity >= @NumOfPeople AND NOT EXISTS (
+                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date
                 );";
-
+            
             using (var cmd = new SqliteCommand(sql, conn))
             {
+                cmd.Parameters.AddWithValue("@WantWindow", wantWindow ? 1 : 0);
                 cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
                 cmd.Parameters.AddWithValue("@Date", formattedDate);
-                cmd.Parameters.AddWithValue("@TimeSlot", timeSlots[currentIndex]);
 
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count > 0)
                 {
-                    return (nextDate, timeSlots[currentIndex]);
+                    break;
                 }
 
-                currentIndex = (currentIndex + 1) % timeSlots.Length;
-                if (currentIndex == 0)
-                {
-                    nextDate = nextDate.AddDays(1);
-                }
+                nextDate = nextDate.AddDays(1);
             }
         }
-    }
-
-    public void SendEmail(string customerEmail, DateTime reservationDate, string timeSlot, string firstName, int numOfPeople)
-    {
-        string smtpServer = "smtp-mail.outlook.com";
-        int port = 587;
-        string username = "yessrestaurant@outlook.com";
-        string password = "Marcel12345";
-
-        string from = "yessrestaurant@outlook.com";
-        string to = customerEmail;
-
-        string subject = "Bevestiging van reservering bij YES! Restaurant";
-        string body = $"Beste {firstName},\n\n" +
-                      $"Bedankt voor uw reservering bij YES! Restaurant.\n" +
-                      $"Hier zijn de details van uw reservering:\n" +
-                      $"Datum: {reservationDate.ToShortDateString()}\n" +
-                      $"Tijdslot: {timeSlot}\n" +
-                      $"Aantal personen: {numOfPeople}\n\n" +
-                      $"We kijken ernaar uit om u te verwelkomen!\n\n" +
-                      $"Met vriendelijke groet,\n" +
-                      $"YES! Restaurant";
-
-        SmtpClient client = new SmtpClient(smtpServer, port)
-        {
-            Credentials = new NetworkCredential(username, password),
-            EnableSsl = true
-        };
-
-        MailMessage message = new MailMessage(from, to, subject, body);
-
-        try
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            client.Send(message);
-            Console.WriteLine("Bevestigingsmail is succesvol verstuurd.");
-            Console.ResetColor();
-        
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Er is een fout opgetreden bij het versturen van de e-mail: " + ex.Message);
-        }
+        return nextDate;
     }
 }
