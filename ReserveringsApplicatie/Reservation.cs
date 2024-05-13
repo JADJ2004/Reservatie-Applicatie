@@ -76,7 +76,7 @@ namespace ReservationApplication
                 while (!people_checker)
                 {
                     Console.Write("Aantal personen: ");
-                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople < 6)
+                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
                     {
                         break;
                     }
