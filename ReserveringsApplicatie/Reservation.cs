@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace ReservationApplication
 {
@@ -25,6 +26,7 @@ namespace ReservationApplication
             bool mail_checker = false;
             
             string dateString = "";
+            DateTime reservationDate = DateTime.MinValue;
             int numberOfPeople = 0;
             string firstName = "";
             string lastName = "";
@@ -40,7 +42,6 @@ namespace ReservationApplication
                 Console.WriteLine();
 
                 // Datum invoeren
-                DateTime reservationDate;
                 while (!date_checker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
@@ -75,7 +76,7 @@ namespace ReservationApplication
                 while (!people_checker)
                 {
                     Console.Write("Aantal personen: ");
-                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0)
+                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople < 6)
                     {
                         break;
                     }
@@ -88,7 +89,7 @@ namespace ReservationApplication
                     Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                     Console.Write("Voornaam: ");
                     firstName = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(firstName))
+                    if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z]+$"))
                     {
                         first_name_checker = true;
                     }
@@ -105,7 +106,7 @@ namespace ReservationApplication
                 {
                     Console.Write("Achternaam: ");
                     lastName = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(lastName))
+                    if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
                     {
                         last_name_checker = true;
                     }
