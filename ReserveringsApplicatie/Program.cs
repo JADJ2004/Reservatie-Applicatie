@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Customer_Reservation_Deleter;
 
 namespace ReservationApplication
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
             Menus.StartUp();
         }
     }
 }
+

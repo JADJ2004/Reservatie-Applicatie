@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Customer_Reservation_Deleter;
 using System.Collections.Generic;
 using System.Text;
@@ -9,14 +9,13 @@ using System.Threading;
 
 namespace ReservationApplication{
 
-        public static class Menus
-        {
-            private static string keuze;
-            private static string AdminWachtwoord = "1234YES!";
-            private static string Wachtwoord;
-            
-            public static void StartUp()
-            {
+    public static class Menus
+    {
+        private static string keuze;
+        private static string AdminWachtwoord = "1234YES!";
+        private static string Wachtwoord;
+        public static void StartUp()
+    {
                 Database db = new Database();
                     db.InitializeDatabase();
 
@@ -30,12 +29,12 @@ namespace ReservationApplication{
 |       ||   |___ | |_____ |  | 
 |_     _||    ___||_____  ||__| 
   |   |  |   |___  _____| | __  
-  |___|  |_______||_______||__| 
+  |___|  |_______||_______||__|  
 Welkom bij het hoofdmenu van YES! Selecteer een optie.
 Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                     string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer of bewerk je reservering", "Toon het menu", "Verlaten"};
 
-                    MenuTest mainMenu = new MenuTest(prompt, options);
+                    UserInterface mainMenu = new UserInterface(prompt, options);
                     int selectedIndex = mainMenu.Run();
 
                     switch(selectedIndex)
@@ -44,7 +43,7 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                             Menus.AdminLogin();
                             break;
                         case 1:
-                            TestAplicatie reservationApplication = new TestAplicatie();
+                            TestApplicatie reservationApplication = new TestApplicatie();
                             reservationApplication.ReservationSystem();
                             break;
                         case 2: 
@@ -84,8 +83,5 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
             {
                 Environment.Exit(0);
             }
-            
-        }
+    }
 }
-
-
