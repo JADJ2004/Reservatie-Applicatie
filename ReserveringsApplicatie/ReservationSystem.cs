@@ -6,7 +6,7 @@ using System.Net.Mail;
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\Reservatie-Applicatie-1\LocalTest\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
 
     public ReservationSystem()
     {
@@ -94,7 +94,7 @@ public class ReservationSystem
         }
     }
 
-    public void SendEmail(string customerEmail, DateTime reservationDate, string timeSlot, string firstName, int numOfPeople)
+    public void SendEmail(string customerEmail, DateTime reservationDate, string timeSlot, string firstName, int numOfPeople, int ReservationId)
     {
         string smtpServer = "smtp-mail.outlook.com";
         int port = 587;
@@ -108,6 +108,7 @@ public class ReservationSystem
         string body = $"Beste {firstName},\n\n" +
                       $"Bedankt voor uw reservering bij YES! Restaurant.\n" +
                       $"Hier zijn de details van uw reservering:\n" +
+                      $"Reserverings nummer: {ReservationId}\n" +
                       $"Datum: {reservationDate.ToShortDateString()}\n" +
                       $"Tijdslot: {timeSlot}\n" +
                       $"Aantal personen: {numOfPeople}\n\n" +
@@ -133,7 +134,9 @@ public class ReservationSystem
         }
         catch (Exception ex)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Er is een fout opgetreden bij het versturen van de e-mail: " + ex.Message);
+            Console.ResetColor();
         }
     }
 }

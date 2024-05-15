@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\Reservatie-Applicatie-1\LocalTest\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
 
     public void InitializeDatabase()
     {
@@ -38,7 +38,7 @@ public partial class Database
         }
     }
 
-    public (bool success, DateTime suggestedDate, string suggestedTimeSlot) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
+    public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
@@ -63,14 +63,16 @@ public partial class Database
                 try
                 {
                     command.ExecuteNonQuery();
-                    return (true, date, timeSlot);
+                    command.CommandText = "SELECT last_insert_rowid()";
+                    int reservationId = Convert.ToInt32(command.ExecuteScalar());
+                    return (true, date, timeSlot, reservationId);
                 }
                 catch (SqliteException e)
                 {
                     if (e.Message.Contains("UNIQUE constraint failed"))
                     {
                         var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(tableId, date, timeSlot, connection);
-                        return (false, nextAvailableDate, nextAvailableTimeSlot);
+                        return (false, nextAvailableDate, nextAvailableTimeSlot, -1);
                     }
                     throw;
                 }

@@ -185,13 +185,13 @@ namespace ReservationApplication
 
                 if (confirmation == "ja")
                 {
-                    var (success, suggestedDate, suggestedTimeSlot) = db.AddReservation(numberOfPeople, firstName, infix, lastName, phoneNumber, email, reservationDate, timeSlot, tableId, remarks);
+                    var (success, suggestedDate, suggestedTimeSlot, ReservationId) = db.AddReservation(numberOfPeople, firstName, infix, lastName, phoneNumber, email, reservationDate, timeSlot, tableId, remarks);
                     if (success)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("\nUw reservering is succesvol verwerkt.");
                         Console.ResetColor();
-                        reservationSystem.SendEmail(email, reservationDate, timeSlot, firstName, numberOfPeople);
+                        reservationSystem.SendEmail(email, reservationDate, timeSlot, firstName, numberOfPeople, ReservationId);
                         reservationConfirmed = true;
                     }
                     else
