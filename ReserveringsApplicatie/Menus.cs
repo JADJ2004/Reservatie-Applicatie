@@ -69,7 +69,7 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                 if (Wachtwoord == AdminWachtwoord)
                 {
                     Console.WriteLine("Je bent succesvol ingelogd als beheerder.");
-                    ManagerTools.StartUp();
+                    ManagerMenu.StartUp();
                 }
                 else
                 {

@@ -1,21 +1,22 @@
 using ReservationApplication;
 
-public static class ManagerTools
+public static class ManagerMenu
 {
     public static void StartUp()
     {
         string prompt = @"
 Welkom Marcel wat wilt u vandaag gaan doen?";
-        string[] options = {"Reserveringen in zien", "Menu veranderen", "Uitloggen"};
+        string[] options = { "Reserveringen inzien", "Menu veranderen", "Uitloggen" };
 
         UserInterface ManagerMenu = new UserInterface(prompt, options);
 
         int selectedIndex = ManagerMenu.Run();
 
-        switch(selectedIndex)
+        switch (selectedIndex)
         {
             case 0:
-                Console.WriteLine("Not implemented");
+                ReservationViewer reservationViewer = new ReservationViewer();
+                reservationViewer.ViewReservationsByDate();
                 break;
             case 1:
                 Console.WriteLine("Not implemented");
@@ -26,6 +27,4 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 break;
         }
     }
-
-
 }
