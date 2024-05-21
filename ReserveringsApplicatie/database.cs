@@ -234,5 +234,39 @@ public partial class Database
 
         return reservations;
     }
+    public ReservationModel GetReservationById(int reservationId)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "SELECT * FROM Reservations WHERE ReservationId = @ReservationId";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new ReservationModel
+                        {
+                            ReservationId = reader.GetInt32(0),
+                            TableId = reader.GetInt32(1),
+                            NumOfPeople = reader.GetInt32(2),
+                            FirstName = reader.GetString(3),
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            LastName = reader.GetString(5),
+                            PhoneNumber = reader.GetString(6),
+                            Email = reader.GetString(9),
+                            Date = reader.GetString(7),
+                            TimeSlot = reader.GetString(8),
+                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
 }
