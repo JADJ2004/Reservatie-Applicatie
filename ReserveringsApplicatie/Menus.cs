@@ -44,7 +44,7 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                             break;
                         case 1:
                             TestApplicatie reservationApplication = new TestApplicatie();
-                            reservationApplication.ReservationSystem();
+                            reservationApplication.StartReservationSystem();
                             break;
                         case 2: 
                             reservationDeleter.ReservationDeleter();
