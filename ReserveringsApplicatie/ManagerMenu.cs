@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:ReserveringsApplicatie/ManagerTools.cs
 public static class ManagerTools
 =======
@@ -10,6 +11,12 @@ public static class ManagerMenu
     private static string AdminWachtwoord = "1234YES!";
     private static string Wachtwoord;
             
+=======
+using ReservationApplication;
+
+public static class ManagerMenu
+{
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
     public static void StartUp()
     {
         string prompt = @"
@@ -30,6 +37,7 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 Console.WriteLine("Not implemented");
                 break;
             case 2:
+<<<<<<< HEAD
                 Console.WriteLine("Not implemented");
                 break;
             case 3:
@@ -42,3 +50,11 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
 =======
 }
 >>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d:ReserveringsApplicatie/ManagerMenu.cs
+=======
+                Console.WriteLine("U bent uitgelogd.");
+                Menus.StartUp();
+                break;
+        }
+    }
+}
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d

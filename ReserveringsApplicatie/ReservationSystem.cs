@@ -5,7 +5,11 @@ public class ReservationSystem
 {
     private SqliteConnection conn;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Reservatie-Applicatie\Localtest\Mydatabase.db";
+=======
+    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 =======
     private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
 >>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d

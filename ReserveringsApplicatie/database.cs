@@ -42,7 +42,11 @@ public partial class Database
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public (bool success, DateTime suggestedDate) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, int tableId, string remarks)
+=======
+    public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 =======
     public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
 >>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
@@ -70,7 +74,13 @@ public partial class Database
                 {
                     command.ExecuteNonQuery();
 <<<<<<< HEAD
+<<<<<<< HEAD
                     return (true, date);
+=======
+                    command.CommandText = "SELECT last_insert_rowid()";
+                    int reservationId = Convert.ToInt32(command.ExecuteScalar());
+                    return (true, date, timeSlot, reservationId);
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 =======
                     command.CommandText = "SELECT last_insert_rowid()";
                     int reservationId = Convert.ToInt32(command.ExecuteScalar());
@@ -87,6 +97,9 @@ public partial class Database
 =======
                         var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(tableId, date, timeSlot, connection);
                         return (false, nextAvailableDate, nextAvailableTimeSlot, -1);
+<<<<<<< HEAD
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
+=======
 >>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                     }
                     throw;
