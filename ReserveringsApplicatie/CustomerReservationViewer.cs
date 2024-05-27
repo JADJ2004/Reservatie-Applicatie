@@ -29,15 +29,19 @@ namespace ReservationApplication
                 else
                 {
                     Console.WriteLine("Reservering niet gevonden.");
+                    Menus.StartUp();
                 }
             }
             else
             {
                 Console.WriteLine("Ongeldige invoer. Voer een geldig reserverings-ID in.");
+                Console.WriteLine("Je gaat terug naar het hoofdmenu.");
+                Menus.StartUp();
             }
 
             Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
             Console.ReadKey();
+            Menus.StartUp();
         }
     }
 }

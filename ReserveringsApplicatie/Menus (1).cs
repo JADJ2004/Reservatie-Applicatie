@@ -1,4 +1,4 @@
-using System;
+﻿﻿using System;
 using Customer_Reservation_Deleter;
 using System.Collections.Generic;
 using System.Text;
@@ -89,4 +89,3 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
             }
     }
 }
-c

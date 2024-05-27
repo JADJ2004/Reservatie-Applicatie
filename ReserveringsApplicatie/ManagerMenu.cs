@@ -8,9 +8,9 @@ public static class ManagerMenu
 Welkom Marcel wat wilt u vandaag gaan doen?";
         string[] options = { "Reserveringen inzien", "Menu veranderen", "Uitloggen" };
 
-        UserInterface managerMenu = new UserInterface(prompt, options);
+        UserInterface ManagerMenu = new UserInterface(prompt, options);
 
-        int selectedIndex = managerMenu.Run();
+        int selectedIndex = ManagerMenu.Run();
 
         switch (selectedIndex)
         {

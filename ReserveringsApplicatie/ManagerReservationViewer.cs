@@ -66,7 +66,7 @@ namespace ReservationApplication
             List<string> weekDates = new List<string>();
             DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 2; i < 9; i++) //TRG VERANDEREN NAAR 0 EN 7
             {
                 weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
             }
