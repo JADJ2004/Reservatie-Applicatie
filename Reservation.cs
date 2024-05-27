@@ -202,7 +202,11 @@ namespace ReservationApplication
                             Console.WriteLine("\nUw reservering is succesvol verwerkt.");
                             Console.ResetColor();
                             reservationSystem.SendEmail(email, reservationDate, timeSlot, firstName, numberOfPeople, ReservationId);
+                            correctInformation = true;    
                             reservationConfirmed = true; // Beëindig de lus als de reservering is bevestigd
+                            Console.ResetColor();
+                            Menus.StartUp();
+                            
                         }
                         else
                         {
