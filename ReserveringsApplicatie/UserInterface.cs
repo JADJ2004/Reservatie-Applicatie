@@ -45,7 +45,6 @@ public class UserInterface
         ConsoleKey keyPressed;
         do
         {
-            Console.Clear();
             DisplayOptions();
 
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
@@ -67,11 +66,16 @@ public class UserInterface
                     SelectedIndex = 0;
                 }
             }
-
-        } while (keyPressed != ConsoleKey.Enter);
-
+            else if (keyPressed == ConsoleKey.Enter)
+            {
+                break; // Exit the loop when Enter key is pressed
+            }
+            // Clear the console to avoid reprinting the menu
+            Console.Clear();
+        } while (true);
 
         return SelectedIndex;
     }
+
 
 }

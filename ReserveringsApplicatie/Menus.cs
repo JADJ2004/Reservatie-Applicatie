@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-﻿using System;
-=======
-﻿﻿using System;
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
-﻿﻿using System;
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
+using System;
 using Customer_Reservation_Deleter;
 using System.Collections.Generic;
 using System.Text;
@@ -17,19 +9,6 @@ using System.Threading;
 
 namespace ReservationApplication{
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        public static class Menus
-        {
-            private static string keuze;
-            private static string AdminWachtwoord = "1234YES!";
-            private static string Wachtwoord;
-            
-            public static void StartUp()
-            {
-=======
-=======
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
     public static class Menus
     {
         private static string keuze;
@@ -37,10 +16,6 @@ namespace ReservationApplication{
         private static string Wachtwoord;
         public static void StartUp()
     {
-<<<<<<< HEAD
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                 Database db = new Database();
                     db.InitializeDatabase();
 
@@ -48,11 +23,6 @@ namespace ReservationApplication{
 
 
                     string prompt = @"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
  __   __  _______  _______  __  
 |  | |  ||       ||       ||  | 
 |  |_|  ||    ___||  _____||  | 
@@ -60,23 +30,11 @@ namespace ReservationApplication{
 |_     _||    ___||_____  ||__| 
   |   |  |   |___  _____| | __  
   |___|  |_______||_______||__|  
-<<<<<<< HEAD
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 Welkom bij het hoofdmenu van YES! Selecteer een optie.
 Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
-                    string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer of bewerk je reservering", "Toon het menu", "Verlaten"};
+                    string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer of bewerk je reservering", "Bekijk je reservering", "Toon het menu", "Verlaten"};
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    MenuTest mainMenu = new MenuTest(prompt, options);
-=======
                     UserInterface mainMenu = new UserInterface(prompt, options);
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
-                    UserInterface mainMenu = new UserInterface(prompt, options);
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                     int selectedIndex = mainMenu.Run();
 
                     switch(selectedIndex)
@@ -85,27 +43,21 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                             Menus.AdminLogin();
                             break;
                         case 1:
-<<<<<<< HEAD
-<<<<<<< HEAD
-                            TestAplicatie reservationApplication = new TestAplicatie();
-                            reservationApplication.ReservationSystem();
-=======
                             TestApplicatie reservationApplication = new TestApplicatie();
                             reservationApplication.StartReservationSystem();
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
-                            TestApplicatie reservationApplication = new TestApplicatie();
-                            reservationApplication.StartReservationSystem();
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                             break;
                         case 2: 
                             reservationDeleter.ReservationDeleter();
                             break;
                         case 3:
+                            CustomerReservationViewer reservationViewer= new CustomerReservationViewer();
+                            reservationViewer.ViewReservationById();
+                            break;
+                        case 4:
                             FoodMenu foodMenu = new FoodMenu();
                             foodMenu.ToonMenu();
                             break;
-                        case 4:
+                        case 5:
                             Console.WriteLine("Tot ziens!");
                             Menus.ExitMenu();
                             break;
@@ -121,15 +73,7 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                 if (Wachtwoord == AdminWachtwoord)
                 {
                     Console.WriteLine("Je bent succesvol ingelogd als beheerder.");
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    ManagerTools.StartUp();
-=======
                     ManagerMenu.StartUp();
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
-                    ManagerMenu.StartUp();
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                 }
                 else
                 {
@@ -143,15 +87,6 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
             {
                 Environment.Exit(0);
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
-            
-        }
-=======
-=======
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
     }
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 }
-
-
+c

@@ -4,15 +4,15 @@ using Microsoft.Data.Sqlite;
 public class ReservationSystem
 {
     private SqliteConnection conn;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+
     private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Reservatie-Applicatie\Localtest\Mydatabase.db";
-=======
+
     private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
-=======
+
+
     private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
+
 
     public ReservationSystem()
     {
@@ -92,9 +92,9 @@ public class ReservationSystem
                 nextDate = nextDate.AddDays(1);
             }
         }
-<<<<<<< HEAD
+
         return nextDate;
-=======
+
     }
 
     public void SendEmail(string customerEmail, DateTime reservationDate, string timeSlot, string firstName, int numOfPeople, int ReservationId)
@@ -141,6 +141,6 @@ public class ReservationSystem
             Console.WriteLine("Er is een fout opgetreden bij het versturen van de e-mail: " + ex.Message);
             Console.ResetColor();
         }
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
+
     }
 }

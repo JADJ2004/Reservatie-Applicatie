@@ -1,14 +1,23 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace ReservationApplication
 {
-    class TestAplicatie
+    class TestApplicatie
     {
         private Database db = new Database();
         private ReservationSystem reservationSystem = new ReservationSystem();
 
         public void StartReservationSystem()
         {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("*******************************************");
+            Console.WriteLine("* Welkom bij het reserveringsapplicatie! *");
+            Console.WriteLine("*******************************************");
+            Console.ResetColor();
+            Console.WriteLine();
+
             bool reservationConfirmed = false;
 
             while (!reservationConfirmed)
@@ -38,43 +47,41 @@ namespace ReservationApplication
                 while (!dateChecker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                    string dateString = Console.ReadLine() ?? "";
+                    dateString = Console.ReadLine() ?? "";
                     if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
                     {
                         dateChecker = true;
-<<<<<<< HEAD
-=======
                     }
                     else
                     {
                         Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
->>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                     }
                 }
 
-                // Aan het raam zitten?
-                bool wantsWindow;
+                // Tijdslot selecteren
+                string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
+                string timeSlot = "";
+                Console.WriteLine("Selecteer een tijdslot:");
+                for (int i = 0; i < timeSlots.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {timeSlots[i]}");
+                }
                 while (true)
                 {
-                    Console.WriteLine("Wilt u aan het raam zitten? (ja/nee): ");
-                    string input = Console.ReadLine()?.Trim().ToLower();
-                    if (input == "ja")
+                    Console.Write("Kies een optie (1-3): ");
+                    if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
                     {
-                        wantsWindow = true;
+                        timeSlot = timeSlots[slot - 1];
                         break;
                     }
-                    else if (input == "nee")
-                    {
-                        wantsWindow = false;
-                        break;
-                    }
+                    Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
                 }
 
                 // Aantal personen
                 while (!peopleChecker)
                 {
                     Console.Write("Aantal personen: ");
-                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0)
+                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
                     {
                         peopleChecker = true;
                     }
@@ -87,9 +94,10 @@ namespace ReservationApplication
                 // Persoonsgegevens
                 while (!firstNameChecker)
                 {
+                    Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                     Console.Write("Voornaam: ");
                     firstName = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(firstName))
+                    if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z]+$"))
                     {
                         firstNameChecker = true;
                     }
@@ -99,15 +107,14 @@ namespace ReservationApplication
                     }
                 }
 
-                // Tussenvoegsel
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                string infix = Console.ReadLine() ?? "";
+                infix = Console.ReadLine() ?? "";
 
                 while (!lastNameChecker)
                 {
                     Console.Write("Achternaam: ");
                     lastName = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(lastName))
+                    if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
                     {
                         lastNameChecker = true;
                     }
@@ -125,7 +132,10 @@ namespace ReservationApplication
                     {
                         phoneNumberChecker = true;
                     }
-                    Console.WriteLine("Een geldig telefoonnummer moet uit 10 cijfers bestaan.");
+                    else
+                    {
+                        Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
+                    }
                 }
 
                 while (!emailChecker)
@@ -150,8 +160,10 @@ namespace ReservationApplication
 
                 if (tableId == -1)
                 {
-                    Console.WriteLine($"Geen beschikbare tafels voor de opgegeven criteria op {reservationDate.ToShortDateString()}.");
-                    Console.WriteLine($"De eerstvolgende beschikbare datum is: {nextAvailableDate.ToShortDateString()}.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\nGeen beschikbare tafels voor de opgegeven criteria op {reservationDate.ToShortDateString()} tijdens {timeSlot}.");
+                    Console.WriteLine($"De eerstvolgende beschikbare datum en tijdslot zijn: {nextAvailableDate.ToShortDateString()} {nextAvailableTimeSlot}.");
+                    Console.ResetColor();
                     continue;
                 }
 
