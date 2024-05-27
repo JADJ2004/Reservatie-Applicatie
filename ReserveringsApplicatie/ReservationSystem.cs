@@ -4,7 +4,11 @@ using Microsoft.Data.Sqlite;
 public class ReservationSystem
 {
     private SqliteConnection conn;
+<<<<<<< HEAD
     private const string ConnectionString = @"Data Source=C:\Users\joeyc\OneDrive\Documents\GitHub\Reservatie-Applicatie\Localtest\Mydatabase.db";
+=======
+    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
 
     public ReservationSystem()
     {
@@ -84,6 +88,55 @@ public class ReservationSystem
                 nextDate = nextDate.AddDays(1);
             }
         }
+<<<<<<< HEAD
         return nextDate;
+=======
+    }
+
+    public void SendEmail(string customerEmail, DateTime reservationDate, string timeSlot, string firstName, int numOfPeople, int ReservationId)
+    {
+        string smtpServer = "smtp-mail.outlook.com";
+        int port = 587;
+        string username = "yessrestaurant@outlook.com";
+        string password = "Marcel12345";
+
+        string from = "yessrestaurant@outlook.com";
+        string to = customerEmail;
+
+        string subject = "Bevestiging van reservering bij YES! Restaurant";
+        string body = $"Beste {firstName},\n\n" +
+                      $"Bedankt voor uw reservering bij YES! Restaurant.\n" +
+                      $"Hier zijn de details van uw reservering:\n" +
+                      $"Reserverings nummer: {ReservationId}\n" +
+                      $"Datum: {reservationDate.ToShortDateString()}\n" +
+                      $"Tijdslot: {timeSlot}\n" +
+                      $"Aantal personen: {numOfPeople}\n\n" +
+                      $"We kijken ernaar uit om u te verwelkomen!\n\n" +
+                      $"Met vriendelijke groet,\n" +
+                      $"YES! Restaurant";
+
+        SmtpClient client = new SmtpClient(smtpServer, port)
+        {
+            Credentials = new NetworkCredential(username, password),
+            EnableSsl = true
+        };
+
+        MailMessage message = new MailMessage(from, to, subject, body);
+
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            client.Send(message);
+            Console.WriteLine("Bevestigingsmail is succesvol verstuurd.");
+            Console.ResetColor();
+        
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Er is een fout opgetreden bij het versturen van de e-mail: " + ex.Message);
+            Console.ResetColor();
+        }
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
+using ReservationApplication;
 
 public partial class Database
 {
@@ -27,6 +29,7 @@ public partial class Database
                     Phonenumber TEXT NOT NULL,
                     Date TEXT NOT NULL,
                     Email TEXT NOT NULL,
+                    Remarks TEXT,
                     FOREIGN KEY (TableId) REFERENCES Tables(TableId),
                     UNIQUE (TableId, Date)
                 );";
@@ -38,7 +41,11 @@ public partial class Database
         }
     }
 
+<<<<<<< HEAD
     public (bool success, DateTime suggestedDate) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, int tableId, string remarks)
+=======
+    public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
@@ -62,14 +69,25 @@ public partial class Database
                 try
                 {
                     command.ExecuteNonQuery();
+<<<<<<< HEAD
                     return (true, date);
+=======
+                    command.CommandText = "SELECT last_insert_rowid()";
+                    int reservationId = Convert.ToInt32(command.ExecuteScalar());
+                    return (true, date, timeSlot, reservationId);
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                 }
                 catch (SqliteException e)
                 {
                     if (e.Message.ToLower().Contains("unique constraint failed"))
                     {
+<<<<<<< HEAD
                         DateTime nextAvailableDate = FindNextAvailableDate(tableId, date, connection);
                         return (false, nextAvailableDate);
+=======
+                        var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(tableId, date, timeSlot, connection);
+                        return (false, nextAvailableDate, nextAvailableTimeSlot, -1);
+>>>>>>> 0386f2ee0b7f151f9574bc66a3b1efb4c4edc38d
                     }
                     throw;
                 }
@@ -105,4 +123,155 @@ public partial class Database
         }
         return nextDate;
     }
+
+    public List<string> GetCurrentWeekDates()
+    {
+    List<string> weekDates = new List<string>();
+    DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+    
+    for (int i = 0; i < 7; i++)
+    {
+        weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
+    }
+
+    return weekDates;
+    }
+
+    public Dictionary<string, (int occupiedTables, int totalPeople)> GetReservationsDetailsForWeek(List<string> dates)
+    {
+        Dictionary<string, (int occupiedTables, int totalPeople)> reservationsDetails = new Dictionary<string, (int occupiedTables, int totalPeople)>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            foreach (var date in dates)
+            {
+                string sqlQuery = "SELECT COUNT(*), SUM(NumOfPeople) FROM Reservations WHERE Date = @Date";
+                using (var command = new SqliteCommand(sqlQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@Date", date);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int occupiedTables = reader.GetInt32(0);
+                            int totalPeople = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                            reservationsDetails[date] = (occupiedTables, totalPeople);
+                        }
+                    }
+                }
+            }
+        }
+
+    return reservationsDetails;
+}
+
+    public List<ReservationModel> GetReservationsByDate(string date)
+    {
+        List<ReservationModel> reservations = new List<ReservationModel>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "SELECT * FROM Reservations WHERE Date = @Date";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@Date", date);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        reservations.Add(new ReservationModel
+                        {
+                            ReservationId = reader.GetInt32(0),
+                            TableId = reader.GetInt32(1),
+                            NumOfPeople = reader.GetInt32(2),
+                            FirstName = reader.GetString(3),
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            LastName = reader.GetString(5),
+                            PhoneNumber = reader.GetString(6),
+                            Email = reader.GetString(9),
+                            Date = reader.GetString(7),
+                            TimeSlot = reader.GetString(8),
+                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                        });
+                    }
+                }
+            }
+        }
+
+        return reservations;
+    }
+
+
+    public List<ReservationModel> GetAllReservations()
+    {
+        List<ReservationModel> reservations = new List<ReservationModel>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "SELECT * FROM Reservations";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        reservations.Add(new ReservationModel
+                        {
+                            ReservationId = reader.GetInt32(0),      
+                            TableId = reader.GetInt32(1),             
+                            NumOfPeople = reader.GetInt32(2),      
+                            FirstName = reader.GetString(3),        
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4), 
+                            LastName = reader.GetString(5),         
+                            PhoneNumber = reader.GetString(6),        
+                            Email = reader.GetString(9),             
+                            Date = reader.GetString(7),            // 6-> 9 -> 7 -> 8 -> 10 genieters
+                            TimeSlot = reader.GetString(8),            
+                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                        });
+                    }
+                }
+            }
+        }
+
+        return reservations;
+    }
+    public ReservationModel GetReservationById(int reservationId)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "SELECT * FROM Reservations WHERE ReservationId = @ReservationId";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new ReservationModel
+                        {
+                            ReservationId = reader.GetInt32(0),
+                            TableId = reader.GetInt32(1),
+                            NumOfPeople = reader.GetInt32(2),
+                            FirstName = reader.GetString(3),
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            LastName = reader.GetString(5),
+                            PhoneNumber = reader.GetString(6),
+                            Email = reader.GetString(9),
+                            Date = reader.GetString(7),
+                            TimeSlot = reader.GetString(8),
+                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

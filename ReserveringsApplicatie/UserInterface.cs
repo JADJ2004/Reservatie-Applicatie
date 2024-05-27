@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 public class UserInterface
 {
     private int SelectedIndex;
@@ -26,14 +28,12 @@ public class UserInterface
             if (i == SelectedIndex)
             {
                 prefix = "-";
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Yellow;
             }
             else
             {
                 prefix = " ";
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
             }
             Console.WriteLine($" {prefix} {currentOption}");
         }
@@ -73,4 +73,5 @@ public class UserInterface
 
         return SelectedIndex;
     }
+
 }
