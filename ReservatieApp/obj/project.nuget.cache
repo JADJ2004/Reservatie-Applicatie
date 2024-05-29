@@ -1,0 +1,22 @@
+{
+  "version": 2,
+<<<<<<< Updated upstream:ReservatieApp/obj/project.nuget.cache
+  "dgSpecHash": "xvXMcQTn66kDvezCBoEmb/n9gUV8+laj+Zf3HpZRti1TQN17S1VkHLys7eAA9HDb0yPF0FYvfp4ZlVEgnsV3tA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\ReservatieApp\\ReservatieApp.csproj",
+=======
+  "dgSpecHash": "cmQR0xxyvesJenAoaS2YZQldoCq2Dd6aZSWDqZLR6sfF+cFdcOznA/plDJQtjCZdxM9Se49C6MdRemxQaAMqDw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rensg\\OneDrive\\Documenten\\GitHub\\Reservatie-Applicatie\\ReserveringsApplicatie\\LocalTest.csproj",
+>>>>>>> Stashed changes:ReserveringsApplicatie/obj/project.nuget.cache
+  "expectedPackageFiles": [
+    "C:\\Users\\rensg\\.nuget\\packages\\microsoft.data.sqlite\\8.0.4\\microsoft.data.sqlite.8.0.4.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.4\\microsoft.data.sqlite.core.8.0.4.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.6\\sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.6\\sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
+    "C:\\Users\\rensg\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512"
+  ],
+  "logs": []
+}
