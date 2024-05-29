@@ -32,7 +32,7 @@ namespace ReservationApplication{
   |___|  |_______||_______||__|  
 Welkom bij het hoofdmenu van YES! Selecteer een optie.
 Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
-                    string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer of bewerk je reservering", "Bekijk je reservering", "Toon het menu", "Verlaten"};
+                    string[] options = {"Log in als admin", "Reserveer een tafel", "Annuleer je reservering", "Bewerk je reservering", "Bekijk je reservering", "Toon het menu", "Verlaten"};
 
                     UserInterface mainMenu = new UserInterface(prompt, options);
                     int selectedIndex = mainMenu.Run();
@@ -50,14 +50,18 @@ Gebruik de pijltes toetsen om te selecteen en klik ENTER om het te kiezen.";
                             reservationDeleter.ReservationDeleter();
                             break;
                         case 3:
+                        CustomerReservationChanger reservationChanger = new CustomerReservationChanger();
+                            reservationChanger.ReservationChanger();
+                            break;
+                        case 4:
                             CustomerReservationViewer reservationViewer= new CustomerReservationViewer();
                             reservationViewer.ViewReservationById();
                             break;
-                        case 4:
+                        case 5:
                             FoodMenu foodMenu = new FoodMenu();
                             foodMenu.ToonMenu();
                             break;
-                        case 5:
+                        case 6:
                             Console.WriteLine("Tot ziens!");
                             Menus.ExitMenu();
                             break;

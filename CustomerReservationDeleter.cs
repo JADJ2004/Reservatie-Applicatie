@@ -4,7 +4,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    public bool DeleteReservation(string firstName, string lastName, string date)
+    public bool DeleteReservation(int reservationId)
     {
         bool deletionSuccess = false;
         using (var connection = new SqliteConnection(ConnectionString))
@@ -12,12 +12,10 @@ public partial class Database
             connection.Open();
             var sqlQuery = @"
                 DELETE FROM Reservations 
-                WHERE First_name = @FirstName AND Last_name = @LastName AND Date = @Date";
+                WHERE reservationId = @ReservationId";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
-                command.Parameters.AddWithValue("@FirstName", firstName);
-                command.Parameters.AddWithValue("@LastName", lastName);
-                command.Parameters.AddWithValue("@Date", date);
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
 
                 int rowsAffected = command.ExecuteNonQuery();
                 if (rowsAffected > 0)
@@ -38,92 +36,53 @@ namespace Customer_Reservation_Deleter
 
         public void ReservationDeleter()
         {
-            bool CRD_checker = false;
-            while (!CRD_checker)
+            Console.WriteLine("Voer uw reserverings-ID in:");
+            if (int.TryParse(Console.ReadLine(), out int reservationId))
             {
-                bool date_checker = false;
-                bool first_name_checker = false;
-                bool last_name_checker = false;
+                var reservation = db.GetReservationById(reservationId);
 
-                string date_CRD = "";
-                string name = "";
-                string surname = "";
-
-                while (!date_checker)
+                if (reservation != null)
                 {
-                    Console.Clear();
-                    Console.WriteLine("********* Reserveringsgegevens ************");
-                    Console.WriteLine("");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Druk op Q om af te sluiten");
-                    Console.ResetColor();
-                    Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                    Console.WriteLine("");
+                    Console.WriteLine("Reserveringsdetails:");
+                    Console.WriteLine($"Reservering ID: {reservation.ReservationId}");
+                    Console.WriteLine($"Tafel ID: {reservation.TableId}");
+                    Console.WriteLine($"Aantal Personen: {reservation.NumOfPeople}");
+                    Console.WriteLine($"Naam: {reservation.FirstName} {reservation.Infix} {reservation.LastName}");
+                    Console.WriteLine($"Telefoonnummer: {reservation.PhoneNumber}");
+                    Console.WriteLine($"E-mail: {reservation.Email}");
+                    Console.WriteLine($"Datum: {reservation.Date}");
+                    Console.WriteLine($"Tijdslot: {reservation.TimeSlot}");
+                    Console.WriteLine($"Opmerkingen: {reservation.Remarks}");
+
+                    Console.WriteLine("Wilt u deze reservatie verwijderen?");
+                    string ChangeConfirmation = Console.ReadLine()?.Trim().ToLower();
                     
-                    date_CRD = Console.ReadLine() ?? "";
-                    DateTime parsedDate;
-                    if (DateTime.TryParseExact(date_CRD, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out parsedDate))
+                    if (ChangeConfirmation == "ja")
                     {
-                        date_checker = true;
-                    }
-                    if ( date_CRD == "Q" || date_CRD == "q")
-                    {
-                        Program program = new Program();
-                        Program.Main();
+                        db.DeleteReservation(reservationId);
                     }
                     else
                     {
-                        Console.WriteLine("Incorrect formaat. Probeer: (dd-MM-yyyy)");
+                        Console.WriteLine("Je gaat terug naar het hoofdmenu.");
+                        Menus.StartUp();
                     }
                 }
-
-                while (!first_name_checker)
+                else
                 {
-                    Console.Write("Voornaam: ");
-                    name = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(name))
-                    {
-                        first_name_checker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
-                    }
-                }
-
-                while (!last_name_checker)
-                {
-                    Console.Write("Achternaam: ");
-                    surname = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(surname))
-                    {
-                        last_name_checker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
-                    }
-                }
-
-                Console.WriteLine("\nReserveringsgegevens:");
-                Console.WriteLine("Datum: " + date_CRD);
-                Console.WriteLine("Voornaam: " + name);
-                Console.WriteLine("Achternaam: " + surname);
-                Console.WriteLine("Weet u zeker dat u deze reservering wilt verwijderen? (ja/nee)");
-                string CRD_confirmation = Console.ReadLine()?.Trim().ToLower();
-                if (CRD_confirmation == "ja")
-                {
-                    if (db.DeleteReservation(name, surname, date_CRD))
-                    {
-                        CRD_checker = true;
-                        Console.WriteLine("\nReservering succesvol verwijderd!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nReservering niet gevonden of kon niet worden verwijderd.");
-                    }
+                    Console.WriteLine("Reservering niet gevonden.");
+                    Menus.StartUp();
                 }
             }
+            else
+            {
+                Console.WriteLine("Ongeldige invoer. Voer een geldig reserverings-ID in.");
+                Console.WriteLine("Je gaat terug naar het hoofdmenu.");
+                Menus.StartUp();
+            }
+
+            Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
+            Console.ReadKey();
+            Menus.StartUp();
         }
     }
 }
