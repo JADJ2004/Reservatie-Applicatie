@@ -234,6 +234,19 @@ public partial class Database
 
         return reservations;
     }
+    public void DeleteReservation(int reservationId)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "DELETE FROM Reservations WHERE ReservationId = @ReservationId";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
+                command.ExecuteNonQuery();
+            }
+        }
+    }
     public ReservationModel GetReservationById(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))

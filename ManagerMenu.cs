@@ -6,7 +6,7 @@ public static class ManagerMenu
     {
         string prompt = @"
 Welkom Marcel wat wilt u vandaag gaan doen?";
-        string[] options = { "Reserveringen inzien", "Menu veranderen", "Uitloggen" };
+        string[] options = { "Reserveringen inzien", "Reservering wijzigen", "Reservering verwijderen", "Menu veranderen", "Uitloggen" };
 
         UserInterface ManagerMenu = new UserInterface(prompt, options);
 
@@ -19,9 +19,17 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 reservationViewer.ViewReservationsByDate();
                 break;
             case 1:
-                Console.WriteLine("Not implemented");
+                ManagerReservationChanger reservationChanger = new ManagerReservationChanger();
+                reservationChanger.ChangeReservation();
                 break;
             case 2:
+                ManagerReservationDeleter reservationDeleter = new ManagerReservationDeleter();
+                reservationDeleter.DeleteReservation();
+                break;
+            case 3:
+                Console.WriteLine("Not implemented");
+                break;
+            case 4:
                 Console.WriteLine("U bent uitgelogd.");
                 Menus.StartUp();
                 break;
