@@ -213,6 +213,7 @@ namespace ReservationApplication
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"\nKon niet reserveren op {reservationDate.ToShortDateString()} tijdens {timeSlot}. Probeer op {suggestedDate.ToShortDateString()} tijdens {suggestedTimeSlot}.");
                             Console.ResetColor();
+                            break;
                         }
                     }
                     else if (confirmation == "nee")
@@ -376,7 +377,7 @@ namespace ReservationApplication
                             Console.WriteLine($"\nGeen beschikbare tafels voor de opgegeven criteria op {reservationDate.ToShortDateString()} tijdens {timeSlot}.");
                             Console.WriteLine($"De eerstvolgende beschikbare datum en tijdslot zijn: {nextAvailableDate.ToShortDateString()} {nextAvailableTimeSlot}.");
                             Console.ResetColor();
-                            continue;
+                            break;
                         }
                     }
                     else
