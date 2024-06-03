@@ -5,6 +5,7 @@ namespace ReservationApplication
 {
     public class ManagerReservationChanger
     {
+        private const string ConnectionString = @"Data Source=C:\Users\noah\OneDrive\Documenten\sprint-5\Sprint5Local\Mydatabase.db";
         private Database db = new Database();
 
         public void ChangeReservation()
@@ -174,7 +175,7 @@ namespace ReservationApplication
                 DateTime CRC_reservationDate;
                 if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
                 {
-                    var reservationChanger = new ReservationChanger(connectionString);
+                    var reservationChanger = new ReservationChanger(ConnectionString);
                     reservationChanger.UpdateReservation(CRC_numOfPeople, CRC_name, CRC_addition, CRC_surname, int.Parse(CRC_phoneNumber), CRC_email, CRC_reservationDate, reservationId);
                 }
 

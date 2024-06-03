@@ -4,7 +4,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    public bool DeleteReservation(int reservationId)
+    public bool CustomerDeleteReservation(int reservationId)
     {
         bool deletionSuccess = false;
         using (var connection = new SqliteConnection(ConnectionString))
@@ -59,7 +59,7 @@ namespace Customer_Reservation_Deleter
                     
                     if (ChangeConfirmation == "ja")
                     {
-                        db.DeleteReservation(reservationId);
+                        db.CustomerDeleteReservation(reservationId);
                     }
                     else
                     {
