@@ -11,14 +11,15 @@ public class ReservationChanger
         connectionString = $"Data Source={dbFilePath};";
     }
 
-    public void UpdateReservation(int numOfPeople, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)
+    public void UpdateReservation(int numOfPeople, string timeSlot, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)
     {
         using (var connection = new SqliteConnection(connectionString))
         {
-            string query = "UPDATE Reservations SET Date = @ReservationDate, NumOfPeople = @NumOfPeople, FirstName = @FirstName, Addition = @Addition, LastName = @LastName, PhoneNumber = @PhoneNumber, Email = @Email WHERE ReservationId = @ReservationId";
+            string query = "UPDATE Reservations SET Date = @ReservationDate, timeSlot = @TimeSlot NumOfPeople = @NumOfPeople, FirstName = @FirstName, Addition = @Addition, LastName = @LastName, PhoneNumber = @PhoneNumber, Email = @Email WHERE ReservationId = @ReservationId";
             var command = new SqliteCommand(query, connection);
 
             command.Parameters.AddWithValue("@ReservationDate", date);
+            command.Parameters.AddWithValue("@TimeSlot", timeSlot);
             command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
             command.Parameters.AddWithValue("@FirstName", name);
             command.Parameters.AddWithValue("@Addition", addition);
