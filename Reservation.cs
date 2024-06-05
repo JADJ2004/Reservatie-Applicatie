@@ -57,12 +57,14 @@ namespace ReservationApplication
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                        Console.WriteLine("");
                         Console.ResetColor();
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
+                        Console.WriteLine("");
                         Console.ResetColor();
                     }
                 }

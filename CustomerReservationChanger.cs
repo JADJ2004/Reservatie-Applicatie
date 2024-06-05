@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 public class CustomerReservationChanger
 {
-    private const string ConnectionString = @"Data Source=C:\Users\noah\OneDrive\Documenten\sprint-5\Sprint5Local\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
