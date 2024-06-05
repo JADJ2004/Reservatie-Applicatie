@@ -1,4 +1,6 @@
 using System;
+using ReservationApplication;
+using System.Text;
 
 namespace ReservationApplication
 {
@@ -9,7 +11,8 @@ namespace ReservationApplication
         public void ViewReservationById()
         {
             Console.WriteLine("Voer uw reserverings-ID in:");
-            if (int.TryParse(Console.ReadLine(), out int reservationId))
+            string input = ReadInputWithEscape();
+            if (int.TryParse(input, out int reservationId))
             {
                 var reservation = db.GetReservationById(reservationId);
 
@@ -43,5 +46,45 @@ namespace ReservationApplication
             Console.ReadKey();
             Menus.StartUp();
         }
+
+private string ReadInputWithEscape()
+{
+    var input = new StringBuilder();
+    int cursorPosition = Console.CursorLeft;
+
+    while (true)
+    {
+        var key = Console.ReadKey(intercept: true);
+        if (key.Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine();
+            break;
+        }
+        if (key.Key == ConsoleKey.Escape)
+        {
+            Menus.StartUp();
+            break;
+        }
+        if (key.Key == ConsoleKey.Backspace)
+        {
+            if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+            {
+                input.Remove(input.Length - 1, 1);
+                Console.Write("\b \b");
+            }
+        }
+        else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+        {
+            // Ignore space at the beginning
+            continue;
+        }
+        else
+        {
+            input.Append(key.KeyChar);
+            Console.Write(key.KeyChar);
+        }
+    }
+    return input.ToString();
+}
     }
 }

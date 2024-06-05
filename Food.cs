@@ -1,4 +1,4 @@
-class Food
+public class Food
 {
     public string Name { get; set;}
     public double Price { get; set;}

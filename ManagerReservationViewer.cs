@@ -4,13 +4,13 @@ using ReservationApplication;
 
 namespace ReservationApplication
 {
-    public class ReservationViewer
+    public class ManagerReservationViewer
     {
         private Database db = new Database();
 
         public void ViewReservationsByDate()
         {
-            List<string> weekDates = GetCurrentWeekDates();
+            List<string> weekDates = db.GetCurrentWeekDates();
             var reservationsDetails = db.GetReservationsDetailsForWeek(weekDates);
 
             string prompt = "Selecteer een datum om reserveringen te bekijken:";
@@ -22,7 +22,7 @@ namespace ReservationApplication
                 options.Add($"{date} ({occupiedTables} tafels bezet, {totalPeople} personen)");
             }
 
-            UserInterface dateMenu = new UserInterface(prompt, options.ToArray());
+            UserInterface dateMenu = new UserInterface(prompt, options.ToArray(), () => ManagerMenu.StartUp());
             int selectedIndex = dateMenu.Run();
 
             string selectedDate = weekDates[selectedIndex];
