@@ -5,7 +5,7 @@ namespace ReservationApplication
 {
     public class ManagerReservationChanger
     {
-        private const string ConnectionString = @"Data Source=C:\Users\noah\OneDrive\Documenten\sprint-5\Sprint5Local\Mydatabase.db";
+        private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\LocalTest\Mydatabase.db";
         private Database db = new Database();
 
         public void ChangeReservation()
@@ -96,6 +96,24 @@ namespace ReservationApplication
                     }
                 }
 
+                string[] CRC_timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
+                string CRC_timeSlot = "";
+                Console.WriteLine("Selecteer een tijdslot:");
+                for (int i = 0; i < CRC_timeSlots.Length; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {CRC_timeSlots[i]}");
+                }
+                while (true)
+                {
+                    Console.Write("Kies een optie (1-3): ");
+                    if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                    {
+                        CRC_timeSlot = CRC_timeSlots[slot - 1];
+                        break;
+                    }
+                    Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
+                }
+
                 while (!CRC_people_checker)
                 {
                     Console.Write("Aantal personen: ");
@@ -176,7 +194,7 @@ namespace ReservationApplication
                 if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
                 {
                     var reservationChanger = new ReservationChanger(ConnectionString);
-                    reservationChanger.UpdateReservation(CRC_numOfPeople, CRC_name, CRC_addition, CRC_surname, int.Parse(CRC_phoneNumber), CRC_email, CRC_reservationDate, reservationId);
+                    reservationChanger.UpdateReservation(CRC_numOfPeople, CRC_timeSlot, CRC_name, CRC_addition, CRC_surname, int.Parse(CRC_phoneNumber), CRC_email, CRC_reservationDate, reservationId);
                 }
 
                 Console.WriteLine("\nReserveringsgegevens:");

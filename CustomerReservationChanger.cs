@@ -1,5 +1,6 @@
 using System;
 using ReservationApplication;
+using System.Text.RegularExpressions;
 
 public class CustomerReservationChanger
 {
@@ -47,6 +48,24 @@ public class CustomerReservationChanger
                 {
                     Console.WriteLine("Incorrecte formaat. Probeer: (dd-MM-yyyy)");
                 }
+            }
+
+            string[] CRC_timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
+            string CRC_timeSlot = "";
+            Console.WriteLine("Selecteer een tijdslot:");
+            for (int i = 0; i < CRC_timeSlots.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {CRC_timeSlots[i]}");
+            }
+            while (true)
+            {
+                Console.Write("Kies een optie (1-3): ");
+                if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                {
+                    CRC_timeSlot = CRC_timeSlots[slot - 1];
+                    break;
+                }
+                Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
             }
 
             while (!CRC_people_checker)
@@ -129,11 +148,12 @@ public class CustomerReservationChanger
             if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
             {
                 var reservationChanger = new ReservationChanger(ConnectionString);
-                reservationChanger.UpdateReservation(CRC_numOfPeople, CRC_name, CRC_addition, CRC_surname, int.Parse(CRC_phoneNumber), CRC_email, CRC_reservationDate, reservationId);
+                reservationChanger.UpdateReservation(CRC_numOfPeople, CRC_timeSlot, CRC_name, CRC_addition, CRC_surname, int.Parse(CRC_phoneNumber), CRC_email, CRC_reservationDate, reservationId);
             }
 
             Console.WriteLine("\nReserveringsgegevens:");
             Console.WriteLine("Datum: " + CRC_date);
+            Console.WriteLine($"Tijdslot: {CRC_timeSlot}");
             Console.WriteLine("Aantal Personen: " + CRC_numOfPeople);
             Console.WriteLine("Voornaam: " + CRC_name);
             Console.WriteLine("Toevoering: " + CRC_addition);
@@ -148,9 +168,157 @@ public class CustomerReservationChanger
                 CRC_checker = true;
                 Console.WriteLine("\nReservering succesvol veranderd!");
             }
-            else
+            else if (CRC_confirmation == "nee")
             {
-                Console.WriteLine("Reservering niet veranderd. Probeer opnieuw.");
+                Console.WriteLine("Welke informatie wilt u wijzigen?");
+                Console.WriteLine("1. Datum");
+                Console.WriteLine("2. Tijdslot");
+                Console.WriteLine("3. Aantal personen");
+                Console.WriteLine("4. Naam");
+                Console.WriteLine("5. Telefoonnummer");
+                Console.WriteLine("6. E-mail");
+                Console.WriteLine("7. Opmerkingen/verzoeken");
+                Console.Write("Kies een optie (1-7): ");
+                string wijzigOptie = Console.ReadLine()?.Trim();
+
+                switch (wijzigOptie)
+                {
+                    case "1":
+                        // Datum wijzigen
+                        CRC_date_checker = false;
+                        while (!CRC_date_checker)
+                        {
+                            Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
+                            CRC_date = Console.ReadLine() ?? "";
+                            if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
+                            {
+                                CRC_date_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                            }
+                        }
+                        break;
+
+                    case "2":
+                        // Tijdslot wijzigen
+                        Console.WriteLine("Selecteer een nieuw tijdslot:");
+                        for (int i = 0; i < CRC_timeSlots.Length; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {CRC_timeSlots[i]}");
+                        }
+                        while (true)
+                        {
+                            Console.Write("Kies een optie (1-3): ");
+                            if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                            {
+                                CRC_timeSlot = CRC_timeSlots[slot - 1];
+                                break;
+                            }
+                            Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
+                        }
+                        break;
+
+                    case "3":
+                        // Aantal personen wijzigen
+                        CRC_people_checker = false;
+                        while (!CRC_people_checker)
+                        {
+                            Console.Write("Nieuw aantal personen: ");
+                            if (int.TryParse(Console.ReadLine(), out CRC_numOfPeople) && CRC_numOfPeople > 0 && CRC_numOfPeople <= 6)
+                            {
+                                CRC_people_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldig aantal personen.");
+                            }
+                        }
+                        break;
+
+                    case "4":
+                        // Naam wijzigen
+                        CRC_first_name_checker = false;
+                        while (!CRC_first_name_checker)
+                        {
+                            Console.Write("Nieuwe voornaam: ");
+                            CRC_name = Console.ReadLine() ?? "";
+                            if (!string.IsNullOrWhiteSpace(CRC_name) && Regex.IsMatch(CRC_name, @"^[a-zA-Z]+$"))
+                            {
+                                CRC_first_name_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                            }
+                        }
+
+                        Console.Write("Nieuw tussenvoegsel (indien van toepassing, anders druk op Enter): ");
+                        CRC_addition = Console.ReadLine() ?? "";
+
+                        CRC_last_name_checker = false;
+                        while (!CRC_last_name_checker)
+                        {
+                            Console.Write("Nieuwe achternaam: ");
+                            CRC_surname = Console.ReadLine() ?? "";
+                            if (!string.IsNullOrWhiteSpace(CRC_surname) && Regex.IsMatch(CRC_surname, @"^[a-zA-Z]+$"))
+                            {
+                                CRC_last_name_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                            }
+                        }
+                        break;
+
+                    case "5":
+                        // Telefoonnummer wijzigen
+                        CRC_phoneNumber_checker = false;
+                        while (!CRC_phoneNumber_checker)
+                        {
+                            Console.Write("Nieuw telefoonnummer: ");
+                            CRC_phoneNumber = Console.ReadLine() ?? "";
+                            if (CRC_phoneNumber.Length == 10 && long.TryParse(CRC_phoneNumber, out _))
+                            {
+                                CRC_phoneNumber_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
+                            }
+                        }
+                        break;
+
+                    case "6":
+                        // E-mail wijzigen
+                        CRC_mail_checker = false;
+                        while (!CRC_mail_checker)
+                        {
+                            Console.Write("Nieuwe e-mail: ");
+                            CRC_email = Console.ReadLine() ?? "";
+                            if (CRC_email.Contains("@") && CRC_email.Contains("."))
+                            {
+                                CRC_mail_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige e-mail. Probeer een echt e-mail in te vullen.");
+                            }
+                        }
+                        break;
+
+                    case "7":
+                        // Opmerkingen/verzoeken wijzigen
+                        Console.WriteLine("Nieuwe opmerkingen/verzoeken: ");
+                        CRC_comments = Console.ReadLine() ?? "";
+                        break;
+
+                    default:
+                        Console.WriteLine("Ongeldige optie. Probeer opnieuw.");
+                        break;
+                }
             }
         }
 
