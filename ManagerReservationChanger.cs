@@ -1,5 +1,6 @@
 using System;
 using ReservationApplication;
+using System.Text.RegularExpressions;
 
 namespace ReservationApplication
 {
@@ -207,18 +208,147 @@ namespace ReservationApplication
                 Console.WriteLine("E-mail: " + CRC_email);
                 Console.WriteLine("Opmerkingen: " + CRC_comments);
                 Console.WriteLine("Is dit je gewenste reservatie? (ja/nee)");
-                string CRC_confirmation = Console.ReadLine()?.Trim().ToLower();
-                if (CRC_confirmation == "ja")
+                string wijzigOptie = Console.ReadLine()?.Trim();
+
+                switch (wijzigOptie)
                 {
-                    CRC_checker = true;
-                    Console.WriteLine("\nReservering succesvol veranderd!");
-                }
-                else
-                {
-                    Console.WriteLine("Reservering niet veranderd. Probeer opnieuw.");
+                    case "1":
+                        // Datum wijzigen
+                        CRC_date_checker = false;
+                        while (!CRC_date_checker)
+                        {
+                            Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
+                            CRC_date = Console.ReadLine() ?? "";
+                            if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
+                            {
+                                CRC_date_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                            }
+                        }
+                        break;
+
+                    case "2":
+                        // Tijdslot wijzigen
+                        Console.WriteLine("Selecteer een nieuw tijdslot:");
+                        for (int i = 0; i < CRC_timeSlots.Length; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {CRC_timeSlots[i]}");
+                        }
+                        while (true)
+                        {
+                            Console.Write("Kies een optie (1-3): ");
+                            if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                            {
+                                CRC_timeSlot = CRC_timeSlots[slot - 1];
+                                break;
+                            }
+                            Console.WriteLine("Ongeldige invoer. Kies een optie tussen 1 en 3.");
+                        }
+                        break;
+
+                    case "3":
+                        // Aantal personen wijzigen
+                        CRC_people_checker = false;
+                        while (!CRC_people_checker)
+                        {
+                            Console.Write("Nieuw aantal personen: ");
+                            if (int.TryParse(Console.ReadLine(), out CRC_numOfPeople) && CRC_numOfPeople > 0 && CRC_numOfPeople <= 6)
+                            {
+                                CRC_people_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldig aantal personen.");
+                            }
+                        }
+                        break;
+
+                    case "4":
+                        // Naam wijzigen
+                        CRC_first_name_checker = false;
+                        while (!CRC_first_name_checker)
+                        {
+                            Console.Write("Nieuwe voornaam: ");
+                            CRC_name = Console.ReadLine() ?? "";
+                            if (!string.IsNullOrWhiteSpace(CRC_name) && Regex.IsMatch(CRC_name, @"^[a-zA-Z]+$"))
+                            {
+                                CRC_first_name_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                            }
+                        }
+
+                        Console.Write("Nieuw tussenvoegsel (indien van toepassing, anders druk op Enter): ");
+                        CRC_addition = Console.ReadLine() ?? "";
+
+                        CRC_last_name_checker = false;
+                        while (!CRC_last_name_checker)
+                        {
+                            Console.Write("Nieuwe achternaam: ");
+                            CRC_surname = Console.ReadLine() ?? "";
+                            if (!string.IsNullOrWhiteSpace(CRC_surname) && Regex.IsMatch(CRC_surname, @"^[a-zA-Z]+$"))
+                            {
+                                CRC_last_name_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                            }
+                        }
+                        break;
+
+                    case "5":
+                        // Telefoonnummer wijzigen
+                        CRC_phoneNumber_checker = false;
+                        while (!CRC_phoneNumber_checker)
+                        {
+                            Console.Write("Nieuw telefoonnummer: ");
+                            CRC_phoneNumber = Console.ReadLine() ?? "";
+                            if (CRC_phoneNumber.Length == 10 && long.TryParse(CRC_phoneNumber, out _))
+                            {
+                                CRC_phoneNumber_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
+                            }
+                        }
+                        break;
+
+                    case "6":
+                        // E-mail wijzigen
+                        CRC_mail_checker = false;
+                        while (!CRC_mail_checker)
+                        {
+                            Console.Write("Nieuwe e-mail: ");
+                            CRC_email = Console.ReadLine() ?? "";
+                            if (CRC_email.Contains("@") && CRC_email.Contains("."))
+                            {
+                                CRC_mail_checker = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ongeldige e-mail. Probeer een echt e-mail in te vullen.");
+                            }
+                        }
+                        break;
+
+                    case "7":
+                        // Opmerkingen/verzoeken wijzigen
+                        Console.WriteLine("Nieuwe opmerkingen/verzoeken: ");
+                        CRC_comments = Console.ReadLine() ?? "";
+                        break;
+
+                    default:
+                        Console.WriteLine("Ongeldige optie. Probeer opnieuw.");
+                        break;
                 }
             }
-
             Console.WriteLine("\nDank u wel! We hopen u gauw te zien bij YES!");
         }
     }
