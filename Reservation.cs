@@ -30,6 +30,7 @@ namespace ReservationApplication
                 bool emailChecker = false;
 
                 string dateString = "";
+                DateTime today = DateTime.Now;
                 DateTime reservationDate = DateTime.MinValue;
                 int numberOfPeople = 0;
                 string firstName = "";
@@ -48,15 +49,24 @@ namespace ReservationApplication
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
                     dateString = Console.ReadLine() ?? "";
-                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate) && today < reservationDate)
                     {
                         dateChecker = true;
                     }
+                    else if(!DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                        Console.ResetColor();
+                    }
                     else
                     {
-                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
+                        Console.ResetColor();
                     }
                 }
+
 
                 // Tijdslot selecteren
                 string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
