@@ -5,7 +5,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
 
     public void InitializeDatabase()
     {
@@ -19,7 +19,7 @@ public partial class Database
                 );";
             var createReservationsSql = @"
                 CREATE TABLE IF NOT EXISTS Reservations (
-                    ReservationId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ReservationId INTEGER PRIMARY KEY,
                     TableId INTEGER,
                     NumOfPeople INTEGER NOT NULL,
                     First_name TEXT NOT NULL,
@@ -47,11 +47,30 @@ public partial class Database
         {
             connection.Open();
             var formattedDate = date.ToString("dd-MM-yyyy");
+            
+            // Genereer een willekeurige ReservationId
+            Random random = new Random();
+            int reservationId;
+            bool isUnique;
+            
+            do
+            {
+                reservationId = random.Next(100000, 999999); // Verander het bereik als dat nodig is
+                var checkSql = "SELECT COUNT(*) FROM Reservations WHERE ReservationId = @ReservationId";
+                using (var checkCmd = new SqliteCommand(checkSql, connection))
+                {
+                    checkCmd.Parameters.AddWithValue("@ReservationId", reservationId);
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    isUnique = (count == 0);
+                }
+            } while (!isUnique);
+            
             var sqlQuery = @"
-                INSERT INTO Reservations (TableId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
-                VALUES (@TableId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
+                INSERT INTO Reservations (ReservationId, TableId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
+                VALUES (@ReservationId, @TableId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
                 command.Parameters.AddWithValue("@TableId", tableId);
                 command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
                 command.Parameters.AddWithValue("@First_name", firstName);
@@ -66,8 +85,6 @@ public partial class Database
                 try
                 {
                     command.ExecuteNonQuery();
-                    command.CommandText = "SELECT last_insert_rowid()";
-                    int reservationId = Convert.ToInt32(command.ExecuteScalar());
                     return (true, date, timeSlot, reservationId);
                 }
                 catch (SqliteException e)
@@ -121,15 +138,15 @@ public partial class Database
 
     public List<string> GetCurrentWeekDates()
     {
-    List<string> weekDates = new List<string>();
-    DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+        List<string> weekDates = new List<string>();
+        DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
     
-    for (int i = 0; i < 7; i++)
-    {
-        weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
-    }
+        for (int i = 0; i < 7; i++)
+        {
+            weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
+        }
 
-    return weekDates;
+        return weekDates;
     }
 
     public Dictionary<string, (int occupiedTables, int totalPeople)> GetReservationsDetailsForWeek(List<string> dates)
@@ -158,8 +175,8 @@ public partial class Database
             }
         }
 
-    return reservationsDetails;
-}
+        return reservationsDetails;
+    }
 
     public List<ReservationModel> GetReservationsByDate(string date)
     {
@@ -198,7 +215,6 @@ public partial class Database
         return reservations;
     }
 
-
     public List<ReservationModel> GetAllReservations()
     {
         List<ReservationModel> reservations = new List<ReservationModel>();
@@ -215,16 +231,16 @@ public partial class Database
                     {
                         reservations.Add(new ReservationModel
                         {
-                            ReservationId = reader.GetInt32(0),      
-                            TableId = reader.GetInt32(1),             
-                            NumOfPeople = reader.GetInt32(2),      
-                            FirstName = reader.GetString(3),        
-                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4), 
-                            LastName = reader.GetString(5),         
-                            PhoneNumber = reader.GetString(6),        
-                            Email = reader.GetString(9),             
-                            Date = reader.GetString(7),            // 6-> 9 -> 7 -> 8 -> 10 genieters
-                            TimeSlot = reader.GetString(8),            
+                            ReservationId = reader.GetInt32(0),
+                            TableId = reader.GetInt32(1),
+                            NumOfPeople = reader.GetInt32(2),
+                            FirstName = reader.GetString(3),
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            LastName = reader.GetString(5),
+                            PhoneNumber = reader.GetString(6),
+                            Email = reader.GetString(9),
+                            Date = reader.GetString(7),
+                            TimeSlot = reader.GetString(8),
                             Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
                         });
                     }
@@ -234,6 +250,7 @@ public partial class Database
 
         return reservations;
     }
+
     public void DeleteReservation(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -247,6 +264,7 @@ public partial class Database
             }
         }
     }
+
     public ReservationModel GetReservationById(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -281,5 +299,4 @@ public partial class Database
 
         return null;
     }
-
 }

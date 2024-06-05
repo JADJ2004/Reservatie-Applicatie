@@ -6,7 +6,7 @@ namespace ReservationApplication
 {
     public class ManagerReservationChanger
     {
-        private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
+        private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
         private Database db = new Database();
 
         public void ChangeReservation()
