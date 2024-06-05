@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 public class UserInterface
@@ -5,15 +6,14 @@ public class UserInterface
     private int SelectedIndex;
     private string[] Options;
     private string Prompt;
+    private Action EscapePressed;
 
-
-    public UserInterface(string prompt, string[] options)
+    public UserInterface(string prompt, string[] options, Action escapePressed)
     {
-        {
-            Prompt = prompt;
-            Options = options;
-            SelectedIndex = 0;
-        }
+        Prompt = prompt;
+        Options = options;
+        SelectedIndex = 0;
+        EscapePressed = escapePressed;
     }
 
     private void DisplayOptions()
@@ -70,12 +70,15 @@ public class UserInterface
             {
                 break; // Exit the loop when Enter key is pressed
             }
+            else if (keyPressed == ConsoleKey.Escape)
+            {
+                EscapePressed?.Invoke();
+                break;
+            }
             // Clear the console to avoid reprinting the menu
             Console.Clear();
         } while (true);
 
         return SelectedIndex;
     }
-
-
 }

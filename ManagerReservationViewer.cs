@@ -4,13 +4,13 @@ using ReservationApplication;
 
 namespace ReservationApplication
 {
-    public class ReservationViewer
+    public class ManagerReservationViewer
     {
         private Database db = new Database();
 
         public void ViewReservationsByDate()
         {
-            List<string> weekDates = GetCurrentWeekDates();
+            List<string> weekDates = db.GetCurrentWeekDates();
             var reservationsDetails = db.GetReservationsDetailsForWeek(weekDates);
 
             string prompt = "Selecteer een datum om reserveringen te bekijken:";
@@ -22,7 +22,7 @@ namespace ReservationApplication
                 options.Add($"{date} ({occupiedTables} tafels bezet, {totalPeople} personen)");
             }
 
-            UserInterface dateMenu = new UserInterface(prompt, options.ToArray());
+            UserInterface dateMenu = new UserInterface(prompt, options.ToArray(), () => ManagerMenu.StartUp());
             int selectedIndex = dateMenu.Run();
 
             string selectedDate = weekDates[selectedIndex];
@@ -59,19 +59,6 @@ namespace ReservationApplication
             Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
             Console.ReadKey();
             ManagerMenu.StartUp();
-        }
-
-        private List<string> GetCurrentWeekDates()
-        {
-            List<string> weekDates = new List<string>();
-            DateTime startOfWeek = DateTime.Now;
-
-            for (int i = 0; i < 7; i++) //TRG VERANDEREN NAAR 0 EN 7
-            {
-                weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
-            }
-
-            return weekDates;
         }
     }
 }

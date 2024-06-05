@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace ReservationApplication
 {
@@ -12,7 +13,7 @@ namespace ReservationApplication
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("*******************************************");
+            Console.WriteLine("********** *********************************");
             Console.WriteLine("* Welkom bij het reserveringsapplicatie! *");
             Console.WriteLine("*******************************************");
             Console.ResetColor();
@@ -30,7 +31,6 @@ namespace ReservationApplication
                 bool emailChecker = false;
 
                 string dateString = "";
-                DateTime today = DateTime.Now;
                 DateTime reservationDate = DateTime.MinValue;
                 int numberOfPeople = 0;
                 string firstName = "";
@@ -48,27 +48,16 @@ namespace ReservationApplication
                 while (!dateChecker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                    dateString = Console.ReadLine() ?? "";
-                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate) && today < reservationDate)
+                    dateString = ReadInputWithEscape() ?? "";
+                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
                     {
                         dateChecker = true;
                     }
-                    else if(!DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
-                        Console.WriteLine("");
-                        Console.ResetColor();
-                    }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
-                        Console.WriteLine("");
-                        Console.ResetColor();
+                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
                     }
                 }
-
 
                 // Tijdslot selecteren
                 string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
@@ -81,7 +70,8 @@ namespace ReservationApplication
                 while (true)
                 {
                     Console.Write("Kies een optie (1-3): ");
-                    if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                    string slotInput = ReadInputWithEscape();
+                    if (int.TryParse(slotInput, out int slot) && slot >= 1 && slot <= 3)
                     {
                         timeSlot = timeSlots[slot - 1];
                         break;
@@ -93,7 +83,8 @@ namespace ReservationApplication
                 while (!peopleChecker)
                 {
                     Console.Write("Aantal personen: ");
-                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
+                    string input = ReadInputWithEscape();
+                    if (int.TryParse(input, out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
                     {
                         peopleChecker = true;
                     }
@@ -108,7 +99,7 @@ namespace ReservationApplication
                 {
                     Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                     Console.Write("Voornaam: ");
-                    firstName = Console.ReadLine() ?? "";
+                    firstName = ReadInputWithEscape() ?? "";
                     if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z]+$"))
                     {
                         firstNameChecker = true;
@@ -120,12 +111,12 @@ namespace ReservationApplication
                 }
 
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                infix = Console.ReadLine() ?? "";
+                infix = ReadInputWithEscape() ?? "";
 
                 while (!lastNameChecker)
                 {
                     Console.Write("Achternaam: ");
-                    lastName = Console.ReadLine() ?? "";
+                    lastName = ReadInputWithEscape() ?? "";
                     if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
                     {
                         lastNameChecker = true;
@@ -139,7 +130,7 @@ namespace ReservationApplication
                 while (!phoneNumberChecker)
                 {
                     Console.Write("Telefoonnummer: ");
-                    phoneNumber = Console.ReadLine() ?? "";
+                    phoneNumber = ReadInputWithEscape() ?? "";
                     if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
                     {
                         phoneNumberChecker = true;
@@ -153,7 +144,7 @@ namespace ReservationApplication
                 while (!emailChecker)
                 {
                     Console.Write("E-mail: ");
-                    email = Console.ReadLine() ?? "";
+                    email = ReadInputWithEscape() ?? "";
                     if (email.Contains("@") && email.Contains("."))
                     {
                         emailChecker = true;
@@ -165,7 +156,7 @@ namespace ReservationApplication
                 }
 
                 Console.WriteLine("Opmerkingen/verzoeken: ");
-                remarks = Console.ReadLine() ?? "";
+                remarks = ReadInputWithEscape() ?? "";
 
                 // Reservering maken
                 (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) = reservationSystem.ReserveTableForGroup(numberOfPeople, reservationDate, timeSlot);
@@ -202,7 +193,7 @@ namespace ReservationApplication
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Is deze informatie correct? (ja/nee): ");
-                    string confirmation = Console.ReadLine()?.Trim().ToLower();
+                    string confirmation = ReadInputWithEscape()?.Trim().ToLower();
                     Console.ResetColor();
 
                     if (confirmation == "ja")
@@ -239,7 +230,7 @@ namespace ReservationApplication
                         Console.WriteLine("6. E-mail");
                         Console.WriteLine("7. Opmerkingen/verzoeken");
                         Console.Write("Kies een optie (1-7): ");
-                        string wijzigOptie = Console.ReadLine()?.Trim();
+                        string wijzigOptie = ReadInputWithEscape()?.Trim();
 
                         switch (wijzigOptie)
                         {
@@ -249,7 +240,7 @@ namespace ReservationApplication
                                 while (!dateChecker)
                                 {
                                     Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
-                                    dateString = Console.ReadLine() ?? "";
+                                    dateString = ReadInputWithEscape() ?? "";
                                     if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
                                     {
                                         dateChecker = true;
@@ -271,7 +262,8 @@ namespace ReservationApplication
                                 while (true)
                                 {
                                     Console.Write("Kies een optie (1-3): ");
-                                    if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                                    string slotInput = ReadInputWithEscape();
+                                    if (int.TryParse(slotInput, out int slot) && slot >= 1 && slot <= 3)
                                     {
                                         timeSlot = timeSlots[slot - 1];
                                         break;
@@ -286,7 +278,8 @@ namespace ReservationApplication
                                 while (!peopleChecker)
                                 {
                                     Console.Write("Nieuw aantal personen: ");
-                                    if (int.TryParse(Console.ReadLine(), out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
+                                    string input = ReadInputWithEscape();
+                                    if (int.TryParse(input, out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
                                     {
                                         peopleChecker = true;
                                     }
@@ -303,7 +296,7 @@ namespace ReservationApplication
                                 while (!firstNameChecker)
                                 {
                                     Console.Write("Nieuwe voornaam: ");
-                                    firstName = Console.ReadLine() ?? "";
+                                    firstName = ReadInputWithEscape() ?? "";
                                     if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z]+$"))
                                     {
                                         firstNameChecker = true;
@@ -315,13 +308,13 @@ namespace ReservationApplication
                                 }
 
                                 Console.Write("Nieuw tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                                infix = Console.ReadLine() ?? "";
+                                infix = ReadInputWithEscape() ?? "";
 
                                 lastNameChecker = false;
                                 while (!lastNameChecker)
                                 {
                                     Console.Write("Nieuwe achternaam: ");
-                                    lastName = Console.ReadLine() ?? "";
+                                    lastName = ReadInputWithEscape() ?? "";
                                     if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
                                     {
                                         lastNameChecker = true;
@@ -339,7 +332,7 @@ namespace ReservationApplication
                                 while (!phoneNumberChecker)
                                 {
                                     Console.Write("Nieuw telefoonnummer: ");
-                                    phoneNumber = Console.ReadLine() ?? "";
+                                    phoneNumber = ReadInputWithEscape() ?? "";
                                     if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
                                     {
                                         phoneNumberChecker = true;
@@ -357,7 +350,7 @@ namespace ReservationApplication
                                 while (!emailChecker)
                                 {
                                     Console.Write("Nieuwe e-mail: ");
-                                    email = Console.ReadLine() ?? "";
+                                    email = ReadInputWithEscape() ?? "";
                                     if (email.Contains("@") && email.Contains("."))
                                     {
                                         emailChecker = true;
@@ -372,7 +365,7 @@ namespace ReservationApplication
                             case "7":
                                 // Opmerkingen/verzoeken wijzigen
                                 Console.WriteLine("Nieuwe opmerkingen/verzoeken: ");
-                                remarks = Console.ReadLine() ?? "";
+                                remarks = ReadInputWithEscape() ?? "";
                                 break;
 
                             default:
@@ -399,5 +392,45 @@ namespace ReservationApplication
                 }
             }
         }
+
+private string ReadInputWithEscape()
+{
+    var input = new StringBuilder();
+    int cursorPosition = Console.CursorLeft;
+
+    while (true)
+    {
+        var key = Console.ReadKey(intercept: true);
+        if (key.Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine();
+            break;
+        }
+        if (key.Key == ConsoleKey.Escape)
+        {
+            Menus.StartUp();
+            break;
+        }
+        if (key.Key == ConsoleKey.Backspace)
+        {
+            if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+            {
+                input.Remove(input.Length - 1, 1);
+                Console.Write("\b \b");
+            }
+        }
+        else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+        {
+            // Ignore space at the beginning
+            continue;
+        }
+        else
+        {
+            input.Append(key.KeyChar);
+            Console.Write(key.KeyChar);
+        }
+    }
+    return input.ToString();
+}
     }
 }

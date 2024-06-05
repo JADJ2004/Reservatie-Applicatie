@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Data.Sqlite;
 using ReservationApplication;
+using System.Text;
 
 public class ReservationChanger
 {
@@ -11,15 +12,14 @@ public class ReservationChanger
         connectionString = $"Data Source={dbFilePath};";
     }
 
-    public void UpdateReservation(int numOfPeople, string timeSlot, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)
+    public void UpdateReservation(int numOfPeople, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)
     {
         using (var connection = new SqliteConnection(connectionString))
         {
-            string query = "UPDATE Reservations SET Date = @ReservationDate, timeSlot = @TimeSlot NumOfPeople = @NumOfPeople, FirstName = @FirstName, Addition = @Addition, LastName = @LastName, PhoneNumber = @PhoneNumber, Email = @Email WHERE ReservationId = @ReservationId";
+            string query = "UPDATE Reservations SET Date = @ReservationDate, NumOfPeople = @NumOfPeople, FirstName = @FirstName, Addition = @Addition, LastName = @LastName, PhoneNumber = @PhoneNumber, Email = @Email WHERE ReservationId = @ReservationId";
             var command = new SqliteCommand(query, connection);
 
             command.Parameters.AddWithValue("@ReservationDate", date);
-            command.Parameters.AddWithValue("@TimeSlot", timeSlot);
             command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
             command.Parameters.AddWithValue("@FirstName", name);
             command.Parameters.AddWithValue("@Addition", addition);
@@ -47,4 +47,44 @@ public class ReservationChanger
             }
         }
     }
+
+private string ReadInputWithEscape()
+{
+    var input = new StringBuilder();
+    int cursorPosition = Console.CursorLeft;
+
+    while (true)
+    {
+        var key = Console.ReadKey(intercept: true);
+        if (key.Key == ConsoleKey.Enter)
+        {
+            Console.WriteLine();
+            break;
+        }
+        if (key.Key == ConsoleKey.Escape)
+        {
+            Menus.StartUp();
+            break;
+        }
+        if (key.Key == ConsoleKey.Backspace)
+        {
+            if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+            {
+                input.Remove(input.Length - 1, 1);
+                Console.Write("\b \b");
+            }
+        }
+        else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+        {
+            // Ignore space at the beginning
+            continue;
+        }
+        else
+        {
+            input.Append(key.KeyChar);
+            Console.Write(key.KeyChar);
+        }
+    }
+    return input.ToString();
 }
+    }

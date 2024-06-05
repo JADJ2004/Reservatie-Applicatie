@@ -5,7 +5,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
 
     public void InitializeDatabase()
     {
@@ -121,15 +121,15 @@ public partial class Database
 
     public List<string> GetCurrentWeekDates()
     {
-    List<string> weekDates = new List<string>();
-    DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
-    
-    for (int i = 0; i < 7; i++)
-    {
-        weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
-    }
+        List<string> weekDates = new List<string>();
+        DateTime startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+        
+        for (int i = 0; i < 7; i++)
+        {
+            weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
+        }
 
-    return weekDates;
+        return weekDates;
     }
 
     public Dictionary<string, (int occupiedTables, int totalPeople)> GetReservationsDetailsForWeek(List<string> dates)
@@ -158,8 +158,8 @@ public partial class Database
             }
         }
 
-    return reservationsDetails;
-}
+        return reservationsDetails;
+    }
 
     public List<ReservationModel> GetReservationsByDate(string date)
     {
@@ -198,7 +198,6 @@ public partial class Database
         return reservations;
     }
 
-
     public List<ReservationModel> GetAllReservations()
     {
         List<ReservationModel> reservations = new List<ReservationModel>();
@@ -215,16 +214,16 @@ public partial class Database
                     {
                         reservations.Add(new ReservationModel
                         {
-                            ReservationId = reader.GetInt32(0),      
-                            TableId = reader.GetInt32(1),             
-                            NumOfPeople = reader.GetInt32(2),      
-                            FirstName = reader.GetString(3),        
-                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4), 
-                            LastName = reader.GetString(5),         
-                            PhoneNumber = reader.GetString(6),        
-                            Email = reader.GetString(9),             
-                            Date = reader.GetString(7),            // 6-> 9 -> 7 -> 8 -> 10 genieters
-                            TimeSlot = reader.GetString(8),            
+                            ReservationId = reader.GetInt32(0),
+                            TableId = reader.GetInt32(1),
+                            NumOfPeople = reader.GetInt32(2),
+                            FirstName = reader.GetString(3),
+                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            LastName = reader.GetString(5),
+                            PhoneNumber = reader.GetString(6),
+                            Email = reader.GetString(9),
+                            Date = reader.GetString(7),
+                            TimeSlot = reader.GetString(8),
                             Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
                         });
                     }
@@ -234,6 +233,7 @@ public partial class Database
 
         return reservations;
     }
+
     public void DeleteReservation(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -247,6 +247,7 @@ public partial class Database
             }
         }
     }
+
     public ReservationModel GetReservationById(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -281,5 +282,4 @@ public partial class Database
 
         return null;
     }
-
 }
