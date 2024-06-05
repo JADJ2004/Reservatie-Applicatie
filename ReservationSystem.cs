@@ -99,7 +99,7 @@ public class ReservationSystem
         string smtpServer = "smtp-mail.outlook.com";
         int port = 587;
         string username = "yessrestaurant@outlook.com";
-        string password = "Marcel12345";
+        string password = "Marcel123456";
 
         string from = "yessrestaurant@outlook.com";
         string to = customerEmail;
