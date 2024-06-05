@@ -19,7 +19,7 @@ namespace ReservationApplication
             foreach (var date in weekDates)
             {
                 var (occupiedTables, totalPeople) = reservationsDetails[date];
-                options.Add($"{date} ({occupiedTables} tafels bezet, {totalPeople} mensen)");
+                options.Add($"{date} ({occupiedTables} tafels bezet, {totalPeople} personen)");
             }
 
             UserInterface dateMenu = new UserInterface(prompt, options.ToArray());
