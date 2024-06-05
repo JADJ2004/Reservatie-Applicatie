@@ -1,3 +1,4 @@
+using System;
 using ReservationApplication;
 
 public static class ManagerMenu
@@ -8,14 +9,14 @@ public static class ManagerMenu
 Welkom Marcel wat wilt u vandaag gaan doen?";
         string[] options = { "Reserveringen inzien", "Reservering wijzigen", "Reservering verwijderen", "Menu veranderen", "Uitloggen" };
 
-        UserInterface ManagerMenu = new UserInterface(prompt, options);
+        UserInterface ManagerMenu = new UserInterface(prompt, options, () => Menus.StartUp());
 
         int selectedIndex = ManagerMenu.Run();
 
         switch (selectedIndex)
         {
             case 0:
-                ReservationViewer reservationViewer = new ReservationViewer();
+                ManagerReservationViewer reservationViewer = new ManagerReservationViewer();
                 reservationViewer.ViewReservationsByDate();
                 break;
             case 1:
