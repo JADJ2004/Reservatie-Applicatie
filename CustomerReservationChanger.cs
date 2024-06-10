@@ -1,10 +1,11 @@
 using System;
 using ReservationApplication;
 using System.Text.RegularExpressions;
+using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
+    private const string DbFilePath = @"Data Source=C:\Users\noah\OneDrive\Documenten\sprint-5\Sprint5Local\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
@@ -16,7 +17,7 @@ public class CustomerReservationChanger
     {
         bool CRC_checker = true;
         Console.WriteLine("Voer uw reserverings-ID in:");
-        if (int.TryParse(Console.ReadLine(), out int reservationId))
+        if (int.TryParse(ReadInputWithEscape(), out int reservationId))
         {
             var reservation = db.GetReservationById(reservationId);
 
@@ -34,7 +35,7 @@ public class CustomerReservationChanger
                 Console.WriteLine($"Opmerkingen: {reservation.Remarks}");
 
                 Console.WriteLine("Wilt u deze reservatie veranderen? (ja/nee)");
-                string ChangeConfirmation = Console.ReadLine()?.Trim().ToLower();
+                string ChangeConfirmation = ReadInputWithEscape()?.Trim().ToLower();
 
                 if (ChangeConfirmation == "ja")
                 {
@@ -49,7 +50,7 @@ public class CustomerReservationChanger
                         Console.WriteLine("6. E-mail");
                         Console.WriteLine("7. Opmerkingen/verzoeken");
                         Console.Write("Kies een optie (1-7): ");
-                        string wijzigOptie = Console.ReadLine()?.Trim();
+                        string wijzigOptie = ReadInputWithEscape()?.Trim();
 
                         bool validInput = false;
                         string CRC_date = string.Empty;
@@ -70,7 +71,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
-                                    CRC_date = Console.ReadLine() ?? "";
+                                    CRC_date = ReadInputWithEscape() ?? "";
                                     if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
                                     {
                                         validInput = true;
@@ -94,7 +95,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Kies een optie (1-3): ");
-                                    if (int.TryParse(Console.ReadLine(), out int slot) && slot >= 1 && slot <= 3)
+                                    if (int.TryParse(ReadInputWithEscape(), out int slot) && slot >= 1 && slot <= 3)
                                     {
                                         CRC_timeSlot = CRC_timeSlots[slot - 1];
                                         validInput = true;
@@ -112,7 +113,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Nieuw aantal personen: ");
-                                    if (int.TryParse(Console.ReadLine(), out CRC_numOfPeople) && CRC_numOfPeople > 0 && CRC_numOfPeople <= 6)
+                                    if (int.TryParse(ReadInputWithEscape(), out CRC_numOfPeople) && CRC_numOfPeople > 0 && CRC_numOfPeople <= 6)
                                     {
                                         validInput = true;
                                     }
@@ -129,7 +130,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Nieuwe voornaam: ");
-                                    CRC_firstName = Console.ReadLine() ?? "";
+                                    CRC_firstName = ReadInputWithEscape() ?? "";
                                     if (!string.IsNullOrWhiteSpace(CRC_firstName) && Regex.IsMatch(CRC_firstName, @"^[a-zA-Z]+$"))
                                     {
                                         validInput = true;
@@ -141,13 +142,13 @@ public class CustomerReservationChanger
                                 }
 
                                 Console.Write("Nieuw tussenvoegsel (indien van toepassing, anders druk op Enter): ");
-                                CRC_infix = Console.ReadLine() ?? "";
+                                CRC_infix = ReadInputWithEscape() ?? "";
 
                                 validInput = false;
                                 while (!validInput)
                                 {
                                     Console.Write("Nieuwe achternaam: ");
-                                    CRC_lastName = Console.ReadLine() ?? "";
+                                    CRC_lastName = ReadInputWithEscape() ?? "";
                                     if (!string.IsNullOrWhiteSpace(CRC_lastName) && Regex.IsMatch(CRC_lastName, @"^[a-zA-Z]+$"))
                                     {
                                         validInput = true;
@@ -165,7 +166,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Nieuw telefoonnummer: ");
-                                    string phoneNumberInput = Console.ReadLine() ?? "";
+                                    string phoneNumberInput = ReadInputWithEscape() ?? "";
                                     if (phoneNumberInput.Length == 10 && long.TryParse(phoneNumberInput, out long parsedPhoneNumber))
                                     {
                                         CRC_phoneNumber = (int)parsedPhoneNumber;
@@ -184,7 +185,7 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Nieuwe e-mail: ");
-                                    CRC_email = Console.ReadLine() ?? "";
+                                    CRC_email = ReadInputWithEscape() ?? "";
                                     if (CRC_email.Contains("@") && CRC_email.Contains("."))
                                     {
                                         validInput = true;
@@ -199,7 +200,7 @@ public class CustomerReservationChanger
                             case "7":
                                 // Opmerkingen/verzoeken wijzigen
                                 Console.WriteLine("Nieuwe opmerkingen/verzoeken: ");
-                                reservation.Remarks = Console.ReadLine() ?? "";
+                                reservation.Remarks = ReadInputWithEscape() ?? "";
                                 break;
 
                             default:
@@ -239,5 +240,45 @@ public class CustomerReservationChanger
         Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
         Console.ReadKey();
         Menus.StartUp();
+    }
+
+    private string ReadInputWithEscape()
+    {
+        var input = new StringBuilder();
+        int cursorPosition = Console.CursorLeft;
+
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true);
+            if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine();
+                break;
+            }
+            if (key.Key == ConsoleKey.Escape)
+            {
+                Menus.StartUp();
+                break;
+            }
+            if (key.Key == ConsoleKey.Backspace)
+            {
+                if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+                {
+                    input.Remove(input.Length - 1, 1);
+                    Console.Write("\b \b");
+                }
+            }
+            else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+            {
+                // Ignore space at the beginning
+                continue;
+            }
+            else
+            {
+                input.Append(key.KeyChar);
+                Console.Write(key.KeyChar);
+            }
+        }
+        return input.ToString();
     }
 }
