@@ -10,6 +10,14 @@ namespace ReservationApplication
 
         public void ViewReservationById()
         {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("*******************************************");
+            Console.WriteLine("* Reservering inzien. *");
+            Console.WriteLine("*******************************************");
+            Console.ResetColor();
+            Console.WriteLine();
+            
             Console.WriteLine("Voer uw reserverings-ID in:");
             string input = ReadInputWithEscape();
             if (int.TryParse(input, out int reservationId))

@@ -10,6 +10,14 @@ namespace ReservationApplication
 
         public void DeleteReservation()
         {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("*******************************************");
+            Console.WriteLine("* Reservering verwijderen. *");
+            Console.WriteLine("*******************************************");
+            Console.ResetColor();
+            Console.WriteLine();
+            
             Console.WriteLine("Voer uw reserverings-ID in:");
             string input = ReadInputWithEscape();
             if (int.TryParse(input, out int reservationId))

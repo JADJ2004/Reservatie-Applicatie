@@ -5,7 +5,7 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string DbFilePath = @"Data Source=C:\Users\noah\OneDrive\Documenten\sprint-5\Sprint5Local\Mydatabase.db";
+    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
@@ -15,6 +15,14 @@ public class CustomerReservationChanger
 
     public void ReservationChanger()
     {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("*******************************************");
+        Console.WriteLine("* Reservering veranderen. *");
+        Console.WriteLine("*******************************************");
+        Console.ResetColor();
+        Console.WriteLine();
+
         bool CRC_checker = true;
         Console.WriteLine("Voer uw reserverings-ID in:");
         if (int.TryParse(ReadInputWithEscape(), out int reservationId))

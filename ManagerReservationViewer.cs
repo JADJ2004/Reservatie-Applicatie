@@ -13,6 +13,14 @@ namespace ReservationApplication
             List<string> weekDates = db.GetCurrentWeekDates();
             var reservationsDetails = db.GetReservationsDetailsForWeek(weekDates);
 
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("*******************************************");
+            Console.WriteLine("* Reservering inzien. *");
+            Console.WriteLine("*******************************************");
+            Console.ResetColor();
+            Console.WriteLine();
+
             string prompt = "Selecteer een datum om reserveringen te bekijken:";
             List<string> options = new List<string>();
 

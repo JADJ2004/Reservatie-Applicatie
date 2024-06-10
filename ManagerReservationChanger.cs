@@ -15,6 +15,14 @@ public class ManagerReservationChanger
 
     public void ChangeReservation()
     {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("*******************************************");
+        Console.WriteLine("* Reservering veranderen. *");
+        Console.WriteLine("*******************************************");
+        Console.ResetColor();
+        Console.WriteLine();
+        
         bool CRC_checker = true;
         Console.WriteLine("Voer uw reserverings-ID in:");
         if (int.TryParse(ReadInputWithEscape(), out int reservationId))
