@@ -113,7 +113,7 @@ namespace ReservationApplication
                     Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                     Console.Write("Voornaam: ");
                     firstName = ReadInputWithEscape() ?? "";
-                    if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z]+$"))
+                    if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z\s]+$"))
                     {
                         firstNameChecker = true;
                     }
