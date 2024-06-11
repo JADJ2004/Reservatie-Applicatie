@@ -5,7 +5,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
 
     public void InitializeDatabase()
     {
@@ -33,12 +33,45 @@ public partial class Database
                     FOREIGN KEY (TableId) REFERENCES Tables(TableId),
                     UNIQUE (TableId, Date, TimeSlot)
                 );";
+            var createMenuItemsSql = @"
+                CREATE TABLE IF NOT EXISTS MenuItems (
+                    MenuItemId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Category TEXT NOT NULL,
+                    Name TEXT NOT NULL,
+                    Price REAL NOT NULL
+                );";
 
-            using (var command = new SqliteCommand(createTablesSql + createReservationsSql, connection))
+            using (var command = new SqliteCommand(createTablesSql + createReservationsSql + createMenuItemsSql, connection))
             {
                 command.ExecuteNonQuery();
             }
         }
+    }
+
+    public List<MenuItem> GetMenuItemsByCategory(string category)
+    {
+        List<MenuItem> menuItems = new List<MenuItem>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = "SELECT * FROM MenuItems WHERE Category = @Category";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@Category", category);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string name = reader.GetString(2);
+                        double price = reader.GetDouble(3);
+                        menuItems.Add(new MenuItem(category, name, price)); // Hier wordt de MenuItem correct aangemaakt met de category
+                    }
+                }
+            }
+        }
+
+        return menuItems;
     }
 
     public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddReservation(int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, int tableId, string remarks)

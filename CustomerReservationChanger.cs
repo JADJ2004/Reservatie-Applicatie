@@ -5,7 +5,8 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db
+";
     private Database db;
 
     public CustomerReservationChanger()
@@ -74,23 +75,33 @@ public class CustomerReservationChanger
 
                         switch (wijzigOptie)
                         {
-                            case "1":
-                                // Datum wijzigen
-                                validInput = false;
-                                while (!validInput)
+                        case "1":
+                        // Datum wijzigen
+                        validInput = false;
+                            while (!validInput)
+                            {
+                                Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
+                                CRC_date = ReadInputWithEscape() ?? "";
+                                if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate) && DateTime.Today < CRC_reservationDate)
                                 {
-                                    Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
-                                    CRC_date = ReadInputWithEscape() ?? "";
-                                    if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
-                                    {
-                                        validInput = true;
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
-                                    }
+                                    validInput = true;
                                 }
-                                break;
+                                else if(!DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                                    Console.WriteLine("");
+                                    Console.ResetColor();
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
+                                    Console.WriteLine("");
+                                    Console.ResetColor();
+                                }
+                            }
+                            break;
 
                             case "2":
                                 // Tijdslot wijzigen
