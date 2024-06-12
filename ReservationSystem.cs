@@ -6,7 +6,7 @@ using System.Net.Mail;
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
 
     public ReservationSystem()
     {
@@ -17,7 +17,7 @@ public class ReservationSystem
     public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numOfPeople, DateTime date, string timeSlot)
     {
         int reservedTableId = FindAvailableTable(numOfPeople, date, timeSlot);
-        
+
         if (reservedTableId == -1)
         {
             var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(numOfPeople, date, timeSlot);
@@ -30,14 +30,15 @@ public class ReservationSystem
 
     private int FindAvailableTable(int numOfPeople, DateTime date, string timeSlot)
     {
-        string formattedDate = date.ToString("yyyy-MM-dd");
+        string formattedDate = date.ToString("dd-MM-yyyy");
         string sql = @"
             SELECT t.TableId
             FROM Tables t
             WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
                 SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
             )
-            ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC;";
+            ORDER BY t.Capacity ASC, t.TableId ASC
+            LIMIT 1;";
 
         using (var cmd = new SqliteCommand(sql, conn))
         {
@@ -47,7 +48,7 @@ public class ReservationSystem
 
             using (var reader = cmd.ExecuteReader())
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
                     return reader.GetInt32(0);
                 }
@@ -61,37 +62,34 @@ public class ReservationSystem
         DateTime nextDate = startDate;
         string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
         int currentIndex = Array.IndexOf(timeSlots, startTimeSlot);
-        
+
         while (true)
         {
-            string formattedDate = nextDate.ToString("yyyy-MM-dd");
-            foreach (var timeSlot in timeSlots)
-            {
-                string sql = @"
-                    SELECT COUNT(*)
-                    FROM Tables t
-                    WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
-                        SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
-                    );";
+            string formattedDate = nextDate.ToString("dd-MM-yyyy");
+            string sql = @"
+                SELECT COUNT(*)
+                FROM Tables t
+                WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
+                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+                );";
 
-                using (var cmd = new SqliteCommand(sql, conn))
+            using (var cmd = new SqliteCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
+                cmd.Parameters.AddWithValue("@Date", formattedDate);
+                cmd.Parameters.AddWithValue("@TimeSlot", timeSlots[currentIndex]);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                if (count > 0)
                 {
-                    cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
-                    cmd.Parameters.AddWithValue("@Date", formattedDate);
-                    cmd.Parameters.AddWithValue("@TimeSlot", timeSlot);
-
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    if (count > 0)
-                    {
-                        return (nextDate, timeSlot);
-                    }
+                    return (nextDate, timeSlots[currentIndex]);
                 }
-            }
 
-            currentIndex = (currentIndex + 1) % timeSlots.Length;
-            if (currentIndex == 0)
-            {
-                nextDate = nextDate.AddDays(1);
+                currentIndex = (currentIndex + 1) % timeSlots.Length;
+                if (currentIndex == 0)
+                {
+                    nextDate = nextDate.AddDays(1);
+                }
             }
         }
     }
