@@ -80,12 +80,12 @@ public class CustomerReservationChanger
                                 while (!validInput)
                                 {
                                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                                    dateString = ReadInputWithEscape() ?? "";
-                                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate) && today < reservationDate)
+                                    CRC_date = ReadInputWithEscape() ?? "";
+                                    if (CRC_date.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate) && today < CRC_reservationDate)
                                     {
-                                        dateChecker = true;
+                                        validInput = true;
                                     }
-                                    else if(!DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                                    else if(!DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
                                     {
                                         Console.ForegroundColor = ConsoleColor.Red;
                                         Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
