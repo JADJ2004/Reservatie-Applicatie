@@ -37,8 +37,7 @@ public class ReservationSystem
             WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
                 SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
             )
-            ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC
-            LIMIT 1;";
+            ORDER BY ABS(t.Capacity - @NumOfPeople) ASC, t.Capacity DESC;";
 
         using (var cmd = new SqliteCommand(sql, conn))
         {
@@ -48,7 +47,7 @@ public class ReservationSystem
 
             using (var reader = cmd.ExecuteReader())
             {
-                if (reader.Read())
+                while (reader.Read())
                 {
                     return reader.GetInt32(0);
                 }
@@ -66,30 +65,33 @@ public class ReservationSystem
         while (true)
         {
             string formattedDate = nextDate.ToString("yyyy-MM-dd");
-            string sql = @"
-                SELECT COUNT(*)
-                FROM Tables t
-                WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
-                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
-                );";
-
-            using (var cmd = new SqliteCommand(sql, conn))
+            foreach (var timeSlot in timeSlots)
             {
-                cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
-                cmd.Parameters.AddWithValue("@Date", formattedDate);
-                cmd.Parameters.AddWithValue("@TimeSlot", timeSlots[currentIndex]);
+                string sql = @"
+                    SELECT COUNT(*)
+                    FROM Tables t
+                    WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
+                        SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+                    );";
 
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                if (count > 0)
+                using (var cmd = new SqliteCommand(sql, conn))
                 {
-                    return (nextDate, timeSlots[currentIndex]);
-                }
+                    cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
+                    cmd.Parameters.AddWithValue("@Date", formattedDate);
+                    cmd.Parameters.AddWithValue("@TimeSlot", timeSlot);
 
-                currentIndex = (currentIndex + 1) % timeSlots.Length;
-                if (currentIndex == 0)
-                {
-                    nextDate = nextDate.AddDays(1);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        return (nextDate, timeSlot);
+                    }
                 }
+            }
+
+            currentIndex = (currentIndex + 1) % timeSlots.Length;
+            if (currentIndex == 0)
+            {
+                nextDate = nextDate.AddDays(1);
             }
         }
     }
