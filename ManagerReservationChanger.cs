@@ -5,7 +5,7 @@ using System.Text;
 
 public class ManagerReservationChanger
 {
-    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
+    private const string DbFilePath = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
     private Database db;
 
     public ManagerReservationChanger()

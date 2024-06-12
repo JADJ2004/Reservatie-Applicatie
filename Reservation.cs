@@ -44,10 +44,6 @@ namespace ReservationApplication
 
                 DateTime today = DateTime.Now.Date;
 
-                Console.WriteLine();
-                Console.WriteLine("********* Reserveringsgegevens ************");
-                Console.WriteLine();
-
                 // Datum invoeren
                 while (!dateChecker)
                 {
@@ -97,16 +93,7 @@ namespace ReservationApplication
                 // Aantal personen
                 while (!peopleChecker)
                 {
-                    Console.Write("Aantal personen: ");
-                    string input = ReadInputWithEscape();
-                    if (int.TryParse(input, out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
-                    {
-                        peopleChecker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ongeldig aantal personen.");
-                    }
+                    peopleChecker = check.peopleChecker();
                 }
 
                 // Persoonsgegevens
@@ -120,16 +107,7 @@ namespace ReservationApplication
 
                 while (!lastNameChecker)
                 {
-                    Console.Write("Achternaam: ");
-                    lastName = ReadInputWithEscape() ?? "";
-                    if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
-                    {
-                        lastNameChecker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
-                    }
+                    lastNameChecker = check.Achternaam();  
                 }
 
                 while (!phoneNumberChecker)

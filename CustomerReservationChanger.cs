@@ -5,7 +5,7 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
+    private const string DbFilePath = @"Data Source=C:\Users\joey-\Documents\GitHub\ConsoleApp1\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
@@ -94,7 +94,7 @@ public class CustomerReservationChanger
 
                             case "2":
                                 // Tijdslot wijzigen
-                                string[] CRC_timeSlots = { "12:00-14:00", "14:00-16:00", "16:00-18:00" };
+                                string[] CRC_timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
                                 Console.WriteLine("Selecteer een nieuw tijdslot:");
                                 for (int i = 0; i < CRC_timeSlots.Length; i++)
                                 {
