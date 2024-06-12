@@ -5,7 +5,7 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private static readonly string ConnectionString = DatabaseConfig.GetConnectionString();
+    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
