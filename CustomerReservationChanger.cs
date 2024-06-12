@@ -79,15 +79,25 @@ public class CustomerReservationChanger
                                 validInput = false;
                                 while (!validInput)
                                 {
-                                    Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
-                                    CRC_date = ReadInputWithEscape() ?? "";
-                                    if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
+                                    Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
+                                    dateString = ReadInputWithEscape() ?? "";
+                                    if (DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate) && today < reservationDate)
                                     {
-                                        validInput = true;
+                                        dateChecker = true;
+                                    }
+                                    else if(!DateTime.TryParseExact(dateString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out reservationDate))
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                                        Console.WriteLine("");
+                                        Console.ResetColor();
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
+                                        Console.WriteLine("");
+                                        Console.ResetColor();
                                     }
                                 }
                                 break;
