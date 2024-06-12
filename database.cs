@@ -5,7 +5,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
+    private const string ConnectionString = @".\Mydatabase.db";
 
     public void InitializeDatabase()
     {
