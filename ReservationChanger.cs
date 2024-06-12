@@ -8,7 +8,7 @@ public class ReservationChanger
 
     public ReservationChanger(string dbFilePath)
     {
-        connectionString = $"Data Source={dbFilePath};";
+    private static readonly string ConnectionString = DatabaseConfig.GetConnectionString();
     }
 
     public void UpdateReservation(int numOfPeople, string timeSlot, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)

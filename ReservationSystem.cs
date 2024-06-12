@@ -6,7 +6,7 @@ using System.Net.Mail;
 public class ReservationSystem
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
+    private static readonly string ConnectionString = DatabaseConfig.GetConnectionString();
 
     public ReservationSystem()
     {
