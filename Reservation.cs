@@ -107,21 +107,12 @@ namespace ReservationApplication
 
                 while (!lastNameChecker)
                 {
-                    lastNameChecker = check.Achternaam();  
+                    lastNameChecker = check.Achternaam();
                 }
 
                 while (!phoneNumberChecker)
                 {
-                    Console.Write("Telefoonnummer: ");
-                    phoneNumber = ReadInputWithEscape() ?? "";
-                    if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
-                    {
-                        phoneNumberChecker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
-                    }
+                    phoneNumberChecker = check.phoneChecker();
                 }
 
                 while (!emailChecker)

@@ -73,20 +73,13 @@ klik ESC om terug te gaan of het programma af te sluiten.";
             }
         }
 
-    public static void AdminLogin(string inputPassword = null)
+    public static void AdminLogin()
         {
-            Console.WriteLine("\nDit is het log in scherm voor de beheerder.");
-            Console.WriteLine("Wat is het wachtwoord?");
-            if (inputPassword == null)
-            {
-                Wachtwoord = Console.ReadLine();
-            }
-            else
-            {
-                Wachtwoord = inputPassword;
-            }
-           
-            if (Wachtwoord == AdminWachtwoord)
+            Checker check = new Checker();
+
+            bool access = check.AdminWachtwoord();
+
+            if (access)
             {
                 Console.WriteLine("Je bent succesvol ingelogd als beheerder.");
                 ManagerMenu.StartUp();
