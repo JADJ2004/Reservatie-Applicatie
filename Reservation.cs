@@ -13,9 +13,10 @@ namespace ReservationApplication
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("*******************************************");
-            Console.WriteLine("* Welkom bij het reserveringsapplicatie! *");
-            Console.WriteLine("*******************************************");
+            Console.WriteLine("************************************************************************************************/");
+            Console.WriteLine("█▀█ █▀▀ █▀ █▀▀ █▀█ █░█ █▀▀ █▀▀ █▀█   █▀▀ █▀▀ █▄░█   ▀█▀ ▄▀█ █▀▀ █▀▀ █░░");
+            Console.WriteLine("█▀▄ ██▄ ▄█ ██▄ █▀▄ ▀▄▀ ██▄ ██▄ █▀▄   ██▄ ██▄ █░▀█   ░█░ █▀█ █▀░ ██▄ █▄▄");
+            Console.WriteLine("************************************************************************************************/");
             Console.ResetColor();
             Console.WriteLine();
 
@@ -42,11 +43,6 @@ namespace ReservationApplication
 
                 DateTime today = DateTime.Now.Date;
 
-                Console.WriteLine();
-                Console.WriteLine("********* Reserveringsgegevens ************");
-                Console.WriteLine();
-
-                // Datum invoeren
                 while (!dateChecker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");

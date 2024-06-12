@@ -6,6 +6,11 @@ public static class ManagerMenu
     public static void StartUp()
     {
         string prompt = @"
+************************************************************************************************/
+█▀▄▀█ ▄▀█ █▄░█ ▄▀█ █▀▀ █▀▀ █▀█   █▀▄▀█ █▀▀ █▄░█ █░█
+█░▀░█ █▀█ █░▀█ █▀█ █▄█ ██▄ █▀▄   █░▀░█ ██▄ █░▀█ █▄█
+************************************************************************************************/
+
 Welkom Marcel wat wilt u vandaag gaan doen?";
         string[] options = { "Reserveringen inzien", "Reservering wijzigen", "Reservering verwijderen", "Menu veranderen", "Uitloggen" };
 

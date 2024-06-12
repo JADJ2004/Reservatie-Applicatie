@@ -12,9 +12,10 @@ namespace ReservationApplication
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("*******************************************");
-            Console.WriteLine("* Reservering inzien. *");
-            Console.WriteLine("*******************************************");
+            Console.WriteLine("************************************************************************************************/");
+            Console.WriteLine("█▀█ █▀▀ █▀ █▀▀ █▀█ █░█ █▀▀ █▀█ █ █▄░█ █▀▀   █ █▄░█ ▀█ █ █▀▀ █▄░█");
+            Console.WriteLine("█▀▄ ██▄ ▄█ ██▄ █▀▄ ▀▄▀ ██▄ █▀▄ █ █░▀█ █▄█   █ █░▀█ █▄ █ ██▄ █░▀█");
+            Console.WriteLine("************************************************************************************************/");
             Console.ResetColor();
             Console.WriteLine();
             

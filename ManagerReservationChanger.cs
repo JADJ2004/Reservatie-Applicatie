@@ -17,9 +17,10 @@ public class ManagerReservationChanger
     {
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("*******************************************");
-        Console.WriteLine("* Reservering veranderen. *");
-        Console.WriteLine("*******************************************");
+        Console.WriteLine("************************************************************************************************/");
+        Console.WriteLine("█▀█ █▀▀ █▀ █▀▀ █▀█ █░█ █▀▀ █▀█ █ █▄░█ █▀▀ █▀▀ █▄░█   ▄▀█ ▄▀█ █▄░█ █▀█ ▄▀█ █▀ █▀ █▀▀ █▄░█");
+        Console.WriteLine("█▀▄ ██▄ ▄█ ██▄ █▀▄ ▀▄▀ ██▄ █▀▄ █ █░▀█ █▄█ ██▄ █░▀█   █▀█ █▀█ █░▀█ █▀▀ █▀█ ▄█ ▄█ ██▄ █░▀█");
+        Console.WriteLine("************************************************************************************************/");
         Console.ResetColor();
         Console.WriteLine();
         
