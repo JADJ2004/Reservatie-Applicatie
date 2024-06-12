@@ -12,64 +12,57 @@ namespace ReservationApplication
             {
                 Console.WriteLine("\nDit is het log in scherm voor de beheerder.");
                 Console.WriteLine("Wat is het wachtwoord?");
-
                 password = Console.ReadLine();
             }
 
-            if (password == "1234YES!")
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
-
-
+            return password == "1234YES!";
         }
 
-        public bool Persoonsgegevens(string firstName = null)
+        public bool Persoonsgegevens(out string firstName, string inputFirstName = null)
         {
-            if (firstName == null)
+            if (inputFirstName == null)
             {
                 Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
                 Console.Write("Voornaam: ");
-                firstName = ReadInputWithEscape() ?? "";
+                inputFirstName = ReadInputWithEscape() ?? "";
             }
 
-            if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z\s]+$"))
+            if (!string.IsNullOrWhiteSpace(inputFirstName) && Regex.IsMatch(inputFirstName, @"^[a-zA-Z\s]+$"))
             {
+                firstName = inputFirstName;
                 return true;
             }
             else
             {
                 Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                firstName = string.Empty;
                 return false;
             }
         }
 
-        public bool Achternaam(string lastName = null)
+        public bool Achternaam(out string lastName, string inputLastName = null)
         {
-            if (lastName == null)
+            if (inputLastName == null)
             {
-            Console.Write("Achternaam: ");
-            lastName = ReadInputWithEscape() ?? "";
+                Console.Write("Achternaam: ");
+                inputLastName = ReadInputWithEscape() ?? "";
             }
-            if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
+
+            if (!string.IsNullOrWhiteSpace(inputLastName) && Regex.IsMatch(inputLastName, @"^[a-zA-Z]+$"))
             {
+                lastName = inputLastName;
                 return true;
             }
             else
             {
                 Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+                lastName = string.Empty;
                 return false;
             }
         }
 
-        public bool peopleChecker(string input = null)
+        public bool peopleChecker(out int numberOfPeople, string input = null)
         {
-            int numberOfPeople = 0;
             if (input == null)
             {
                 Console.Write("Aantal personen: ");
@@ -83,27 +76,30 @@ namespace ReservationApplication
             else
             {
                 Console.WriteLine("Ongeldig aantal personen.");
+                numberOfPeople = 0;
                 return false;
             }
         }
 
-        public bool phoneChecker(string phoneNumber = null)
+        public bool phoneChecker(out string phoneNumber, string inputPhoneNumber = null)
         {
-            if (phoneNumber == null)
+            if (inputPhoneNumber == null)
             {
                 Console.Write("Telefoonnummer: ");
-                phoneNumber = ReadInputWithEscape() ?? "";
+                inputPhoneNumber = ReadInputWithEscape() ?? "";
             }
-            if (phoneNumber.Length == 10 && long.TryParse(phoneNumber, out _))
+
+            if (inputPhoneNumber.Length == 10 && long.TryParse(inputPhoneNumber, out _))
             {
+                phoneNumber = inputPhoneNumber;
                 return true;
             }
             else
             {
                 Console.WriteLine("Telefoonnummer moet 10 cijfers lang zijn.");
+                phoneNumber = string.Empty;
                 return false;
             }
-    
         }
 
         private string ReadInputWithEscape()
@@ -126,7 +122,7 @@ namespace ReservationApplication
                 }
                 if (key.Key == ConsoleKey.Backspace)
                 {
-                    if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+                    if (input.Length > 0 && Console.CursorLeft > cursorPosition)
                     {
                         input.Remove(input.Length - 1, 1);
                         Console.Write("\b \b");
@@ -134,7 +130,6 @@ namespace ReservationApplication
                 }
                 else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
                 {
-                    // Ignore space at the beginning
                     continue;
                 }
                 else
@@ -147,6 +142,3 @@ namespace ReservationApplication
         }
     }
 }
-
-
-

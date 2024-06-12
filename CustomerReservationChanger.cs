@@ -5,13 +5,12 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db
-";
+    private const string DbFilePath = @".\Mydatabase.db"; // Ensure this path is correct
     private Database db;
 
     public CustomerReservationChanger()
     {
-        db = new Database(); // Assuming Database constructor without arguments
+        db = new Database();
     }
 
     public void ReservationChanger()
@@ -19,8 +18,8 @@ public class CustomerReservationChanger
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("************************************************************************************************/");
-        Console.WriteLine("█▀█ █▀▀ █▀ █▀▀ █▀█ █░█ █▀▀ █▀█ █ █▄░█ █▀▀   ▄▀█ ▄▀█ █▄░█ █▀█ ▄▀█ █▀ █▀ █▀▀ █▄░█");
-        Console.WriteLine("█▀▄ ██▄ ▄█ ██▄ █▀▄ ▀▄▀ ██▄ █▀▄ █ █░▀█ █▄█   █▀█ █▀█ █░▀█ █▀▀ █▀█ ▄█ ▄█ ██▄ █░▀█");
+        Console.WriteLine("?????????????????????????????????????????? ????????????????????????????????????");
+        Console.WriteLine("?????????????????????????????????????????? ????????????????????????????????????");
         Console.WriteLine("************************************************************************************************/");
         Console.ResetColor();
         Console.WriteLine();
@@ -75,36 +74,24 @@ public class CustomerReservationChanger
 
                         switch (wijzigOptie)
                         {
-                        case "1":
-                        // Datum wijzigen
-                        validInput = false;
-                            while (!validInput)
-                            {
-                                Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
-                                CRC_date = ReadInputWithEscape() ?? "";
-                                if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate) && DateTime.Today < CRC_reservationDate)
+                            case "1":
+                                validInput = false;
+                                while (!validInput)
                                 {
-                                    validInput = true;
+                                    Console.Write("Voer uw nieuwe reserveringsdatum in (dd-MM-yyyy): ");
+                                    CRC_date = ReadInputWithEscape() ?? "";
+                                    if (DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
+                                    {
+                                        validInput = true;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
+                                    }
                                 }
-                                else if(!DateTime.TryParseExact(CRC_date, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out CRC_reservationDate))
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("Ongeldige invoer. Probeer: (dd-MM-yyyy)");
-                                    Console.WriteLine("");
-                                    Console.ResetColor();
-                                }
-                                else
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("Je kan geen tafel reserveren voor een datum in het verleden");
-                                    Console.WriteLine("");
-                                    Console.ResetColor();
-                                }
-                            }
-                            break;
+                                break;
 
                             case "2":
-                                // Tijdslot wijzigen
                                 string[] CRC_timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
                                 Console.WriteLine("Selecteer een nieuw tijdslot:");
                                 for (int i = 0; i < CRC_timeSlots.Length; i++)
@@ -128,7 +115,6 @@ public class CustomerReservationChanger
                                 break;
 
                             case "3":
-                                // Aantal personen wijzigen
                                 validInput = false;
                                 while (!validInput)
                                 {
@@ -145,7 +131,6 @@ public class CustomerReservationChanger
                                 break;
 
                             case "4":
-                                // Naam wijzigen
                                 validInput = false;
                                 while (!validInput)
                                 {
@@ -181,7 +166,6 @@ public class CustomerReservationChanger
                                 break;
 
                             case "5":
-                                // Telefoonnummer wijzigen
                                 validInput = false;
                                 while (!validInput)
                                 {
@@ -200,7 +184,6 @@ public class CustomerReservationChanger
                                 break;
 
                             case "6":
-                                // E-mail wijzigen
                                 validInput = false;
                                 while (!validInput)
                                 {
@@ -218,7 +201,6 @@ public class CustomerReservationChanger
                                 break;
 
                             case "7":
-                                // Opmerkingen/verzoeken wijzigen
                                 Console.WriteLine("Nieuwe opmerkingen/verzoeken: ");
                                 reservation.Remarks = ReadInputWithEscape() ?? "";
                                 break;
@@ -228,14 +210,18 @@ public class CustomerReservationChanger
                                 break;
                         }
 
-                        // Save the updated reservation to the database
-                        var reservationChanger = new ReservationChanger(ConnectionString);
-                        reservationChanger.UpdateReservation(
-                            CRC_numOfPeople, CRC_timeSlot, CRC_firstName, CRC_infix, CRC_lastName, CRC_phoneNumber, CRC_email, CRC_reservationDate, reservationId
-                        );
-
-                        Console.WriteLine("\nReservering succesvol veranderd!");
-                        CRC_checker = false;
+                        var reservationChanger = new ReservationChanger(DbFilePath);
+                        try
+                        {
+                            reservationChanger.UpdateReservation(
+                                CRC_numOfPeople, CRC_timeSlot, CRC_firstName, CRC_infix, CRC_lastName, CRC_phoneNumber, CRC_email, CRC_reservationDate, reservationId
+                            );
+                            CRC_checker = false;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error updating reservation: " + ex.Message);
+                        }
                     }
                 }
                 else
@@ -282,7 +268,7 @@ public class CustomerReservationChanger
             }
             if (key.Key == ConsoleKey.Backspace)
             {
-                if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+                if (input.Length > 0 && Console.CursorLeft > cursorPosition)
                 {
                     input.Remove(input.Length - 1, 1);
                     Console.Write("\b \b");
@@ -290,7 +276,6 @@ public class CustomerReservationChanger
             }
             else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
             {
-                // Ignore space at the beginning
                 continue;
             }
             else
