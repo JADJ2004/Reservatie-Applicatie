@@ -5,7 +5,7 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string DbFilePath = @"Data Source=C:\Users\jibbe\Documents\sprint4demo\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
@@ -218,7 +218,7 @@ public class CustomerReservationChanger
                         }
 
                         // Save the updated reservation to the database
-                        var reservationChanger = new ReservationChanger(DbFilePath);
+                        var reservationChanger = new ReservationChanger(ConnectionString);
                         reservationChanger.UpdateReservation(
                             CRC_numOfPeople, CRC_timeSlot, CRC_firstName, CRC_infix, CRC_lastName, CRC_phoneNumber, CRC_email, CRC_reservationDate, reservationId
                         );

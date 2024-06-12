@@ -6,9 +6,9 @@ public class ReservationChanger
 {
     private string connectionString;
 
-    public ReservationChanger(string dbFilePath)
+    public ReservationChanger(string ConnectionString)
     {
-        connectionString = $"Data Source={dbFilePath};";
+        connectionString = $"Data Source={ConnectionString};";
     }
 
     public void UpdateReservation(int numOfPeople, string timeSlot, string name, string addition, string surname, int phoneNumber, string email, DateTime date, int reservationId)
