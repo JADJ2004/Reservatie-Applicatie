@@ -26,6 +26,44 @@ public class Checker
         }
     }
 
+    public bool Achternaam(string lastName = null)
+    {
+        if (lastName == null)
+        {
+        Console.Write("Achternaam: ");
+        lastName = ReadInputWithEscape() ?? "";
+        }
+        if (!string.IsNullOrWhiteSpace(lastName) && Regex.IsMatch(lastName, @"^[a-zA-Z]+$"))
+        {
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
+            return false;
+        }
+    }
+
+    public bool peopleChecker(string input = null)
+    {
+        int numberOfPeople = 0;
+        if (input == null)
+        {
+            Console.Write("Aantal personen: ");
+            input = ReadInputWithEscape();
+        }
+
+        if (int.TryParse(input, out numberOfPeople) && numberOfPeople > 0 && numberOfPeople <= 6)
+        {
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Ongeldig aantal personen.");
+            return false;
+        }
+    }
+
     private string ReadInputWithEscape()
     {
         var input = new StringBuilder();
