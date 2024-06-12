@@ -5,7 +5,7 @@ using System.Text;
 
 public class CustomerReservationChanger
 {
-    private const string ConnectionString = @".\Mydatabase.db";
+    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
     private Database db;
 
     public CustomerReservationChanger()
