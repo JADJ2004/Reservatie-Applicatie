@@ -31,6 +31,7 @@ namespace ReservationApplication
 
         public void ToonMenu()
         {
+            Console.Clear();
             Console.WriteLine("");
             Console.WriteLine("VOORGERECHTEN");
             PrintCategory(0);
@@ -42,7 +43,6 @@ namespace ReservationApplication
             PrintCategory(2);
             Console.WriteLine("");
             
-            Menus.StartUp();
         }
 
         private void PrintCategory(int categoryIndex)
@@ -54,74 +54,45 @@ namespace ReservationApplication
             Console.WriteLine(); 
         }
 
-        public void EditFood(int categoryIndex, int foodIndex, string newName, double newPrice)
-        {
-            if (categoryIndex >= 0 && categoryIndex < Foods.Count && foodIndex >= 0 && foodIndex < Foods[categoryIndex].Count)
-            {
-                Foods[categoryIndex][foodIndex].Name = newName;
-                Foods[categoryIndex][foodIndex].Price = newPrice;
-                Console.WriteLine("Food item updated successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Invalid category or food index!");
-            }
-        }
 
-        public List<string> GetMenu()
+        private string ReadInputWithEscape()
         {
-            List<string> menu = new List<string>();
+            var input = new StringBuilder();
+            int cursorPosition = Console.CursorLeft;
 
-            foreach (var category in Foods)
+            while (true)
             {
-                foreach (var foodItem in category)
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Enter)
                 {
-                    string menuItem = foodItem.Name;
-                    menu.Add(menuItem);
+                    Console.WriteLine();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Menus.StartUp();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+                    {
+                        input.Remove(input.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+                {
+                    // Ignore space at the beginning
+                    continue;
+                }
+                else
+                {
+                    input.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
                 }
             }
-
-            return menu;
+            return input.ToString();
         }
-
-private string ReadInputWithEscape()
-{
-    var input = new StringBuilder();
-    int cursorPosition = Console.CursorLeft;
-
-    while (true)
-    {
-        var key = Console.ReadKey(intercept: true);
-        if (key.Key == ConsoleKey.Enter)
-        {
-            Console.WriteLine();
-            break;
-        }
-        if (key.Key == ConsoleKey.Escape)
-        {
-            Menus.StartUp();
-            break;
-        }
-        if (key.Key == ConsoleKey.Backspace)
-        {
-            if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
-            {
-                input.Remove(input.Length - 1, 1);
-                Console.Write("\b \b");
             }
-        }
-        else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
-        {
-            // Ignore space at the beginning
-            continue;
-        }
-        else
-        {
-            input.Append(key.KeyChar);
-            Console.Write(key.KeyChar);
-        }
-    }
-    return input.ToString();
-}
-    }
 }
