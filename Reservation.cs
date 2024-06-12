@@ -24,6 +24,7 @@ namespace ReservationApplication
 
             while (!reservationConfirmed)
             {
+                Checker check = new Checker();
                 bool dateChecker = false;
                 bool firstNameChecker = false;
                 bool lastNameChecker = false;
@@ -43,6 +44,11 @@ namespace ReservationApplication
 
                 DateTime today = DateTime.Now.Date;
 
+                Console.WriteLine();
+                Console.WriteLine("********* Reserveringsgegevens ************");
+                Console.WriteLine();
+
+                // Datum invoeren
                 while (!dateChecker)
                 {
                     Console.Write("Voer uw reserveringsdatum in (dd-MM-yyyy): ");
@@ -106,17 +112,7 @@ namespace ReservationApplication
                 // Persoonsgegevens
                 while (!firstNameChecker)
                 {
-                    Console.WriteLine("\nGraag uw contactgegevens achterlaten:");
-                    Console.Write("Voornaam: ");
-                    firstName = ReadInputWithEscape() ?? "";
-                    if (!string.IsNullOrWhiteSpace(firstName) && Regex.IsMatch(firstName, @"^[a-zA-Z\s]+$"))
-                    {
-                        firstNameChecker = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ongeldige invoer. Probeer alleen letters te gebruiken.");
-                    }
+                    firstNameChecker = check.Persoonsgegevens();
                 }
 
                 Console.Write("Tussenvoegsel (indien van toepassing, anders druk op Enter): ");
