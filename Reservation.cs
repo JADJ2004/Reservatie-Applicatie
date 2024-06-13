@@ -14,8 +14,8 @@ namespace ReservationApplication
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("************************************************************************************************/");
-            Console.WriteLine("??????????????????????????????????? ?????????????? ????????????????????");
-            Console.WriteLine("??????????????????????????????????? ?????????????? ????????????????????");
+            Console.WriteLine("█▀█ █▀▀ █▀ █▀▀ █▀█ █░█ █▀▀ █▀▀ █▀█   █▀▀ █▀▀ █▄░█   ▀█▀ ▄▀█ █▀▀ █▀▀ █░░");
+            Console.WriteLine("█▀▄ ██▄ ▄█ ██▄ █▀▄ ▀▄▀ ██▄ ██▄ █▀▄   ██▄ ██▄ █░▀█   ░█░ █▀█ █▀░ ██▄ █▄▄");
             Console.WriteLine("************************************************************************************************/");
             Console.ResetColor();
             Console.WriteLine();
@@ -180,7 +180,7 @@ namespace ReservationApplication
                             Console.ResetColor();
                             reservationSystem.SendEmail(email, reservationDate, timeSlot, firstName, numberOfPeople, ReservationId);
                             correctInformation = true;    
-                            reservationConfirmed = true; // Be�indig de lus als de reservering is bevestigd
+                            reservationConfirmed = true; // Beëindig de lus als de reservering is bevestigd
                             Console.ResetColor();
                             Menus.StartUp();
                             
