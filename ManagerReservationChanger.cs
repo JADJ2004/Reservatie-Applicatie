@@ -233,7 +233,6 @@ public class ManagerReservationChanger
                             CRC_numOfPeople, CRC_timeSlot, CRC_firstName, CRC_infix, CRC_lastName, CRC_phoneNumber, CRC_email, CRC_reservationDate, reservationId
                         );
 
-                        Console.WriteLine("\nReservering succesvol veranderd!");
                         CRC_checker = false;
                     }
                 }
