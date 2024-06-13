@@ -54,8 +54,8 @@ namespace ReservationApplication
             reservationDeleter.ReservationDeleter();
             break;
         case 3:
-            CustomerReservationChanger reservationChanger = new CustomerReservationChanger();
-            reservationChanger.ReservationChanger();
+            ManagerReservationChanger reservationChanger = new ManagerReservationChanger();
+            reservationChanger.ChangeReservation();
             break;
         case 4:
             CustomerReservationViewer reservationViewer = new CustomerReservationViewer();
