@@ -5,7 +5,7 @@ using ReservationApplication;
 
 public partial class Database
 {
-    private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
+    private const string ConnectionString = @"Data Source = .\Mydatabase.db";
 
     public void InitializeDatabase()
     {
