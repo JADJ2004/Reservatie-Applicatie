@@ -129,7 +129,7 @@ namespace ReservationApplication
                     }
                 }
 
-                Console.WriteLine("Opmerkingen/verzoeken: ");
+                Console.WriteLine("Opmerkingen:");
                 remarks = ReadInputWithEscape() ?? "";
 
                 // Reservering maken

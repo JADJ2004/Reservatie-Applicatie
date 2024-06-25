@@ -13,7 +13,7 @@ namespace ReservationApplication
             this.database = database;
         }
 
-        private const string ConnectionString = @"Data Source=C:\Users\rensg\OneDrive\Documenten\GitHub\LOCAAL\lokaal\mm\Mydatabase.db";
+        private const string ConnectionString = @"Data Source = .\Mydatabase.db";
 
         public void AddMenuItem(string category, string name, double price)
         {
