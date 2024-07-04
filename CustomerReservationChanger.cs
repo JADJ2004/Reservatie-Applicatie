@@ -3,7 +3,7 @@ using ReservationApplication;
 using System.Text.RegularExpressions;
 using System.Text;
 
-public class CustomerReservationChanger
+public class CustomerReservationChanger : IUseDatabase
 {
     private const string DbFilePath = @".\Mydatabase.db"; // Ensure this path is correct
     private Database db;

@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 public class ReservationChanger
 {
     private string connectionString;
+    
 
     public ReservationChanger(string dbFilePath)
     {

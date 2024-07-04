@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 using ReservationApplication;
 using System.Text;
 
-public partial class Database
+public partial class Database 
 {
     public bool CustomerDeleteReservation(int reservationId)
     {
@@ -31,7 +31,7 @@ public partial class Database
 
 namespace Customer_Reservation_Deleter
 {
-    class CRD
+    class CRD 
     {
         private Database db = new Database();
 
@@ -124,7 +124,6 @@ private string ReadInputWithEscape()
         }
         else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
         {
-            // Ignore space at the beginning
             continue;
         }
         else

@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace ReservationApplication
 {
-    public class MenuManager
+    public class MenuManager : IUseDatabase
     {
         private readonly Database database;
 

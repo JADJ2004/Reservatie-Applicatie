@@ -3,7 +3,7 @@ using ReservationApplication;
 using System.Text.RegularExpressions;
 using System.Text;
 
-public class ManagerReservationChanger
+public class ManagerReservationChanger : IUseDatabase
 {
     private const string ConnectionString = @".\Mydatabase.db";
     private Database db;

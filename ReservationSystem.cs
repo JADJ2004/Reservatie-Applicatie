@@ -3,7 +3,7 @@ using System;
 using System.Net;
 using System.Net.Mail;
 
-public class ReservationSystem
+public class ReservationSystem : IUseDatabase
 {
     private SqliteConnection conn;
     private const string ConnectionString = @"Data Source = .\Mydatabase.db";

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReservationApplication
 {
-    public class CustomerReservationViewer
+    public class CustomerReservationViewer 
     {
         private Database db = new Database();
 

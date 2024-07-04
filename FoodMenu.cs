@@ -19,7 +19,7 @@ namespace ReservationApplication
         }
     }
 
-    public class FoodMenu
+    public class FoodMenu : IFoodMenu
     {   
         private readonly Database database;
 
@@ -46,7 +46,7 @@ namespace ReservationApplication
         }
 
 
-        private void PrintCategory(string category)
+        public void PrintCategory(string category)
         {
             List<MenuItem> menuItems = database.GetMenuItemsByCategory(category); // Hier is de correctie
             foreach (MenuItem menuItem in menuItems)

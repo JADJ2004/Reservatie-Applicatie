@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 using ReservationApplication;
 
-public partial class Database
+public partial class Database : IUseDatabase
 {
     private const string ConnectionString = @"Data Source = .\Mydatabase.db";
 
