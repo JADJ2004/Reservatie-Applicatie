@@ -20,8 +20,6 @@ namespace ReservationApplication
             db.InitializeDatabase();
             Console.Clear();
 
-            CRD reservationDeleter = new CRD();
-
             string prompt = @"
 
                                                                 ██╗░░░██╗███████╗░██████╗██╗
@@ -51,7 +49,8 @@ namespace ReservationApplication
                     reservationApplication.StartReservationSystem();
                     break;
                 case 2:
-                    reservationDeleter.ReservationDeleter();
+                    CRD.ReservationDeleter();
+
                     break;
                 case 3:
                     ManagerReservationChanger reservationChanger = new ManagerReservationChanger();

@@ -33,8 +33,8 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 reservationChanger.ChangeReservation();
                 break;
             case 2:
-                ManagerReservationDeleter reservationDeleter = new ManagerReservationDeleter();
-                reservationDeleter.DeleteReservation();
+                ManagerReservationDeleter.DeleteReservation();
+
                 break;
             case 3:
                 ChangeMenu();

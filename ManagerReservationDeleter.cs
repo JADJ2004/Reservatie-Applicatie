@@ -4,11 +4,11 @@ using System.Text;
 
 namespace ReservationApplication
 {
-    public class ManagerReservationDeleter
+    public static class ManagerReservationDeleter
     {
-        private Database db = new Database();
+        private static Database db = new Database();
 
-        public void DeleteReservation()
+        public static void DeleteReservation()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -66,7 +66,7 @@ namespace ReservationApplication
             ManagerMenu.StartUp();
         }
 
-        private string ReadInputWithEscape()
+        private static string ReadInputWithEscape()
         {
             var input = new StringBuilder();
             int cursorPosition = Console.CursorLeft;

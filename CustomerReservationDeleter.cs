@@ -3,58 +3,13 @@ using Microsoft.Data.Sqlite;
 using ReservationApplication;
 using System.Text;
 
-public partial class Database 
-{
-    public bool CustomerDeleteReservation(int reservationId)
-    {
-        bool deletionSuccess = false;
-        using (var connection = new SqliteConnection(ConnectionString))
-        {
-            connection.Open();
-
-            using (var transaction = connection.BeginTransaction())
-            {
-                try
-                {
-                    string deleteReservationTablesQuery = "DELETE FROM ReservationTables WHERE ReservationId = @ReservationId";
-                    using (var command = new SqliteCommand(deleteReservationTablesQuery, connection, transaction))
-                    {
-                        command.Parameters.AddWithValue("@ReservationId", reservationId);
-                        command.ExecuteNonQuery();
-                    }
-
-                    string deleteReservationQuery = "DELETE FROM Reservations WHERE ReservationId = @ReservationId";
-                    using (var command = new SqliteCommand(deleteReservationQuery, connection, transaction))
-                    {
-                        command.Parameters.AddWithValue("@ReservationId", reservationId);
-                        int rowsAffected = command.ExecuteNonQuery();
-                        if (rowsAffected > 0)
-                        {
-                            deletionSuccess = true;
-                        }
-                    }
-
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
-        return deletionSuccess;
-    }
-}
-
-
 namespace Customer_Reservation_Deleter
 {
-    class CRD 
+    public static class CRD
     {
-        private Database db = new Database();
+        private static Database db = new Database();
 
-        public void ReservationDeleter()
+        public static void ReservationDeleter()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -85,22 +40,25 @@ namespace Customer_Reservation_Deleter
                     Console.WriteLine($"Opmerkingen: {reservation.Remarks}");
 
                     Console.WriteLine("Wilt u deze reservatie verwijderen?");
-                    string ChangeConfirmation = ReadInputWithEscape()?.Trim().ToLower();
+                    string changeConfirmation = ReadInputWithEscape()?.Trim().ToLower();
                     
-                    if (ChangeConfirmation == "ja")
+                    if (changeConfirmation == "ja")
                     {
-                        db.CustomerDeleteReservation(reservationId);
+                        db.DeleteReservation(reservationId);
+                        Console.WriteLine("Reservering succesvol verwijderd.");
                     }
                     else
                     {
                         Console.WriteLine("Je gaat terug naar het hoofdmenu.");
                         Menus.StartUp();
+                        return;
                     }
                 }
                 else
                 {
                     Console.WriteLine("Reservering niet gevonden.");
                     Menus.StartUp();
+                    return;
                 }
             }
             else
@@ -108,6 +66,7 @@ namespace Customer_Reservation_Deleter
                 Console.WriteLine("Ongeldige invoer. Voer een geldig reserverings-ID in.");
                 Console.WriteLine("Je gaat terug naar het hoofdmenu.");
                 Menus.StartUp();
+                return;
             }
 
             Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
@@ -115,43 +74,43 @@ namespace Customer_Reservation_Deleter
             Menus.StartUp();
         }
 
-private string ReadInputWithEscape()
-{
-    var input = new StringBuilder();
-    int cursorPosition = Console.CursorLeft;
+        private static string ReadInputWithEscape()
+        {
+            var input = new StringBuilder();
+            int cursorPosition = Console.CursorLeft;
 
-    while (true)
-    {
-        var key = Console.ReadKey(intercept: true);
-        if (key.Key == ConsoleKey.Enter)
-        {
-            Console.WriteLine();
-            break;
-        }
-        if (key.Key == ConsoleKey.Escape)
-        {
-            Menus.StartUp();
-            break;
-        }
-        if (key.Key == ConsoleKey.Backspace)
-        {
-            if (input.Length > 0 && Console.CursorLeft > cursorPosition + 0)
+            while (true)
             {
-                input.Remove(input.Length - 1, 1);
-                Console.Write("\b \b");
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Menus.StartUp();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0 && Console.CursorLeft > cursorPosition)
+                    {
+                        input.Remove(input.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    input.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
             }
+            return input.ToString();
         }
-        else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
-        {
-            continue;
-        }
-        else
-        {
-            input.Append(key.KeyChar);
-            Console.Write(key.KeyChar);
-        }
-    }
-    return input.ToString();
-}
     }
 }
