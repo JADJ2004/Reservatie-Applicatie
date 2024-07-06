@@ -35,44 +35,44 @@ namespace ReservationApplication
     Welkom bij het hoofdmenu van YES! Selecteer een optie.
     Gebruik de pijltoetsen om te selecteren en klik ENTER om het te kiezen.
     Klik ESC om terug te gaan of het programma af te sluiten.";
-    string[] options = { "Log in als admin", "Reserveer een tafel", "Annuleer je reservering", "Bewerk je reservering", "Bekijk je reservering", "Toon het menu", "Afsluiten" };
+            string[] options = { "Log in als admin", "Reserveer een tafel", "Annuleer je reservering", "Bewerk je reservering", "Bekijk je reservering", "Toon het menu", "Afsluiten" };
 
-    UserInterface mainMenu = new UserInterface(prompt, options, () => ExitMenu());
-    int selectedIndex = mainMenu.Run();
-    Console.Clear();
+            UserInterface mainMenu = new UserInterface(prompt, options, () => ExitMenu());
+            int selectedIndex = mainMenu.Run();
+            Console.Clear();
 
-    switch (selectedIndex)
-    {
-        case 0:
-            AdminLogin();
-            break;
-        case 1:
-            TestApplicatie reservationApplication = new TestApplicatie();
-            reservationApplication.StartReservationSystem();
-            break;
-        case 2:
-            reservationDeleter.ReservationDeleter();
-            break;
-        case 3:
-            ManagerReservationChanger reservationChanger = new ManagerReservationChanger();
-            reservationChanger.ChangeReservation();
-            break;
-        case 4:
-            CustomerReservationViewer reservationViewer = new CustomerReservationViewer();
-            reservationViewer.ViewReservationById();
-            break;
-        case 5:
-            FoodMenu foodMenu = new FoodMenu(db); // Hier wordt de database doorgegeven
-            foodMenu.ToonMenu();
-            break;
-        case 6:
-            Console.WriteLine("Tot ziens!");
-            ExitMenu();
-            break;
-    }
-}
+            switch (selectedIndex)
+            {
+                case 0:
+                    AdminLogin();
+                    break;
+                case 1:
+                    TestApplicatie reservationApplication = new TestApplicatie();
+                    reservationApplication.StartReservationSystem();
+                    break;
+                case 2:
+                    reservationDeleter.ReservationDeleter();
+                    break;
+                case 3:
+                    ManagerReservationChanger reservationChanger = new ManagerReservationChanger();
+                    reservationChanger.ChangeReservation();
+                    break;
+                case 4:
+                    CustomerReservationViewer reservationViewer = new CustomerReservationViewer();
+                    reservationViewer.ViewReservationById();
+                    break;
+                case 5:
+                    FoodMenu foodMenu = new FoodMenu(db);
+                    foodMenu.ToonMenu();
+                    break;
+                case 6:
+                    Console.WriteLine("Tot ziens!");
+                    ExitMenu();
+                    break;
+            }
+        }
 
-    public static void AdminLogin()
+        public static void AdminLogin()
         {
             Checker check = new Checker();
 
@@ -90,7 +90,6 @@ namespace ReservationApplication
                 StartUp();
             }
         }
- 
 
         public static void ExitMenu()
         {

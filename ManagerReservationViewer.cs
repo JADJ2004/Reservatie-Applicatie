@@ -10,9 +10,6 @@ namespace ReservationApplication
 
         public void ViewReservationsByDate()
         {
-            List<string> weekDates = db.GetCurrentWeekDates();
-            var reservationsDetails = db.GetReservationsDetailsForWeek(weekDates);
-
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("************************************************************************************************/");
@@ -22,38 +19,63 @@ namespace ReservationApplication
             Console.ResetColor();
             Console.WriteLine();
 
-            string prompt = "Selecteer een datum om reserveringen te bekijken:";
-            List<string> options = new List<string>();
-
-            foreach (var date in weekDates)
+            DateTime startDate;
+            while (true)
             {
-                var (occupiedTables, totalPeople) = reservationsDetails[date];
-                options.Add($"{date} ({occupiedTables} tafels bezet, {totalPeople} personen)");
+                Console.Write("Voer de startdatum in (dd-MM-yyyy): ");
+                string input = Console.ReadLine();
+                if (DateTime.TryParseExact(input, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out startDate))
+                {
+                    break;
+                }
+                Console.WriteLine("Ongeldige datum. Probeer het opnieuw.");
             }
 
-            UserInterface dateMenu = new UserInterface(prompt, options.ToArray(), () => ManagerMenu.StartUp());
-            int selectedIndex = dateMenu.Run();
+            List<(DateTime date, string timeSlot)> next7DaysTimeSlots = GetNext7DaysTimeSlots(startDate);
 
-            string selectedDate = weekDates[selectedIndex];
-            ShowReservationsForDate(selectedDate);
+            foreach (var (date, timeSlot) in next7DaysTimeSlots)
+            {
+                ShowReservationsForDateAndTimeSlot(date, timeSlot);
+            }
+
+            Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
+            Console.ReadKey();
+            ManagerMenu.StartUp();
         }
 
-        private void ShowReservationsForDate(string date)
+        private List<(DateTime date, string timeSlot)> GetNext7DaysTimeSlots(DateTime startDate)
         {
-            Console.Clear();
-            Console.WriteLine($"********* Reserveringen voor {date} ************");
-            var reservations = db.GetReservationsByDate(date);
+            List<(DateTime date, string timeSlot)> datesAndTimeSlots = new List<(DateTime date, string timeSlot)>();
+            string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
+
+            for (int i = 0; i < 7; i++)
+            {
+                DateTime currentDate = startDate.AddDays(i);
+                foreach (var timeSlot in timeSlots)
+                {
+                    datesAndTimeSlots.Add((currentDate, timeSlot));
+                }
+            }
+
+            return datesAndTimeSlots;
+        }
+
+        private void ShowReservationsForDateAndTimeSlot(DateTime date, string timeSlot)
+        {
+            string formattedDate = date.ToString("dd-MM-yyyy");
+            Console.WriteLine($"********* Reserveringen voor {formattedDate} tijdens {timeSlot} ************");
+            var reservations = db.GetReservationsByDateAndTimeSlot(formattedDate, timeSlot);
 
             if (reservations.Count == 0)
             {
-                Console.WriteLine("Er zijn geen reserveringen gevonden voor deze datum.");
+                Console.WriteLine("Er zijn geen reserveringen gevonden voor deze datum en tijdslot.");
             }
             else
             {
                 foreach (var reservation in reservations)
                 {
                     Console.WriteLine($"Reservering ID: {reservation.ReservationId}");
-                    Console.WriteLine($"Tafel ID: {reservation.TableId}");
+                    Console.WriteLine($"Tafel ID's: {string.Join(", ", reservation.TableIds)}");
                     Console.WriteLine($"Aantal Personen: {reservation.NumOfPeople}");
                     Console.WriteLine($"Naam: {reservation.FirstName} {reservation.Infix} {reservation.LastName}");
                     Console.WriteLine($"Telefoonnummer: {reservation.PhoneNumber}");
@@ -64,23 +86,7 @@ namespace ReservationApplication
                     Console.WriteLine("-----------------------------------------");
                 }
             }
-
-            Console.WriteLine("Druk op een toets om terug te keren naar het menu.");
-            Console.ReadKey();
-            ManagerMenu.StartUp();
-        }
-
-        private List<string> GetCurrentWeekDates()
-        {
-            List<string> weekDates = new List<string>();
-            DateTime startOfWeek = DateTime.Now;
-
-            for (int i = 0; i < 7; i++) //TRG VERANDEREN NAAR 0 EN 7
-            {
-                weekDates.Add(startOfWeek.AddDays(i).ToString("dd-MM-yyyy"));
-            }
-
-            return weekDates;
+            Console.WriteLine();
         }
     }
 }

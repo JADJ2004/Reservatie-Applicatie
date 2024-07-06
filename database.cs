@@ -20,7 +20,6 @@ public partial class Database : IUseDatabase
             var createReservationsSql = @"
                 CREATE TABLE IF NOT EXISTS Reservations (
                     ReservationId INTEGER PRIMARY KEY,
-                    TableId INTEGER,
                     NumOfPeople INTEGER NOT NULL,
                     First_name TEXT NOT NULL,
                     Infix TEXT,
@@ -29,9 +28,15 @@ public partial class Database : IUseDatabase
                     Date TEXT NOT NULL,
                     TimeSlot TEXT NOT NULL,
                     Email TEXT NOT NULL,
-                    Remarks TEXT,
+                    Remarks TEXT
+                );";
+            var createReservationTablesSql = @"
+                CREATE TABLE IF NOT EXISTS ReservationTables (
+                    ReservationId INTEGER,
+                    TableId INTEGER,
+                    FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId),
                     FOREIGN KEY (TableId) REFERENCES Tables(TableId),
-                    UNIQUE (TableId, Date, TimeSlot)
+                    PRIMARY KEY (ReservationId, TableId)
                 );";
             var createMenuItemsSql = @"
                 CREATE TABLE IF NOT EXISTS MenuItems (
@@ -41,12 +46,13 @@ public partial class Database : IUseDatabase
                     Price REAL NOT NULL
                 );";
 
-            using (var command = new SqliteCommand(createTablesSql + createReservationsSql + createMenuItemsSql, connection))
+            using (var command = new SqliteCommand(createTablesSql + createReservationsSql + createReservationTablesSql + createMenuItemsSql, connection))
             {
                 command.ExecuteNonQuery();
             }
         }
     }
+
 
     public List<MenuItem> GetMenuItemsByCategory(string category)
     {
@@ -80,15 +86,15 @@ public partial class Database : IUseDatabase
         {
             connection.Open();
             var formattedDate = date.ToString("dd-MM-yyyy");
-            
-            // Genereer een willekeurige ReservationId
+
+            // Generate a unique ReservationId
             Random random = new Random();
             int reservationId;
             bool isUnique;
-            
+
             do
             {
-                reservationId = random.Next(100000, 999999); // Verander het bereik als dat nodig is
+                reservationId = random.Next(100000, 999999);
                 var checkSql = "SELECT COUNT(*) FROM Reservations WHERE ReservationId = @ReservationId";
                 using (var checkCmd = new SqliteCommand(checkSql, connection))
                 {
@@ -97,14 +103,13 @@ public partial class Database : IUseDatabase
                     isUnique = (count == 0);
                 }
             } while (!isUnique);
-            
+
             var sqlQuery = @"
-                INSERT INTO Reservations (ReservationId, TableId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
-                VALUES (@ReservationId, @TableId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
+                INSERT INTO Reservations (ReservationId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
+                VALUES (@ReservationId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
                 command.Parameters.AddWithValue("@ReservationId", reservationId);
-                command.Parameters.AddWithValue("@TableId", tableId);
                 command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
                 command.Parameters.AddWithValue("@First_name", firstName);
                 command.Parameters.AddWithValue("@Infix", infix);
@@ -118,13 +123,22 @@ public partial class Database : IUseDatabase
                 try
                 {
                     command.ExecuteNonQuery();
+                    var insertTableQuery = @"
+                        INSERT INTO ReservationTables (ReservationId, TableId)
+                        VALUES (@ReservationId, @TableId)";
+                    using (var tableCommand = new SqliteCommand(insertTableQuery, connection))
+                    {
+                        tableCommand.Parameters.AddWithValue("@ReservationId", reservationId);
+                        tableCommand.Parameters.AddWithValue("@TableId", tableId);
+                        tableCommand.ExecuteNonQuery();
+                    }
                     return (true, date, timeSlot, reservationId);
                 }
                 catch (SqliteException e)
                 {
                     if (e.Message.Contains("UNIQUE constraint failed"))
                     {
-                        var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(tableId, date, timeSlot, connection);
+                        var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(date, timeSlot, connection);
                         return (false, nextAvailableDate, nextAvailableTimeSlot, -1);
                     }
                     throw;
@@ -133,7 +147,112 @@ public partial class Database : IUseDatabase
         }
     }
 
-    private (DateTime, string) FindNextAvailableDateTime(int tableId, DateTime startDate, string startTimeSlot, SqliteConnection connection)
+    public List<Table> GetAvailableTablesForLargeReservation(DateTime date, string timeSlot)
+    {
+        List<Table> availableTables = new List<Table>();
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = @"
+                SELECT t.TableId, t.Capacity
+                FROM Tables t
+                WHERE t.TableId NOT IN (
+                    SELECT rt.TableId
+                    FROM ReservationTables rt
+                    INNER JOIN Reservations r ON rt.ReservationId = r.ReservationId
+                    WHERE r.Date = @Date AND r.TimeSlot = @TimeSlot
+                );";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@Date", date.ToString("dd-MM-yyyy"));
+                command.Parameters.AddWithValue("@TimeSlot", timeSlot);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        availableTables.Add(new Table
+                        {
+                            TableId = reader.GetInt32(0),
+                            Capacity = reader.GetInt32(1)
+                        });
+                    }
+                }
+            }
+        }
+        return availableTables;
+    }
+    public (bool success, DateTime suggestedDate, string suggestedTimeSlot, int reservationId) AddLargeReservation(List<int> tableIds, int numOfPeople, string firstName, string infix, string lastName, string phoneNumber, string email, DateTime date, string timeSlot, string remarks)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            var formattedDate = date.ToString("dd-MM-yyyy");
+
+            // Generate a unique ReservationId
+            Random random = new Random();
+            int reservationId;
+            bool isUnique;
+
+            do
+            {
+                reservationId = random.Next(100000, 999999);
+                var checkSql = "SELECT COUNT(*) FROM Reservations WHERE ReservationId = @ReservationId";
+                using (var checkCmd = new SqliteCommand(checkSql, connection))
+                {
+                    checkCmd.Parameters.AddWithValue("@ReservationId", reservationId);
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                    isUnique = (count == 0);
+                }
+            } while (!isUnique);
+
+            var sqlQuery = @"
+                INSERT INTO Reservations (ReservationId, NumOfPeople, First_name, Infix, Last_name, Phonenumber, Email, Date, TimeSlot, Remarks)
+                VALUES (@ReservationId, @NumOfPeople, @First_name, @Infix, @Last_name, @Phonenumber, @Email, @Date, @TimeSlot, @Remarks)";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ReservationId", reservationId);
+                command.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
+                command.Parameters.AddWithValue("@First_name", firstName);
+                command.Parameters.AddWithValue("@Infix", infix);
+                command.Parameters.AddWithValue("@Last_name", lastName);
+                command.Parameters.AddWithValue("@Phonenumber", phoneNumber);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Date", formattedDate);
+                command.Parameters.AddWithValue("@TimeSlot", timeSlot);
+                command.Parameters.AddWithValue("@Remarks", remarks);
+
+                try
+                {
+                    command.ExecuteNonQuery();
+
+                    foreach (var tableId in tableIds)
+                    {
+                        var insertTableQuery = @"
+                            INSERT INTO ReservationTables (ReservationId, TableId)
+                            VALUES (@ReservationId, @TableId)";
+                        using (var tableCommand = new SqliteCommand(insertTableQuery, connection))
+                        {
+                            tableCommand.Parameters.AddWithValue("@ReservationId", reservationId);
+                            tableCommand.Parameters.AddWithValue("@TableId", tableId);
+                            tableCommand.ExecuteNonQuery();
+                        }
+                    }
+
+                    return (true, date, timeSlot, reservationId);
+                }
+                catch (SqliteException e)
+                {
+                    if (e.Message.Contains("UNIQUE constraint failed"))
+                    {
+                        var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(date, timeSlot, connection);
+                        return (false, nextAvailableDate, nextAvailableTimeSlot, -1);
+                    }
+                    throw;
+                }
+            }
+        }
+    }
+    private (DateTime, string) FindNextAvailableDateTime(DateTime startDate, string startTimeSlot, SqliteConnection connection)
     {
         DateTime nextDate = startDate;
         string nextTimeSlot = startTimeSlot;
@@ -144,17 +263,20 @@ public partial class Database : IUseDatabase
         {
             string sql = @"
                 SELECT COUNT(*)
-                FROM Reservations
-                WHERE TableId = @TableId AND Date = @Date AND TimeSlot = @TimeSlot;";
+                FROM Tables t
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM Reservations r
+                    INNER JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                    WHERE rt.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+                );";
 
             using (var cmd = new SqliteCommand(sql, connection))
             {
-                cmd.Parameters.AddWithValue("@TableId", tableId);
                 cmd.Parameters.AddWithValue("@Date", nextDate.ToString("dd-MM-yyyy"));
                 cmd.Parameters.AddWithValue("@TimeSlot", nextTimeSlot);
 
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
-                if (count == 0)
+                if (count > 0)
                 {
                     return (nextDate, nextTimeSlot);
                 }
@@ -218,7 +340,12 @@ public partial class Database : IUseDatabase
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            string sqlQuery = "SELECT * FROM Reservations WHERE Date = @Date";
+            string sqlQuery = @"
+                SELECT r.*, GROUP_CONCAT(rt.TableId) AS TableIds
+                FROM Reservations r
+                LEFT JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                WHERE r.Date = @Date
+                GROUP BY r.ReservationId";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
                 command.Parameters.AddWithValue("@Date", date);
@@ -226,19 +353,27 @@ public partial class Database : IUseDatabase
                 {
                     while (reader.Read())
                     {
+                        var tableIdsString = reader["TableIds"].ToString();
+                        var tableIds = tableIdsString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        var tableIdList = new List<int>();
+                        foreach (var id in tableIds)
+                        {
+                            tableIdList.Add(int.Parse(id));
+                        }
+
                         reservations.Add(new ReservationModel
                         {
                             ReservationId = reader.GetInt32(0),
-                            TableId = reader.GetInt32(1),
-                            NumOfPeople = reader.GetInt32(2),
-                            FirstName = reader.GetString(3),
-                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            LastName = reader.GetString(5),
-                            PhoneNumber = reader.GetString(6),
-                            Email = reader.GetString(9),
-                            Date = reader.GetString(7),
-                            TimeSlot = reader.GetString(8),
-                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                            TableIds = tableIdList,
+                            NumOfPeople = reader.GetInt32(1),
+                            FirstName = reader.GetString(2),
+                            Infix = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            LastName = reader.GetString(4),
+                            PhoneNumber = reader.GetString(5),
+                            Email = reader.GetString(8),
+                            Date = reader.GetString(6),
+                            TimeSlot = reader.GetString(7),
+                            Remarks = reader.IsDBNull(9) ? null : reader.GetString(9)
                         });
                     }
                 }
@@ -255,26 +390,38 @@ public partial class Database : IUseDatabase
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            string sqlQuery = "SELECT * FROM Reservations";
+            string sqlQuery = @"
+                SELECT r.*, GROUP_CONCAT(rt.TableId) AS TableIds
+                FROM Reservations r
+                LEFT JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                GROUP BY r.ReservationId";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
+                        var tableIdsString = reader["TableIds"].ToString();
+                        var tableIds = tableIdsString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        var tableIdList = new List<int>();
+                        foreach (var id in tableIds)
+                        {
+                            tableIdList.Add(int.Parse(id));
+                        }
+
                         reservations.Add(new ReservationModel
                         {
                             ReservationId = reader.GetInt32(0),
-                            TableId = reader.GetInt32(1),
-                            NumOfPeople = reader.GetInt32(2),
-                            FirstName = reader.GetString(3),
-                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            LastName = reader.GetString(5),
-                            PhoneNumber = reader.GetString(6),
-                            Email = reader.GetString(9),
-                            Date = reader.GetString(7),
-                            TimeSlot = reader.GetString(8),
-                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                            TableIds = tableIdList,
+                            NumOfPeople = reader.GetInt32(1),
+                            FirstName = reader.GetString(2),
+                            Infix = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            LastName = reader.GetString(4),
+                            PhoneNumber = reader.GetString(5),
+                            Email = reader.GetString(8),
+                            Date = reader.GetString(6),
+                            TimeSlot = reader.GetString(7),
+                            Remarks = reader.IsDBNull(9) ? null : reader.GetString(9)
                         });
                     }
                 }
@@ -284,18 +431,91 @@ public partial class Database : IUseDatabase
         return reservations;
     }
 
+
     public void DeleteReservation(int reservationId)
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            string sqlQuery = "DELETE FROM Reservations WHERE ReservationId = @ReservationId";
-            using (var command = new SqliteCommand(sqlQuery, connection))
+
+            using (var transaction = connection.BeginTransaction())
             {
-                command.Parameters.AddWithValue("@ReservationId", reservationId);
-                command.ExecuteNonQuery();
+                try
+                {
+                    string deleteReservationTablesQuery = "DELETE FROM ReservationTables WHERE ReservationId = @ReservationId";
+                    using (var command = new SqliteCommand(deleteReservationTablesQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        command.ExecuteNonQuery();
+                    }
+
+                    string deleteReservationQuery = "DELETE FROM Reservations WHERE ReservationId = @ReservationId";
+                    using (var command = new SqliteCommand(deleteReservationQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
+    }
+
+    public List<ReservationModel> GetReservationsByDateAndTimeSlot(string date, string timeSlot)
+    {
+        List<ReservationModel> reservations = new List<ReservationModel>();
+
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            connection.Open();
+            string sqlQuery = @"
+                SELECT r.*, GROUP_CONCAT(rt.TableId) AS TableIds
+                FROM Reservations r
+                LEFT JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                WHERE r.Date = @Date AND r.TimeSlot = @TimeSlot
+                GROUP BY r.ReservationId";
+            using (var command = new SqliteCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@Date", date);
+                command.Parameters.AddWithValue("@TimeSlot", timeSlot);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tableIdsString = reader["TableIds"].ToString();
+                        var tableIds = tableIdsString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        var tableIdList = new List<int>();
+                        foreach (var id in tableIds)
+                        {
+                            tableIdList.Add(int.Parse(id));
+                        }
+
+                        reservations.Add(new ReservationModel
+                        {
+                            ReservationId = reader.GetInt32(0),
+                            TableIds = tableIdList,
+                            NumOfPeople = reader.GetInt32(1),
+                            FirstName = reader.GetString(2),
+                            Infix = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            LastName = reader.GetString(4),
+                            PhoneNumber = reader.GetString(5),
+                            Email = reader.GetString(8),
+                            Date = reader.GetString(6),
+                            TimeSlot = reader.GetString(7),
+                            Remarks = reader.IsDBNull(9) ? null : reader.GetString(9)
+                        });
+                    }
+                }
+            }
+        }
+
+        return reservations;
     }
 
     public ReservationModel GetReservationById(int reservationId)
@@ -303,7 +523,12 @@ public partial class Database : IUseDatabase
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            string sqlQuery = "SELECT * FROM Reservations WHERE ReservationId = @ReservationId";
+            string sqlQuery = @"
+                SELECT r.*, GROUP_CONCAT(rt.TableId) AS TableIds
+                FROM Reservations r
+                LEFT JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                WHERE r.ReservationId = @ReservationId
+                GROUP BY r.ReservationId";
             using (var command = new SqliteCommand(sqlQuery, connection))
             {
                 command.Parameters.AddWithValue("@ReservationId", reservationId);
@@ -311,19 +536,27 @@ public partial class Database : IUseDatabase
                 {
                     if (reader.Read())
                     {
+                        var tableIdsString = reader["TableIds"].ToString();
+                        var tableIds = tableIdsString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        var tableIdList = new List<int>();
+                        foreach (var id in tableIds)
+                        {
+                            tableIdList.Add(int.Parse(id));
+                        }
+
                         return new ReservationModel
                         {
                             ReservationId = reader.GetInt32(0),
-                            TableId = reader.GetInt32(1),
-                            NumOfPeople = reader.GetInt32(2),
-                            FirstName = reader.GetString(3),
-                            Infix = reader.IsDBNull(4) ? null : reader.GetString(4),
-                            LastName = reader.GetString(5),
-                            PhoneNumber = reader.GetString(6),
-                            Email = reader.GetString(9),
-                            Date = reader.GetString(7),
-                            TimeSlot = reader.GetString(8),
-                            Remarks = reader.IsDBNull(10) ? null : reader.GetString(10)
+                            TableIds = tableIdList,
+                            NumOfPeople = reader.GetInt32(1),
+                            FirstName = reader.GetString(2),
+                            Infix = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            LastName = reader.GetString(4),
+                            PhoneNumber = reader.GetString(5),
+                            Email = reader.GetString(8),
+                            Date = reader.GetString(6),
+                            TimeSlot = reader.GetString(7),
+                            Remarks = reader.IsDBNull(9) ? null : reader.GetString(9)
                         };
                     }
                 }

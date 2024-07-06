@@ -133,7 +133,11 @@ namespace ReservationApplication
                 remarks = ReadInputWithEscape() ?? "";
 
                 // Reservering maken
-                (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) = reservationSystem.ReserveTableForGroup(numberOfPeople, reservationDate, timeSlot);
+                int tableId;
+                DateTime nextAvailableDate;
+                string nextAvailableTimeSlot;
+
+                (tableId, nextAvailableDate, nextAvailableTimeSlot) = reservationSystem.ReserveTableForGroup(numberOfPeople, reservationDate, timeSlot);
 
                 if (tableId == -1)
                 {
@@ -157,7 +161,6 @@ namespace ReservationApplication
                     Console.ResetColor();
                     Console.WriteLine($"Datum: {reservationDate.ToShortDateString()}");
                     Console.WriteLine($"Tijdslot: {timeSlot}");
-                    Console.WriteLine($"Tafelnummer: {tableId}");
                     Console.WriteLine($"Aantal personen: {numberOfPeople}");
                     Console.WriteLine($"Naam: {firstName} {infix} {lastName}");
                     Console.WriteLine($"Telefoonnummer: {phoneNumber}");

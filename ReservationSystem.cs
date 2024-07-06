@@ -1,13 +1,14 @@
 using Microsoft.Data.Sqlite;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
+using ReservationApplication;
 
 public class ReservationSystem : IUseDatabase
 {
     private SqliteConnection conn;
-    private const string ConnectionString = @"Data Source = .\Mydatabase.db";
-
+    private const string ConnectionString = @"Data Source=.\Mydatabase.db";
 
     public ReservationSystem()
     {
@@ -15,75 +16,117 @@ public class ReservationSystem : IUseDatabase
         conn.Open();
     }
 
-    public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numOfPeople, DateTime date, string timeSlot)
+    public (int tableId, DateTime nextAvailableDate, string nextAvailableTimeSlot) ReserveTableForGroup(int numberOfPeople, DateTime reservationDate, string timeSlot)
     {
-        int reservedTableId = FindAvailableTable(numOfPeople, date, timeSlot);
-
-        if (reservedTableId == -1)
+        using (var connection = new SqliteConnection(@"Data Source=.\Mydatabase.db"))
         {
-            var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(numOfPeople, date, timeSlot);
-            reservedTableId = FindAvailableTable(numOfPeople, nextAvailableDate, nextAvailableTimeSlot);
-            return (reservedTableId, nextAvailableDate, nextAvailableTimeSlot);
-        }
+            connection.Open();
+            var availableTables = GetAvailableTables(reservationDate, timeSlot, connection);
 
-        return (reservedTableId, date, timeSlot);
+            foreach (var table in availableTables)
+            {
+                if (table.Capacity >= numberOfPeople)
+                {
+                    return (table.TableId, DateTime.MinValue, string.Empty);
+                }
+            }
+
+            var (nextAvailableDate, nextAvailableTimeSlot) = FindNextAvailableDateTime(reservationDate, timeSlot, connection);
+            return (-1, nextAvailableDate, nextAvailableTimeSlot);
+        }
+    }
+    private List<Table> GetAvailableTables(DateTime date, string timeSlot, SqliteConnection connection)
+    {
+        List<Table> availableTables = new List<Table>();
+
+        string sqlQuery = @"
+            SELECT t.TableId, t.Capacity
+            FROM Tables t
+            WHERE t.TableId NOT IN (
+                SELECT rt.TableId
+                FROM ReservationTables rt
+                INNER JOIN Reservations r ON rt.ReservationId = r.ReservationId
+                WHERE r.Date = @Date AND r.TimeSlot = @TimeSlot
+            );";
+        using (var command = new SqliteCommand(sqlQuery, connection))
+        {
+            command.Parameters.AddWithValue("@Date", date.ToString("dd-MM-yyyy"));
+            command.Parameters.AddWithValue("@TimeSlot", timeSlot);
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    availableTables.Add(new Table
+                    {
+                        TableId = reader.GetInt32(0),
+                        Capacity = reader.GetInt32(1)
+                    });
+                }
+            }
+        }
+        return availableTables;
     }
 
-    private int FindAvailableTable(int numOfPeople, DateTime date, string timeSlot)
+    private List<int> FindAvailableTables(int numOfPeople, DateTime date, string timeSlot)
     {
+        List<int> tableIds = new List<int>();
         string formattedDate = date.ToString("dd-MM-yyyy");
         string sql = @"
-            SELECT t.TableId
+            SELECT t.TableId, t.Capacity
             FROM Tables t
-            WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
+            WHERE NOT EXISTS (
                 SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
             )
-            ORDER BY t.Capacity ASC, t.TableId ASC
-            LIMIT 1;";
+            ORDER BY t.Capacity ASC, t.TableId ASC;";
 
         using (var cmd = new SqliteCommand(sql, conn))
         {
-            cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
             cmd.Parameters.AddWithValue("@Date", formattedDate);
             cmd.Parameters.AddWithValue("@TimeSlot", timeSlot);
 
             using (var reader = cmd.ExecuteReader())
             {
-                if (reader.Read())
+                int remainingPeople = numOfPeople;
+                while (reader.Read() && remainingPeople > 0)
                 {
-                    return reader.GetInt32(0);
+                    int tableId = reader.GetInt32(0);
+                    int capacity = reader.GetInt32(1);
+
+                    tableIds.Add(tableId);
+                    remainingPeople -= capacity;
                 }
             }
         }
-        return -1;
+        return tableIds;
     }
 
-    private (DateTime, string) FindNextAvailableDateTime(int numOfPeople, DateTime startDate, string startTimeSlot)
+    private (DateTime, string) FindNextAvailableDateTime(DateTime startDate, string startTimeSlot, SqliteConnection connection)
     {
         DateTime nextDate = startDate;
+        string nextTimeSlot = startTimeSlot;
         string[] timeSlots = { "18:00-19:59", "20:00-21:59", "22:00-23:59" };
         int currentIndex = Array.IndexOf(timeSlots, startTimeSlot);
 
         while (true)
         {
-            string formattedDate = nextDate.ToString("dd-MM-yyyy");
             string sql = @"
                 SELECT COUNT(*)
                 FROM Tables t
-                WHERE t.Capacity >= @NumOfPeople AND NOT EXISTS (
-                    SELECT 1 FROM Reservations r WHERE r.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM Reservations r
+                    INNER JOIN ReservationTables rt ON r.ReservationId = rt.ReservationId
+                    WHERE rt.TableId = t.TableId AND r.Date = @Date AND r.TimeSlot = @TimeSlot
                 );";
 
-            using (var cmd = new SqliteCommand(sql, conn))
+            using (var cmd = new SqliteCommand(sql, connection))
             {
-                cmd.Parameters.AddWithValue("@NumOfPeople", numOfPeople);
-                cmd.Parameters.AddWithValue("@Date", formattedDate);
-                cmd.Parameters.AddWithValue("@TimeSlot", timeSlots[currentIndex]);
+                cmd.Parameters.AddWithValue("@Date", nextDate.ToString("dd-MM-yyyy"));
+                cmd.Parameters.AddWithValue("@TimeSlot", nextTimeSlot);
 
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count > 0)
                 {
-                    return (nextDate, timeSlots[currentIndex]);
+                    return (nextDate, nextTimeSlot);
                 }
 
                 currentIndex = (currentIndex + 1) % timeSlots.Length;
@@ -91,6 +134,7 @@ public class ReservationSystem : IUseDatabase
                 {
                     nextDate = nextDate.AddDays(1);
                 }
+                nextTimeSlot = timeSlots[currentIndex];
             }
         }
     }

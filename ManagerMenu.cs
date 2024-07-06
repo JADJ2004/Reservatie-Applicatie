@@ -14,9 +14,9 @@ public static class ManagerMenu
 ************************************************************************************************/
 
 Welkom Marcel wat wilt u vandaag gaan doen?";
-        string[] options = { "Reserveringen inzien", "Reservering wijzigen", "Reservering verwijderen", "Menu veranderen", "Uitloggen" };
+        string[] options = { "Reserveringen inzien", "Reservering wijzigen", "Reservering verwijderen", "Menu veranderen", "Groepsreservering", "Uitloggen" };
 
-        menuManager = new MenuManager(new Database()); // Hier maak je een instantie van MenuManager aan
+        menuManager = new MenuManager(new Database());
 
         UserInterface ManagerMenu = new UserInterface(prompt, options, () => Menus.StartUp());
 
@@ -37,16 +37,19 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
                 reservationDeleter.DeleteReservation();
                 break;
             case 3:
-                ChangeMenu(); // Hier roep je de methode aan voor het wijzigen van het menu
+                ChangeMenu();
                 break;
             case 4:
+                LargeReservationManager largeReservationManager = new LargeReservationManager();
+                largeReservationManager.MakeLargeReservation();
+                break;
+            case 5:
                 Console.WriteLine("U bent uitgelogd.");
                 Menus.StartUp();
                 break;
         }
     }
 
-    // Methode toegevoegd voor het wijzigen van het menu
     private static void ChangeMenu()
     {
         Console.Clear();
@@ -71,7 +74,6 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
         }
     }
 
-    // Methode toegevoegd voor het toevoegen van een nieuw menu-item
     private static void AddMenuItem()
     {
         Console.Clear();
@@ -95,7 +97,6 @@ Welkom Marcel wat wilt u vandaag gaan doen?";
         Console.WriteLine("Menu-item succesvol toegevoegd.");
     }
 
-    // Methode toegevoegd voor het verwijderen van een menu-item
     private static void RemoveMenuItem()
     {
         Console.Clear();

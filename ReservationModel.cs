@@ -3,7 +3,7 @@ namespace ReservationApplication
     public class ReservationModel
     {
         public int ReservationId { get; set; }
-        public int TableId { get; set; }
+        public List<int> TableIds { get; set; }
         public int NumOfPeople { get; set; }
         public string FirstName { get; set; }
         public string Infix { get; set; }
@@ -13,5 +13,7 @@ namespace ReservationApplication
         public string Date { get; set; }
         public string TimeSlot { get; set; }
         public string Remarks { get; set; }
+        public int TableId { get; set; }
+        public int Capacity { get; set; }
     }
 }

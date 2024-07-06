@@ -11,23 +11,42 @@ public partial class Database
         using (var connection = new SqliteConnection(ConnectionString))
         {
             connection.Open();
-            var sqlQuery = @"
-                DELETE FROM Reservations 
-                WHERE reservationId = @ReservationId";
-            using (var command = new SqliteCommand(sqlQuery, connection))
-            {
-                command.Parameters.AddWithValue("@ReservationId", reservationId);
 
-                int rowsAffected = command.ExecuteNonQuery();
-                if (rowsAffected > 0)
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
                 {
-                    deletionSuccess = true;
+                    string deleteReservationTablesQuery = "DELETE FROM ReservationTables WHERE ReservationId = @ReservationId";
+                    using (var command = new SqliteCommand(deleteReservationTablesQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        command.ExecuteNonQuery();
+                    }
+
+                    string deleteReservationQuery = "DELETE FROM Reservations WHERE ReservationId = @ReservationId";
+                    using (var command = new SqliteCommand(deleteReservationQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@ReservationId", reservationId);
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            deletionSuccess = true;
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
         return deletionSuccess;
     }
 }
+
 
 namespace Customer_Reservation_Deleter
 {
