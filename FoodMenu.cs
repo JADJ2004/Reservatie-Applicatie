@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.Data.Sqlite;
 
 namespace ReservationApplication
@@ -40,9 +41,8 @@ namespace ReservationApplication
 
             Console.WriteLine("DESSERTS");
             PrintCategory("DESSERTS");
-            Thread.Sleep(3000);
-            Console.WriteLine("");
-            Menus.StartUp();
+            Console.WriteLine("Druk op ESC om terug te gaan");
+            string input = ReadInputWithEscape();
         }
 
 
@@ -55,5 +55,45 @@ namespace ReservationApplication
             }
             Console.WriteLine();
         }
+        private static string ReadInputWithEscape()
+        {
+            var input = new StringBuilder();
+            int cursorPosition = Console.CursorLeft;
+
+            while (true)
+            {
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    Menus.StartUp();
+                    break;
+                }
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0 && Console.CursorLeft > cursorPosition)
+                    {
+                        input.Remove(input.Length - 1, 1);
+                        Console.Write("\b \b");
+                    }
+                }
+                else if (char.IsWhiteSpace(key.KeyChar) && input.Length == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    input.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+            }
+            return input.ToString();
+        }
     }
 }
+    
+
