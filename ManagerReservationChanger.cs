@@ -34,7 +34,6 @@ public class ManagerReservationChanger : IUseDatabase
             {
                 Console.WriteLine("Reserveringsdetails:");
                 Console.WriteLine($"Reservering ID: {reservation.ReservationId}");
-                Console.WriteLine($"Tafel ID: {reservation.TableId}");
                 Console.WriteLine($"Aantal Personen: {reservation.NumOfPeople}");
                 Console.WriteLine($"Naam: {reservation.FirstName} {reservation.Infix} {reservation.LastName}");
                 Console.WriteLine($"Telefoonnummer: {reservation.PhoneNumber}");
